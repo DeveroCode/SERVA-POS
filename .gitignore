@@ -1,0 +1,111 @@
+# =========================
+# Dependencies
+# =========================
+node_modules/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Build Outputs
+# =========================
+dist/
+build/
+out/
+.next/
+.vercel/
+coverage/
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# Cache
+# =========================
+.cache/
+.parcel-cache/
+.vite/
+.eslintcache
+
+# =========================
+# Testing
+# =========================
+.nyc_output/
+
+# =========================
+# IDEs
+# =========================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+.idea/
+
+# =========================
+# Operating Systems
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Temporary Files
+# =========================
+tmp/
+temp/
+*.tmp
+
+# =========================
+# Runtime Files
+# =========================
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# =========================
+# Uploads (optional)
+# Uncomment if uploads are generated
+# =========================
+# uploads/
+# public/uploads/
+
+# =========================
+# Secrets
+# =========================
+*.pem
+*.key
+*.crt
+
+# =========================
+# Package Managers
+# =========================
+.pnp
+.pnp.js
+
+# =========================
+# Docker
+# =========================
+.docker/
+
+# =========================
+# Misc
+# =========================
+*.swp
+*.swo
