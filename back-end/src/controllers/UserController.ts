@@ -4,6 +4,14 @@ import { checkPassword, hashPassword } from '../utils';
 import { generateJWT } from '../utils/generateJWT';
 
 export class UserController {
+    static getMe = async (req: Request, res: Response) => {
+        try {
+            return res.status(200).json(req.user);
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
     static create = async (req: Request, res: Response) => {
         const { phone_number, email, password, role } = req.body;
         try {

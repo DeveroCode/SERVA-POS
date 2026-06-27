@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { connectDB } from './config/db';
 import { corsOptions } from './config/cors';
+import UserRoute from './route/UserRoute';
 const port = process.env.PORT || 4000;
 
 dotenv.config();
@@ -14,5 +15,5 @@ app.use(express.json());
 app.use(cors(corsOptions));
 
 // Routes
-
+app.use('/api/auth', UserRoute);
 export default app;

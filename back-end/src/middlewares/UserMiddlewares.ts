@@ -54,3 +54,17 @@ export const createUser = [
     body('phone_number').isMobilePhone('any').withMessage('Invalid phone number'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
 ];
+
+export const updateUser = [
+    body('name').optional().isString().withMessage('Name must be a string'),
+    body('last_name').optional().isString().withMessage('Last name must be a string'),
+    body('email').optional().isEmail().withMessage('Invalid email'),
+    body('phone_number').optional().isMobilePhone('any').withMessage('Invalid phone number'),
+    body('password').optional().isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+];
+
+export const loginUser = [
+    body('email').isEmail().withMessage('Invalid email'),
+    body('phone_number').isMobilePhone('any').optional().withMessage('Invalid phone number'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+];
