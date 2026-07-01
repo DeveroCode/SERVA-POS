@@ -50,8 +50,9 @@ export async function isAuthenticate(req: Request, res: Response, next: NextFunc
 }
 
 export const createUser = [
+    body('name').isString().withMessage('Name must be a string'),
     body('email').isEmail().withMessage('Invalid email'),
-    body('phone_number').isMobilePhone('any').withMessage('Invalid phone number'),
+    body('role').isIn(['admin', 'user']).withMessage('Role must be either admin or user'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
 ];
 

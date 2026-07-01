@@ -13,15 +13,15 @@ export class UserController {
         }
     }
     static create = async (req: Request, res: Response) => {
-        const { phone_number, email, password, role } = req.body;
+        const { name, email, password, role } = req.body;
         try {
-            const findUser = await User.findOne({ where: { email, phone_number } });
+            const findUser = await User.findOne({ where: { email } });
             if (findUser) {
                 const error = new Error('Email or phone number already exists, please try again');
                 return res.status(400).json({ message: error.message });
             }
 
-            const user = await User.create({ phone_number, email, role });
+            const user = new User({ email, role, name });
             user.password = await hashPassword(password);
             await user.save();
             res.status(201).json({ message: 'User created successfully' });
