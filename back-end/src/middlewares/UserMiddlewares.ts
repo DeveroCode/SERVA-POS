@@ -13,9 +13,9 @@ declare global {
 
 export const userExist = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, phone_number } = req.body;
-        const findUser = await User.findOne({ where: { email, phone_number } });
-        if(!findUser) {
+        const { email } = req.body;
+        const findUser = await User.findOne({ email });
+        if (!findUser) {
             const error = new Error('User not found');
             return res.status(404).json({ message: error.message });
         }
@@ -66,6 +66,5 @@ export const updateUser = [
 
 export const loginUser = [
     body('email').isEmail().withMessage('Invalid email'),
-    body('phone_number').isMobilePhone('any').optional().withMessage('Invalid phone number'),
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+    body('password').notEmpty().withMessage('Password is required'),
 ];
