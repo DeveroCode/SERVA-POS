@@ -1,6 +1,6 @@
 import { Shield } from "lucide-react";
 import EnableModalBTN from "../Buttons/EnableModalBTN";
-import InfoUpdate from "../Text/InfoUpdate";
+import InfoUpdate from "../Texts/InfoUpdate";
 
 export default function CPreferenceCard() {
   return (
