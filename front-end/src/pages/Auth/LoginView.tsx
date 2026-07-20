@@ -1,10 +1,12 @@
 import LoginForm from "@/forms/LoginForm";
 import { useLoginUser } from "@/mutations/useMutationAuth";
 import { FormProvider, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import type { LoginUser } from "types/User.types";
 
 export default function LoginView() {
   const { mutate } = useLoginUser();
+  const navigate = useNavigate();
   const methods = useForm<LoginUser>({
     defaultValues: {
       email: "",
@@ -18,6 +20,7 @@ export default function LoginView() {
     mutate(data, {
       onSuccess: () => {
         reset();
+        navigate("/dashboard");
       },
     });
   };

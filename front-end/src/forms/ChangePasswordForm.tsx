@@ -1,23 +1,37 @@
+import ErrorAlert from "@/Components/Alerts/ErrorAlert";
+import { useFormContext } from "react-hook-form";
+import type { UpdatePasswordForm } from "types/User.types";
+
 export default function ChangePasswordForm() {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<UpdatePasswordForm>();
   return (
     <div className="space-y-3">
       <fieldset className="flex flex-col">
-        <label htmlFor="password" className="font-semibold text-gray-700 text-sm">
+        <label
+          htmlFor="currentPassword"
+          className="font-semibold text-gray-700 text-sm"
+        >
           Contraseña actual
         </label>
         <input
           type="password"
-          id="password"
+          id="currentPassword"
           className="input-form"
           placeholder="Ingresa tu contraseña actual"
-          // {...register("password", { required: "The password field is required" })}
+          {...register("currentPassword", {
+            required: "La contraseña actual es obligatoria",
+          })}
         />
-        {/* {errors.password && (
-                <ErrorAlert>{errors.password.message}</ErrorAlert>
-              )} */}
+        {errors.password && <ErrorAlert>{errors.password.message}</ErrorAlert>}
       </fieldset>
       <fieldset className="flex flex-col">
-        <label htmlFor="password" className="font-semibold text-gray-700 text-sm">
+        <label
+          htmlFor="password"
+          className="font-semibold text-gray-700 text-sm"
+        >
           Nueva contraseña
         </label>
         <input
@@ -25,11 +39,11 @@ export default function ChangePasswordForm() {
           id="password"
           className="input-form"
           placeholder="Ingresa tu nueva contraseña"
-          // {...register("password", { required: "The password field is required" })}
+          {...register("password", {
+            required: "La contraseña es obligatoria",
+          })}
         />
-        {/* {errors.password && (
-                <ErrorAlert>{errors.password.message}</ErrorAlert>
-              )} */}
+        {errors.password && <ErrorAlert>{errors.password.message}</ErrorAlert>}
       </fieldset>
     </div>
   );

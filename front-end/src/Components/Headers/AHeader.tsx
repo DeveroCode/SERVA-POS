@@ -20,7 +20,9 @@ bg-white
           serva
         </span>
         <span className="text-[#E5E7EB]">/</span>
-        <span className="text-sm font-medium text-[#4B5563]">Configuración</span>
+        <span className="text-sm font-medium text-[#4B5563]">
+          Configuración
+        </span>
         <span className="text-[#E5E7EB]">/</span>
         <span className="text-sm font-semibold text-[#111827]">Mi perfil</span>
       </div>

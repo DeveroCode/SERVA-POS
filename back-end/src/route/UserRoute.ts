@@ -1,13 +1,16 @@
 import { Router } from "express";
 import { UserController } from "../controllers/UserController";
 import { handleInputErrors } from "../utils/validator";
-import { createUser, isAuthenticate, loginUser, updateUser, userExist } from "../middlewares/UserMiddlewares";
+import { createUser, isAuthenticate, loginUser, parseProfileImage, updatePassword, updateUser, userExist } from "../middlewares/UserMiddlewares";
 
 
 const router: Router = Router();
-router.get('/me', isAuthenticate, UserController.getMe);
 router.post('/create', handleInputErrors, createUser,UserController.create);
-router.patch('/update', handleInputErrors, updateUser,UserController.update);
 router.post('/login', userExist, loginUser,handleInputErrors, UserController.login);
 
+router.use(isAuthenticate);
+router.get('/me', UserController.getMe);
+router.patch('/update', userExist,handleInputErrors, updateUser,UserController.update);
+router.put('/update-password', userExist, handleInputErrors, updatePassword,UserController.updatePassword);
+router.put('/upload/image-profile', parseProfileImage, handleInputErrors,UserController.uploadImageProfile);
 export default router;

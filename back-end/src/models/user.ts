@@ -13,6 +13,7 @@ export interface IUser extends Document {
     phone_number: string;
     password: string;
     role: typeof USER_ROLES[keyof typeof USER_ROLES];
+    birthday: Date;
     image: string;
     isActive: boolean;
     lastLogin: Date;
@@ -21,12 +22,13 @@ export interface IUser extends Document {
 
 const userSchema = new Schema<IUser>({
     name: { type: String, required: true },
-    last_name: { type: String },
+    last_name: { type: String, default: "" },
     email: { type: String, required: true, unique: true },
-    phone_number: { type: String, required: false, unique: true },
+    phone_number: { type: String, required: false, unique: true, default: "" },
     password: { type: String, required: true },
     role: { type: String, required: true, enum: Object.values(USER_ROLES) },
-    image: { type: String, },
+    birthday: { type: Date, required: false, default: Date.now() },
+    image: { type: String, default: "" },
     isActive: { type: Boolean, default: true },
     lastLogin: { type: Date, default: Date.now() },
 }, { timestamps: true });

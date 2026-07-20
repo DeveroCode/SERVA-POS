@@ -1,12 +1,20 @@
 import { z } from "zod";
+export const USER_ROLES = {
+    OWNER: "owner",
+    ADMIN: "admin",
+    USER: "user",
+    CASHIER: "cashier",
+    MANAGER: "manager",
+} as const;
 export const userSchema = z.object({
     _id: z.string(),
     name: z.string(),
     last_name: z.string(),
     email: z.string().email(),
     phone_number: z.string(),
-    role: z.string(),
-    image: z.string().optional(),
+    birthday: z.string(),
+    role: z.enum(Object.values(USER_ROLES)),
+    image: z.string(),
     isActive: z.boolean(),
     lastLogin: z.string().optional(),
 });
@@ -15,9 +23,17 @@ export type User = z.infer<typeof userSchema>;
 
 
 // Auth Types
-export type RegisterForm = Pick<User, "name" | "email" > & {
+export type RegisterForm = Pick<User, "name" | "email"> & {
     password: string;
     role: string;
 };
 
 export type LoginUser = Pick<RegisterForm, "email" | "password">;
+export type UpdateUser = Pick<User, "name" | "last_name" | "email" | "phone_number" | "birthday">;
+export type UpdatePasswordForm = Pick<RegisterForm, "password"> & {
+    currentPassword: string
+};
+
+export type uploadImageProfile = {
+    image: File
+}

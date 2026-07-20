@@ -2,11 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { IUser, User } from "../models/user";
 import { body } from "express-validator";
 import jwt from 'jsonwebtoken';
+import formidable, { Files } from "formidable";
 
 declare global {
     namespace Express {
         interface Request {
             user: IUser;
+            files: Files;
         }
     }
 }
@@ -50,21 +52,130 @@ export async function isAuthenticate(req: Request, res: Response, next: NextFunc
 }
 
 export const createUser = [
-    body('name').isString().withMessage('Name must be a string'),
-    body('email').isEmail().withMessage('Invalid email'),
-    body('role').isIn(['admin', 'user']).withMessage('Role must be either admin or user'),
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+    body('name')
+        .isString()
+        .withMessage('El nombre debe ser una cadena de texto'),
+
+    body('email')
+        .isEmail()
+        .withMessage('El correo electrónico no es válido'),
+
+    body('role')
+        .isIn(['admin', 'user'])
+        .withMessage('El rol debe ser "admin" o "user"'),
+
+    body('password')
+        .isLength({ min: 6 })
+        .withMessage('La contraseña debe tener al menos 6 caracteres')
 ];
 
 export const updateUser = [
-    body('name').optional().isString().withMessage('Name must be a string'),
-    body('last_name').optional().isString().withMessage('Last name must be a string'),
-    body('email').optional().isEmail().withMessage('Invalid email'),
-    body('phone_number').optional().isMobilePhone('any').withMessage('Invalid phone number'),
-    body('password').optional().isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+    body('name')
+        .optional()
+        .isString()
+        .withMessage('El nombre debe ser una cadena de texto'),
+
+    body('last_name')
+        .optional()
+        .isString()
+        .withMessage('El apellido debe ser una cadena de texto'),
+
+    body('email')
+        .optional()
+        .isEmail()
+        .withMessage('El correo electrónico no es válido'),
+
+    body('phone_number')
+        .optional()
+        .isMobilePhone('any')
+        .withMessage('El número de teléfono no es válido'),
+
+    body('password')
+        .optional()
+        .isLength({ min: 6 })
+        .withMessage('La contraseña debe tener al menos 6 caracteres'),
+    body("birthday")
+        .optional()
+        .isISO8601()
+        .withMessage("La fecha de nacimiento no es válida")
+        .toDate()
+        .custom((value: Date) => {
+            const today = new Date();
+
+            let age = today.getFullYear() - value.getFullYear();
+            const monthDiff = today.getMonth() - value.getMonth();
+
+            if (
+                monthDiff < 0 ||
+                (monthDiff === 0 && today.getDate() < value.getDate())
+            ) {
+                age--;
+            }
+
+            if (age < 18) {
+                throw new Error("La edad debe ser mayor o igual a 18");
+            }
+
+            return true;
+        }),
 ];
 
 export const loginUser = [
-    body('email').isEmail().withMessage('Invalid email'),
-    body('password').notEmpty().withMessage('Password is required'),
+    body('email')
+        .isEmail()
+        .withMessage('El correo electrónico no es válido'),
+
+    body('password')
+        .notEmpty()
+        .withMessage('La contraseña es obligatoria'),
 ];
+
+export const updatePassword = [
+    body('currentPassword').notEmpty().withMessage('La contraseña actual es obligatoria'),
+    body('password')
+        .isLength({ min: 6 })
+        .withMessage('La contraseña debe tener al menos 6 caracteres')
+];
+
+const form = formidable({
+    multiples: false,
+    filter: ({ mimetype }) => {
+        return (
+            mimetype === "image/jpeg" ||
+            mimetype === "image/jpg" ||
+            mimetype === "image/png" ||
+            mimetype === "image/webp"
+        );
+    },
+});
+
+export function parseProfileImage(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+    const form = formidable({
+        multiples: false,
+        maxFiles: 1,
+        maxFileSize: 5 * 1024 * 1024, // 5 MB
+        filter: ({ mimetype }) =>
+            [
+                "image/jpeg",
+                "image/jpg",
+                "image/png",
+                "image/webp",
+            ].includes(mimetype ?? ""),
+    });
+
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            return res.status(400).json({
+                message: "No fue posible procesar la imagen.",
+            });
+        }
+
+        req.files = files;
+
+        next();
+    });
+}

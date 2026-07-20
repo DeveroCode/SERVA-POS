@@ -1,6 +1,10 @@
 import LabelForm from "@/Components/Texts/LabelForm";
+import ErrorAlert from "@/Components/Alerts/ErrorAlert";
+import { useFormContext } from "react-hook-form";
+import type { UpdateUser } from "types/User.types";
 
 export default function UpdatePersonalInfoForm() {
+  const {register, formState: {errors}} = useFormContext<UpdateUser>();
   return (
     <div className="space-y-3">
       <fieldset className="flex gap-5">
@@ -9,26 +13,26 @@ export default function UpdatePersonalInfoForm() {
           <input
             type="text"
             id="name"
-            className="input-form"
+            className="input-form capitalize"
             placeholder="Ingresa tu(s) nombre(s)"
-            // {...register("password", { required: "The password field is required" })}
+            {...register("name", { required: "El nombre es obligatorio" })}
           />
-          {/* {errors.password && (
-                <ErrorAlert>{errors.password.message}</ErrorAlert>
-              )} */}
+          {errors.name && (
+                <ErrorAlert>{errors.name.message}</ErrorAlert>
+              )}
         </div>
         <div className="flex flex-col">
           <LabelForm section="last_names">apellido(s)</LabelForm>
           <input
             type="text"
             id="last_names"
-            className="input-form"
+            className="input-form capitalize"
             placeholder="Ingresa tus apellidos"
-            // {...register("password", { required: "The password field is required" })}
+            {...register("last_name", { required: "Los apellidos son obligatorios" })}
           />
-          {/* {errors.password && (
-                <ErrorAlert>{errors.password.message}</ErrorAlert>
-              )} */}
+          {errors.last_name && (
+                <ErrorAlert>{errors.last_name.message}</ErrorAlert>
+              )}
         </div>
       </fieldset>
       <fieldset className="flex gap-5">
@@ -38,11 +42,11 @@ export default function UpdatePersonalInfoForm() {
             type="date"
             id="date"
             className="input-form w-52"
-            // {...register("password", { required: "The password field is required" })}
+            {...register("birthday", { required: "La fecha de nacimiento es obligatoria" })}
           />
-          {/* {errors.password && (
-                <ErrorAlert>{errors.password.message}</ErrorAlert>
-              )} */}
+          {errors.birthday && (
+                <ErrorAlert>{errors.birthday.message}</ErrorAlert>
+              )}
         </div>
         <div className="flex flex-col">
           <LabelForm section="phone">teléfono</LabelForm>
@@ -51,11 +55,11 @@ export default function UpdatePersonalInfoForm() {
             id="phone"
             className="input-form"
             placeholder="Ingresa tu número de teléfono"
-            // {...register("password", { required: "The password field is required" })}
+            {...register("phone_number", { required: "El teléfono es obligatorio" })}
           />
-          {/* {errors.password && (
-                <ErrorAlert>{errors.password.message}</ErrorAlert>
-              )} */}
+          {errors.phone_number && (
+                <ErrorAlert>{errors.phone_number.message}</ErrorAlert>
+              )}
         </div>
       </fieldset>
       <fieldset className="flex flex-col">
@@ -65,11 +69,11 @@ export default function UpdatePersonalInfoForm() {
             id="email"
             className="input-form"
             placeholder="Ingresa tu correo eléctronico"
-            // {...register("password", { required: "The password field is required" })}
+            {...register("email", { required: "El correo électronico es obligatorio" })}
           />
-          {/* {errors.password && (
-                <ErrorAlert>{errors.password.message}</ErrorAlert>
-              )} */}
+          {errors.email && (
+                <ErrorAlert>{errors.email.message}</ErrorAlert>
+              )}
         </fieldset>
     </div>
   );

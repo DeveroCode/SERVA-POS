@@ -1,7 +1,27 @@
 import ChangePasswordForm from "@/forms/ChangePasswordForm";
+import { useChangePassword } from "@/mutations/useMutationUser";
 import { Lock } from "lucide-react";
+import { FormProvider, useForm } from "react-hook-form";
+import type { UpdatePasswordForm } from "types/User.types";
 
 export default function ChangePasswordView() {
+  const { mutate } = useChangePassword();
+  const methods = useForm<UpdatePasswordForm>({
+    defaultValues: {
+      currentPassword: "",
+      password: "",
+    },
+  });
+
+  const { handleSubmit, reset } = methods;
+
+  const handleSendForm = (data: UpdatePasswordForm) => {
+    mutate(data, {
+      onSuccess: () => {
+        reset();
+      },
+    });
+  };
   return (
     <div className="space-y-5">
       <section className="flex flex-col justify-center items-center">
@@ -19,13 +39,18 @@ export default function ChangePasswordView() {
         </div>
       </section>
 
-      <form action="">
-        <ChangePasswordForm />
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(handleSendForm)} noValidate>
+          <ChangePasswordForm />
 
-        <button type="submit" className="transition-colors duration-75 bg-orange-600 cursor-pointer text-white font-bold px-4 rounded w-full py-2 my-6">
+          <button
+            type="submit"
+            className="transition-colors duration-75 bg-orange-600 cursor-pointer text-white font-bold px-4 rounded w-full py-2 my-6"
+          >
             Actualizar
           </button>
-      </form>
+        </form>
+      </FormProvider>
     </div>
   );
 }

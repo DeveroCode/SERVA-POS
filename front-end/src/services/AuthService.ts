@@ -1,8 +1,22 @@
 import api from "@/lib/axios";
 import { isAxiosError } from "axios";
-import type { Response, RegisterForm, LoginUser, LoginResponse } from "types/Index.types";
+import { type Response, type RegisterForm, type LoginUser, type LoginResponse, type User, userSchema } from "../types/Index.types";
 
 export class AuthService {
+    static async getMe(): Promise<User> {
+        try {
+            const { data } = await api.get<User>('/auth/me');
+            const response = userSchema.safeParse(data);
+            console.log(response);
+            if (response.success) {
+                return response.data
+            }
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(error.response?.data.message, { cause: error });
+            }
+        }
+    }
     static async register(formData: RegisterForm): Promise<string> {
         try {
             const { data } = await api.post<Response>('/auth/create', formData);

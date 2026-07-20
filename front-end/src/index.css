@@ -4,27 +4,33 @@ body{
     font-family:"Plus Jakarta Sans",sans-serif;
 }
 
-@layer utilities{
+@layer utilities {
 
     .input-form{
         @apply rounded-md py-2 px-3 border border-gray-300;
     }
+
     .card-profile{
-        @apply rounded-xl border border-gray-200 p-7 shadow-md w-full;
+        @apply w-full rounded-xl border border-gray-200 shadow-md p-5 sm:p-6 lg:p-7;
     }
-    .p-card-profile{
-        @apply font-bold text-gray-800 capitalize text-xs;
-    }
-    .span-card-profile{
-        @apply uppercase text-gray-600 text-sm font-semibold;
-    }
-    .title-card-profile{
-        @apply uppercase text-gray-700 font-bold text-sm;
-    }
-    .button-profile{
-        @apply text-xs font-mono bg-[#F3F4F6] px-2.5 py-1 rounded-md text-[#4B5563] cursor-pointer;
-    }
+
     .second-card{
-        @apply rounded-xl border border-gray-200 shadow p-7;
+        @apply rounded-xl border border-gray-100 shadow p-5 sm:p-6 lg:p-7;
+    }
+
+    .p-card-profile{
+        @apply text-xs font-bold text-gray-800 capitalize;
+    }
+
+    .span-card-profile{
+        @apply text-sm font-semibold uppercase text-gray-600;
+    }
+
+    .title-card-profile{
+        @apply text-sm font-bold uppercase text-gray-700;
+    }
+
+    .button-profile{
+        @apply rounded-md bg-[#F3F4F6] px-2.5 py-1 text-xs font-mono text-[#4B5563] cursor-pointer;
     }
 }

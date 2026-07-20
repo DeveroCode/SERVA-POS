@@ -1,15 +1,33 @@
+import { useUser } from "@/hooks/useUser";
+import { getUserInitials } from "@/lib/index";
+
 export default function CProfile() {
+  const { data: user } = useUser();
   return (
     <header className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center mb-6 w-full px-10 py-3 rounded-xl bg-gray-200 border border-orange-600/40 shadow-lg">
       <div className="shrink-0 flex items-center gap-3">
-        <img
-          src="/profile_example.jpg"
-          alt="image profile user"
-          className="w-15 h-15 rounded-full object-cover"
-        />
+        <>
+          {user.image ? (
+            <img
+              src={user.image}
+              alt="image profile user"
+              className="w-15 h-15 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-15 h-15 rounded-full bg-gray-300 flex items-center justify-center">
+              <span className="text-2xl font-bold text-gray-600">
+                {getUserInitials(user.name, user.last_name)}
+              </span>
+            </div>
+          )}
+        </>
         <div>
-          <span className="font-bold capitalize">Carlos Martinez</span>
-          <p className="text-xs text-gray-500">Role: <span className="text-orange-600">User</span></p>
+          <span className="font-bold capitalize">
+            {user.name} {user.last_name}
+          </span>
+          <p className="text-xs text-gray-500 capitalize">
+            Role: <span className="text-orange-600">{user.role}</span>
+          </p>
         </div>
       </div>
 

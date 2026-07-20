@@ -5,7 +5,6 @@ import { Outlet, useLocation } from "react-router-dom";
 export default function DashboardLayout() {
   const location = useLocation();
   const profile = location.pathname.includes("profile") ? true : false;
-  console.log(profile);
   return (
     <div className="min-h-screen flex overflow-hidden gap-4">
       <div className="p-4 shrink-0">
@@ -17,9 +16,7 @@ export default function DashboardLayout() {
         <section className="flex-1">
           <Outlet />
         </section>
-
       </main>
-
     </div>
   );
 }
