@@ -1,6 +1,8 @@
+import { useUser } from "@/hooks/useUser";
 import { Bell } from "lucide-react";
 
 export default function AHeader() {
+  const {data: user} = useUser();
   return (
     <header
       className="
@@ -24,7 +26,7 @@ bg-white
           Configuración
         </span>
         <span className="text-[#E5E7EB]">/</span>
-        <span className="text-sm font-semibold text-[#111827]">Mi perfil</span>
+        <span className="text-sm font-semibold text-[#111827]">{user.role !== 'admin' ? 'Business' : 'Mi perfil'}</span>
       </div>
       <div className="flex items-center space-x-4">
         <button className="text-xs font-mono bg-[#F3F4F6] px-2.5 py-1 rounded-md text-[#4B5563] cursor-pointer">

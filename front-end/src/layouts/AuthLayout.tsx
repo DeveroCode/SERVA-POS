@@ -11,6 +11,7 @@ export default function AuthLayout() {
           <img
             src="/isotipo.png"
             alt="Serva"
+            loading="lazy"
             className="w-12 h-12 object-contain"
           />
 
@@ -21,7 +22,7 @@ export default function AuthLayout() {
 
         <section className="mb-10">
           <h2 className="text-5xl capitalize font-bold text-center lg:text-left">
-            {getGreeting()}
+            {getGreeting("es")}
           </h2>
 
           <p className="text-center lg:text-left text-gray-600">

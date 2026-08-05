@@ -1,12 +1,13 @@
 import api from "@/lib/axios";
 import { isAxiosError } from "axios";
-import { type Response, type RegisterForm, type LoginUser, type LoginResponse, type User, userSchema } from "../types/Index.types";
+import { businessSchema, type Business, type Businesses, type CreateBusiness, type Response } from "../types/Index.types";
 
-export class AuthService {
-    static async getMe(): Promise<User> {
+
+export class BusinessService {
+    static async getBusinesses(): Promise<Businesses> {
         try {
-            const { data } = await api.get<User>('/auth/me');
-            const response = userSchema.safeParse(data);
+            const { data } = await api.get<Businesses>('/business/my-business');
+            const response = businessSchema.safeParse(data);
             if (response.success) {
                 return response.data
             }
@@ -16,20 +17,20 @@ export class AuthService {
             }
         }
     }
-    static async register(formData: RegisterForm): Promise<string> {
+    static async getBusinessById(id: Business["_id"]): Promise<Business> {
         try {
-            const { data } = await api.post<Response>('/auth/create', formData);
-            return data.message;
+            const { data } = await api.get<Business>(`/business/${id}`);
+            return data;
         } catch (error) {
             if (isAxiosError(error) && error.response) {
                 throw new Error(error.response?.data.message, { cause: error });
             }
         }
     }
-    static async login(formData: LoginUser): Promise<string> {
+
+    static async create(formData: CreateBusiness): Promise<string>{
         try {
-            const { data } = await api.post<LoginResponse>('/auth/login', formData);
-            localStorage.setItem('token', data.token);
+            const {data} = await api.post<Response>('/business/create', formData);
             return data.message;
         } catch (error) {
             if (isAxiosError(error) && error.response) {

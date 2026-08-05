@@ -8,6 +8,12 @@ import ProfileSettingLayout from "./layouts/ProfileSettingLayout";
 import ProfileView from "./pages/dashboard/ProfileView";
 import SecurityProfileView from "./pages/dashboard/SecurityProfileView";
 import AuthMiddleware from "./middlewares/AuthMiddleware";
+import RoleMiddleware from "./middlewares/RoleMiddleware";
+import { USER_ROLES } from "./types/Index.types";
+import OwnerLayout from "./layouts/OwnerLayout";
+import OIndexView from "./pages/dashboard/Owner/OIndexView";
+import ExampleOwerner from "./pages/dashboard/Owner/ExampleOwener";
+import BusinessView from "./pages/dashboard/Owner/BusinessView";
 
 export default function router() {
   return (
@@ -18,13 +24,21 @@ export default function router() {
           <Route path="register" element={<RegisterView />} />
         </Route>
 
-        <Route element={<AuthMiddleware/>}>
+        <Route element={<AuthMiddleware />}>
+          {/* Owner - Routes */}
+          <Route element={<RoleMiddleware allowedRoles={[USER_ROLES.OWNER]} />}>
+            <Route path="/dashboard" element={<OwnerLayout />}>
+              <Route index path="general" element={<OIndexView />} />
+              <Route index path="business/:businessId" element={<BusinessView />} />
+              <Route index path="example" element={<ExampleOwerner />} />
+            </Route>
+          </Route>
           <Route path="/dashboard" element={<DIndex />}>
-            <Route index element={<DIndex />} />
+            {/* <Route index element={<DIndex />} />
             <Route path="menu" element={<DIndex />} />
             <Route path="orders" element={<DIndex />} />
             <Route path="tables" element={<DIndex />} />
-            <Route path="pos" element={<DashboardLayout />} />
+            <Route path="pos" element={<DashboardLayout />} /> */}
           </Route>
 
           {/* Profile Settings */}

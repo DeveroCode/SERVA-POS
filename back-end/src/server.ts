@@ -4,6 +4,7 @@ import cors from 'cors';
 import { connectDB } from './config/db';
 import { corsOptions } from './config/cors';
 import UserRoute from './route/UserRoute';
+import BusinessRoute from './route/BusinessRoute';
 const port = process.env.PORT || 4000;
 
 dotenv.config();
@@ -16,4 +17,5 @@ app.use(cors(corsOptions));
 
 // Routes
 app.use('/api/auth', UserRoute);
+app.use('/api/business', BusinessRoute);
 export default app;

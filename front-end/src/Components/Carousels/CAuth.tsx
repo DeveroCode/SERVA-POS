@@ -42,6 +42,7 @@ export default function CAuth() {
         key={ABackgrounds[current].id}
         src={ABackgrounds[current].url}
         alt={ABackgrounds[current].alt}
+        loading="lazy"
         className={`absolute inset-0 h-full w-full object-cover transition-transform duration-450 ${
           animating ? "-translate-x-full" : "translate-x-0"
         }`}
@@ -53,6 +54,7 @@ export default function CAuth() {
           key={ABackgrounds[next].id}
           src={ABackgrounds[next].url}
           alt={ABackgrounds[next].alt}
+          loading="lazy"
           className={`absolute inset-0 h-full w-full object-cover transition-transform duration-450 ${
             animating ? "translate-x-0" : "translate-x-full"
           }`}

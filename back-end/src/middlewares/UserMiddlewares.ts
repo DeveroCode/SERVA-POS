@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { IUser, User } from "../models/user";
 import { body } from "express-validator";
 import jwt from 'jsonwebtoken';
-import formidable, { Files } from "formidable";
+import { Files } from "formidable";
 
 declare global {
     namespace Express {
@@ -136,46 +136,3 @@ export const updatePassword = [
         .isLength({ min: 6 })
         .withMessage('La contraseña debe tener al menos 6 caracteres')
 ];
-
-const form = formidable({
-    multiples: false,
-    filter: ({ mimetype }) => {
-        return (
-            mimetype === "image/jpeg" ||
-            mimetype === "image/jpg" ||
-            mimetype === "image/png" ||
-            mimetype === "image/webp"
-        );
-    },
-});
-
-export function parseProfileImage(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    const form = formidable({
-        multiples: false,
-        maxFiles: 1,
-        maxFileSize: 5 * 1024 * 1024, // 5 MB
-        filter: ({ mimetype }) =>
-            [
-                "image/jpeg",
-                "image/jpg",
-                "image/png",
-                "image/webp",
-            ].includes(mimetype ?? ""),
-    });
-
-    form.parse(req, (err, fields, files) => {
-        if (err) {
-            return res.status(400).json({
-                message: "No fue posible procesar la imagen.",
-            });
-        }
-
-        req.files = files;
-
-        next();
-    });
-}

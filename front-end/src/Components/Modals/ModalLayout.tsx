@@ -5,12 +5,14 @@ type ModalLayoutProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   children: React.ReactNode;
+  className?: string;
 };
 
 export default function ModalLayout({
   open,
   setOpen,
   children,
+  className,
 }: ModalLayoutProps) {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -37,7 +39,7 @@ export default function ModalLayout({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 30 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="relative z-10 w-125 max-w-[90%] bg-gray-100 rounded-2xl shadow-2xl p-6"
+           className={`relative z-10 w-125 max-w-[90%] bg-gray-100 rounded-2xl shadow-2xl p-6 ${className ?? ""}`}
           >
             {children}
           </motion.div>

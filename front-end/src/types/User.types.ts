@@ -3,9 +3,10 @@ export const USER_ROLES = {
     OWNER: "owner",
     ADMIN: "admin",
     USER: "user",
-    CASHIER: "cashier",
-    MANAGER: "manager",
 } as const;
+
+export type UserRoles = typeof USER_ROLES[keyof typeof USER_ROLES];
+
 export const userSchema = z.object({
     _id: z.string(),
     name: z.string(),

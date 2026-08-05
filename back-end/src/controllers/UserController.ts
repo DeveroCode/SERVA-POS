@@ -3,7 +3,6 @@ import { User } from '../models/user';
 import { checkPassword, getPublicId, hashPassword } from '../utils';
 import { generateJWT } from '../utils/generateJWT';
 import { v4 as uuid } from 'uuid';
-import formidable from 'formidable';
 import cloudinary from '../config/cloudinary';
 
 export class UserController {
@@ -71,8 +70,6 @@ export class UserController {
 
     static uploadImageProfile = async (req: Request, res: Response) => {
         const user = req.user;
-        console.log(req.files);
-        
         try {
             const file = Array.isArray(req.files.image)
                 ? req.files.image[0]

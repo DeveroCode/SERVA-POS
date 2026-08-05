@@ -3,9 +3,10 @@ import type { SidebarItem } from "types/Index.types";
 
 type AdinSidebarLink = {
   item: SidebarItem;
+  className?: string;
 };
 
-export default function AdminSidebarLink({ item }: AdinSidebarLink) {
+export default function AdminSidebarLink({ item, className }: AdinSidebarLink) {
   const location = useLocation();
   const isActive = location.pathname === item.url;
   return (
@@ -19,6 +20,7 @@ export default function AdminSidebarLink({ item }: AdinSidebarLink) {
         px-4
         py-2
         transition-all
+        ${className || ''}
         ${
           isActive
             ? "border-l-2 border-orange-600 text-orange-600 font-bold bg-orange-100/30 rounded-tr-md rounded-br-md"

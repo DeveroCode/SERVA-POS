@@ -2,10 +2,10 @@ import mongoose, { Document, Schema } from "mongoose";
 export const USER_ROLES = {
     OWNER: "owner",
     ADMIN: "admin",
-    USER: "user",
-    CASHIER: "cashier",
-    MANAGER: "manager",
+    USER: "user"
 }
+
+export type UserRoles = typeof USER_ROLES[keyof typeof USER_ROLES];
 export interface IUser extends Document {
     name: string;
     last_name: string;
