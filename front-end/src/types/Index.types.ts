@@ -18,3 +18,7 @@ export interface SidebarItem {
     url: string;
     icon: ReactNode;
 }
+
+export type UploadImage = {
+    image: File
+}

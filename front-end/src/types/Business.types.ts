@@ -25,3 +25,5 @@ export type CreateBusiness = Pick<
   Business,
   "name" | "slug" | "email" | "phone" | "description" | "socialMedia"
 >;
+
+export type UploadLogoBusiness = Pick<Business, "_id" > & { image: File };

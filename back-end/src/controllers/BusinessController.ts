@@ -101,7 +101,7 @@ export class BusinessController {
 
             business.logo = result.secure_url;
             await business.save();
-            res.status(200).json({ message: 'Logo subido correctamente' });
+            res.status(200).json({ message: 'Logo actualizado correctamente' });
         } catch (e) {
             console.error(e);
             res.status(500).json({ message: 'Internal server error' });
@@ -136,7 +136,7 @@ export class BusinessController {
 
             business.coverImage = result.secure_url;
             await business.save();
-            res.status(200).json({ message: 'Logo subido correctamente' });
+            res.status(200).json({ message: 'Cover actualizado correctamente' });
         } catch (e) {
             console.error(e);
             res.status(500).json({ message: 'Internal server error' });

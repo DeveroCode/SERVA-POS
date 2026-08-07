@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export function useCreateBusiness(){
+export function useCreateBusiness() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
@@ -13,10 +13,61 @@ export function useCreateBusiness(){
         onSuccess: (data: string) => {
             toast.success(data);
             navigate('/dashboard/general');
-            queryClient.invalidateQueries({ queryKey: queryKeys.bussines.all });
+            queryClient.invalidateQueries({ queryKey: queryKeys.bussiness.all });
         },
         onError: (error: Error) => {
             toast.error(error.message);
         }
     });
+}
+
+export function useUploadLogoBusiness() {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: BusinessService.uploadLogo,
+    onSuccess: async (data, variables) => {
+      toast.success(data);
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.bussiness.all,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.bussiness.one(variables._id),
+        }),
+      ]);
+
+      navigate("/dashboard/general");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+export function useUploadCoverBusiness() {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: BusinessService.uploadCover,
+    onSuccess: async (data, variables) => {
+      toast.success(data);
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.bussiness.all,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.bussiness.one(variables._id),
+        }),
+      ]);
+
+      navigate("/dashboard/general");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
 }

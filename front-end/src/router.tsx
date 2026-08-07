@@ -34,11 +34,11 @@ export default function router() {
             </Route>
           </Route>
           <Route path="/dashboard" element={<DIndex />}>
-            {/* <Route index element={<DIndex />} />
+            <Route index element={<DIndex />} />
             <Route path="menu" element={<DIndex />} />
             <Route path="orders" element={<DIndex />} />
             <Route path="tables" element={<DIndex />} />
-            <Route path="pos" element={<DashboardLayout />} /> */}
+            <Route path="pos" element={<DashboardLayout />} />
           </Route>
 
           {/* Profile Settings */}
