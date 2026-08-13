@@ -5,23 +5,23 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export function useCreateBusiness() {
-    const navigate = useNavigate();
-    const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: BusinessService.create,
-        onSuccess: (data: string) => {
-            toast.success(data);
-            navigate('/dashboard/general');
-            queryClient.invalidateQueries({ queryKey: queryKeys.bussiness.all });
-        },
-        onError: (error: Error) => {
-            toast.error(error.message);
-        }
-    });
+  return useMutation({
+    mutationFn: BusinessService.create,
+    onSuccess: (data: string) => {
+      toast.success(data);
+      navigate('/dashboard/general');
+      queryClient.invalidateQueries({ queryKey: queryKeys.bussiness.all });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    }
+  });
 }
 
-export function useUpdateBusiness(){
+export function useUpdateBusiness() {
   const navigate = useNavigate();
   const QC = useQueryClient();
 
@@ -41,14 +41,16 @@ export function useUpdateBusiness(){
   });
 }
 
-export function useDeleteBusiness(){
+export function useDeleteBusiness() {
   const QC = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: BusinessService.delete,
     onSuccess: (data) => {
       toast.success(data.message);
       QC.invalidateQueries({ queryKey: queryKeys.bussiness.all });
+      navigate('/dashboard/general');
     },
     onError: (error: Error) => {
       toast.error(error.message);

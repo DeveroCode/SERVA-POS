@@ -80,7 +80,7 @@ export default function EditBusinessView() {
             <ButtonBlank
               className="bg-orange-600 text-white"
               type="submit"
-              text="Crear negocio"
+              text="Actualizar"
             />
           </div>
         </form>

@@ -51,7 +51,7 @@ export class BusinessService {
 
     static async delete(businessId: Business["_id"]): Promise<Response> {
         try {
-            const { data } = await api.delete<Response>(`/business/${businessId}`);
+            const { data } = await api.delete<Response>(`/business/delete/${businessId}`);
             return data;
         } catch (error) {
             if (isAxiosError(error) && error.response) {

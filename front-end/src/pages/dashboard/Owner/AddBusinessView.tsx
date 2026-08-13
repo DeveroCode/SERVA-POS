@@ -71,7 +71,7 @@ export default function AddBusinessView() {
             <ButtonBlank
               className="bg-orange-600 text-white"
               type="submit"
-              text="Actualizar"
+              text="Crear Negocio"
             />
           </div>
         </form>
