@@ -1,6 +1,6 @@
 import api from "@/lib/axios";
 import { isAxiosError } from "axios";
-import { businessSchema, type Business, type Businesses, type CreateBusiness, type Response, type UploadLogoBusiness } from "../types/Index.types";
+import { businessSchema, type Business, type Businesses, type CreateBusiness, type Response, type UpdateBusiness, type UploadLogoBusiness } from "../types/Index.types";
 
 
 export class BusinessService {
@@ -32,6 +32,27 @@ export class BusinessService {
         try {
             const { data } = await api.post<Response>('/business/create', formData);
             return data.message;
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(error.response?.data.message, { cause: error });
+            }
+        }
+    }
+    static async update({ formData, businessId }: UpdateBusiness): Promise<string> {
+        try {
+            const { data } = await api.put<Response>(`/business/update/${businessId}`, formData);
+            return data.message;
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(error.response?.data.message, { cause: error });
+            }
+        }
+    }
+
+    static async delete(businessId: Business["_id"]): Promise<Response> {
+        try {
+            const { data } = await api.delete<Response>(`/business/${businessId}`);
+            return data;
         } catch (error) {
             if (isAxiosError(error) && error.response) {
                 throw new Error(error.response?.data.message, { cause: error });

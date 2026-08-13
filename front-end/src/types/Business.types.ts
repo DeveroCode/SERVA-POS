@@ -26,4 +26,9 @@ export type CreateBusiness = Pick<
   "name" | "slug" | "email" | "phone" | "description" | "socialMedia"
 >;
 
-export type UploadLogoBusiness = Pick<Business, "_id" > & { image: File };
+export type UpdateBusiness = {
+  formData: CreateBusiness;
+  businessId: Business["_id"];
+};
+
+export type UploadLogoBusiness = Pick<Business, "_id"> & { image: File };

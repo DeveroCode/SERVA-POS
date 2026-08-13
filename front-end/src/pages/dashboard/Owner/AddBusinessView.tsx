@@ -3,12 +3,12 @@ import AddBusinessForm from "@/forms/AddBusinessForm";
 import { useCreateBusiness } from "@/mutations/useMutationBusiness";
 import { Building2 } from "lucide-react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
-import  type { CreateBusiness } from "@/types/Index.types";
+import type { CreateBusiness } from "@/types/Index.types";
 import { useEffect } from "react";
 import { slugify } from "@/utils/index";
 
 export default function AddBusinessView() {
-  const {mutate} = useCreateBusiness();
+  const { mutate } = useCreateBusiness();
   const methods = useForm<CreateBusiness>({
     defaultValues: {
       name: "",
@@ -19,25 +19,25 @@ export default function AddBusinessView() {
         facebook: "",
         instagram: "",
         linkedin: "",
-      }
-    }
+      },
+    },
   });
 
-  const {handleSubmit, reset, setValue, control} = methods;
-  const name = useWatch({control, name: "name"});
+  const { handleSubmit, reset, setValue, control } = methods;
+  const name = useWatch({ control, name: "name" });
 
   useEffect(() => {
-    if(name){
+    if (name) {
       setValue("slug", slugify(name));
     }
   });
   const handleSubmitForm = (data: CreateBusiness) => {
-  mutate(data, {
-    onSuccess: () => {
-      reset();
-    }
-  });
-  }
+    mutate(data, {
+      onSuccess: () => {
+        reset();
+      },
+    });
+  };
   return (
     <div className="overflow-x-hidden px-20 space-y-5">
       <section className="flex flex-col justify-center items-center space-y-3">
@@ -55,22 +55,26 @@ export default function AddBusinessView() {
       </section>
       {/* Form */}
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(handleSubmitForm)} noValidate className="space-y-8 w-full">
-        <AddBusinessForm />
+        <form
+          onSubmit={handleSubmit(handleSubmitForm)}
+          noValidate
+          className="space-y-8 w-full"
+        >
+          <AddBusinessForm />
 
-        <div className="flex justify-end gap-3">
-          <ButtonBlank
-            className="bg-white border border-slate-200 shadow"
-            type="submit"
-            text="Cancelar"
-          />
-          <ButtonBlank
-            className="bg-orange-600 text-white"
-            type="submit"
-            text="Crear negocio"
-          />
-        </div>
-      </form>
+          <div className="flex justify-end gap-3">
+            <ButtonBlank
+              className="bg-white border border-slate-200 shadow"
+              type="submit"
+              text="Cancelar"
+            />
+            <ButtonBlank
+              className="bg-orange-600 text-white"
+              type="submit"
+              text="Actualizar"
+            />
+          </div>
+        </form>
       </FormProvider>
     </div>
   );

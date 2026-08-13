@@ -21,6 +21,41 @@ export function useCreateBusiness() {
     });
 }
 
+export function useUpdateBusiness(){
+  const navigate = useNavigate();
+  const QC = useQueryClient();
+
+  return useMutation({
+    mutationFn: BusinessService.update,
+    onSuccess: async (data, variables) => {
+      toast.success(data);
+      await Promise.all([
+        QC.invalidateQueries({ queryKey: queryKeys.bussiness.all }),
+        QC.invalidateQueries({ queryKey: queryKeys.bussiness.one(variables.businessId) }),
+      ]);
+      navigate('/dashboard/general');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    }
+  });
+}
+
+export function useDeleteBusiness(){
+  const QC = useQueryClient();
+
+  return useMutation({
+    mutationFn: BusinessService.delete,
+    onSuccess: (data) => {
+      toast.success(data.message);
+      QC.invalidateQueries({ queryKey: queryKeys.bussiness.all });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    }
+  });
+}
+
 export function useUploadLogoBusiness() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
