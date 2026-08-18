@@ -27,9 +27,15 @@ export class BusinessController {
         const { name, slug, description, email, phone } = req.body;
         const { linkedin, facebook, instagram } = req.body.socialMedia;
         try {
-            const existBusiness = await Business.countDocuments({ owner: _id });
-            if (MAX_BUSINESS <= existBusiness) {
+            const businessCount = await Business.countDocuments({ owner: _id });
+            if (MAX_BUSINESS <= businessCount) {
                 const error = new Error(`No puedes crear mas de ${MAX_BUSINESS} negocios, actualiza tu plan o elimina alguno.`);
+                return res.status(400).json({ message: error.message });
+            }
+
+            const existBusiness = await Business.findOne({ name, owner: _id });
+            if (existBusiness) {
+                const error = new Error(`Ya tienes un negocio con el mismo nombre.`);
                 return res.status(400).json({ message: error.message });
             }
             const business = new Business({ name, slug, description, email, phone, owner: _id, socialMedia: { linkedin, facebook, instagram }, logo: '', coverImage: '', });
