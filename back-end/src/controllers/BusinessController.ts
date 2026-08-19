@@ -46,7 +46,6 @@ export class BusinessController {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
-
     static updateBusiness = async (req: Request, res: Response) => {
         const business = req.business;
         const { name, slug, description, email, phone, socialMedia } = req.body;
@@ -64,7 +63,6 @@ export class BusinessController {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
-
     // TODO: We must eliminate all possible branches within this business, as well as all menus and everything related to the branches, menus, promotions, etc.
     // TODO: Right now, you can delete the business itself, but the information about the branches associated with that business still remains.
     static deleteBusiness = async (req: Request, res: Response) => {
@@ -77,8 +75,6 @@ export class BusinessController {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
-
-
     static uploadLogo = async (req: Request, res: Response) => {
         const business = req.business;
         try {

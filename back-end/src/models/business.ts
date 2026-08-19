@@ -38,6 +38,3 @@ const BusinessSchema = new Schema<IBusiness>({
 
 
 export const Business = mongoose.model<IBusiness>("Business", BusinessSchema);
-export type UploadImageBusiness = {
-    image: File
-}

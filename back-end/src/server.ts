@@ -5,6 +5,7 @@ import { connectDB } from './config/db';
 import { corsOptions } from './config/cors';
 import UserRoute from './route/UserRoute';
 import BusinessRoute from './route/BusinessRoute';
+import BranchRoute from './route/BranchRoute';
 const port = process.env.PORT || 4000;
 
 dotenv.config();
@@ -18,4 +19,5 @@ app.use(cors(corsOptions));
 // Routes
 app.use('/api/auth', UserRoute);
 app.use('/api/business', BusinessRoute);
+app.use('/api/branch', BranchRoute);
 export default app;

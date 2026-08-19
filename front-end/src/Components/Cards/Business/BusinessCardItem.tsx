@@ -115,7 +115,7 @@ export function BusinessCardItem({ business }: { business: Business }) {
         <button
           onClick={() => handleSendBusinessId(business._id)}
           type="button"
-          className="w-full py-2.5 px-4 text-xs font-semibold text-slate-800 bg-white hover:bg-orange-600 hover:text-white border border-slate-200/90 rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center gap-1.5 group/btn"
+          className="w-full cursor-pointer py-2.5 px-4 text-xs font-semibold text-slate-800 bg-white hover:bg-orange-600 hover:text-white border border-slate-200/90 rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center gap-1.5 group/btn"
         >
           <span>Gestionar</span>
           <ChevronRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover/btn:translate-x-0.5" />
