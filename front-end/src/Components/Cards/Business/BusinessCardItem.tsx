@@ -13,6 +13,7 @@ export function BusinessCardItem({ business }: { business: Business }) {
     : "B";
 
   const handleSendBusinessId = (id: Business["_id"]) => {
+    localStorage.setItem("serva:last-business", id);
     navigate(`/dashboard/business/${id}`);
   };
 
