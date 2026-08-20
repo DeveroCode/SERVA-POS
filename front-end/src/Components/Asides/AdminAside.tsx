@@ -3,7 +3,7 @@ import { OwnerAside } from "@/data/OwnerAside";
 import { useUser } from "@/hooks/useUser";
 import { USER_ROLES } from "@/types/User.types";
 import { useLocation, useParams } from "react-router-dom";
-import { Building2, GitBranch, Users } from "lucide-react";
+import { Building2, GitBranch, Plus, Users } from "lucide-react";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useEffect } from "react";
 import type { Business } from "@/types/Business.types";
@@ -74,6 +74,15 @@ export default function AdminAside() {
                     title: "Sucursales",
                     url: `/dashboard/business/${business._id}/branches`,
                     icon: <GitBranch size={20} />,
+                  }}
+                  className="text-sm"
+                />
+                <AdminSidebarLink
+                  item={{
+                    type: "link",
+                    title: "Nueva Sucursal",
+                    url: `/dashboard/business/${business._id}/branches/new`,
+                    icon: <Plus size={20} />,
                   }}
                   className="text-sm"
                 />
