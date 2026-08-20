@@ -14,6 +14,7 @@ import OwnerLayout from "./layouts/OwnerLayout";
 import OIndexView from "./pages/dashboard/Owner/OIndexView";
 import ExampleOwerner from "./pages/dashboard/Owner/ExampleOwener";
 import BusinessView from "./pages/dashboard/Owner/BusinessView";
+import BranchesIndexView from "./pages/dashboard/Owner/BranchesIndexView";
 
 export default function router() {
   return (
@@ -29,7 +30,8 @@ export default function router() {
           <Route element={<RoleMiddleware allowedRoles={[USER_ROLES.OWNER]} />}>
             <Route path="/dashboard" element={<OwnerLayout />}>
               <Route index path="general" element={<OIndexView />} />
-              <Route index path="business/:businessId" element={<BusinessView />} />
+              <Route path="business/:businessId" element={<BusinessView />} />
+              <Route path="business/:businessId/branches" element={<BranchesIndexView />}/>
               <Route index path="example" element={<ExampleOwerner />} />
             </Route>
           </Route>

@@ -2,9 +2,10 @@ import { queryKeys } from "@/lib/queryKeys";
 import { BusinessService } from "@/services/BusinessService";
 import { useQuery } from "@tanstack/react-query";
 import type { Business } from "@/types/Index.types";
+import { SET_TOKEN_KEY } from "@/utils/key";
 
 export function useBusiness(id: Business["_id"]) {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem(SET_TOKEN_KEY);
 
     return useQuery({
         queryKey: queryKeys.bussiness.one(id),

@@ -1,4 +1,5 @@
 import type { Business } from "@/types/Index.types";
+import { LAST_BUSINESS_KEY } from "@/utils/key";
 import {
   Mail,
   Phone, ChevronRight
@@ -13,7 +14,7 @@ export function BusinessCardItem({ business }: { business: Business }) {
     : "B";
 
   const handleSendBusinessId = (id: Business["_id"]) => {
-    localStorage.setItem("serva:last-business", id);
+    localStorage.setItem(LAST_BUSINESS_KEY, id);
     navigate(`/dashboard/business/${id}`);
   };
 

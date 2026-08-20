@@ -1,6 +1,7 @@
 import api from "@/lib/axios";
 import { isAxiosError } from "axios";
 import { type Response, type RegisterForm, type LoginUser, type LoginResponse, type User, userSchema } from "../types/Index.types";
+import { SET_TOKEN_KEY } from "@/utils/key";
 
 export class AuthService {
     static async getMe(): Promise<User> {
@@ -30,6 +31,7 @@ export class AuthService {
         try {
             const { data } = await api.post<LoginResponse>('/auth/login', formData);
             localStorage.setItem('token', data.token);
+            localStorage.setItem(SET_TOKEN_KEY, data.token);
             return data.message;
         } catch (error) {
             if (isAxiosError(error) && error.response) {

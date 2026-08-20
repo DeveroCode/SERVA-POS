@@ -1,15 +1,16 @@
 import { ASideLink } from "@/data/ASide";
 import { OwnerAside } from "@/data/OwnerAside";
-import AdminSidebarLink from "../Links/AdminSidebarLink";
 import { useUser } from "@/hooks/useUser";
 import { USER_ROLES } from "@/types/User.types";
 import { useLocation, useParams } from "react-router-dom";
-import type { Business } from "@/types/Business.types";
 import { Building2, GitBranch, Users } from "lucide-react";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useEffect } from "react";
+import type { Business } from "@/types/Business.types";
+import { LAST_BUSINESS_KEY } from "@/utils/key";
+import AdminSidebarLink from "../Links/AdminSidebarLink";
 
-const LAST_BUSINESS_KEY = "serva:last-business";
+
 export default function AdminAside() {
   const { data: user } = useUser();
   const { businessId } = useParams<{ businessId: Business["_id"] }>();
