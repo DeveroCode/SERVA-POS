@@ -52,4 +52,16 @@ export class BranchService {
             }
         }
     }
+
+    static async delete(branchId: Branch["_id"]): Promise<Response> {
+        const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
+        try {
+            const { data } = await api.delete<Response>(`/branch/${businessId}/${branchId}/delete`);
+            return data
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(error.response?.data.message, { cause: error });
+            }
+        }
+    }
 }
