@@ -1,14 +1,12 @@
 import { queryKeys } from "@/lib/queryKeys";
 import { BranchService } from "@/services/BranchService";
 import { useQuery } from "@tanstack/react-query";
-import type { getBranches } from "@/types/Index.types";
-import { SET_TOKEN_KEY } from "@/utils/key";
+import type { Branch } from "@/types/Index.types";
+import { LAST_BUSINESS_KEY, SET_TOKEN_KEY } from "@/utils/key";
 
-export function useBranch({
-    businessId,
-    branchId,
-}: getBranches) {
+export function useBranch(branchId: Branch["_id"]) {
     const token = localStorage.getItem(SET_TOKEN_KEY);
+    const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
     return useQuery({
         queryKey: queryKeys.branch.one(
             businessId,

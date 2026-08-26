@@ -3,9 +3,9 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import type { Business } from "@/types/Business.types";
 import ModalLayout from "../Modals/ModalLayout";
-import EditBusinessView from "@/pages/dashboard/Owner/EditBusinessView";
+import EditBusinessView from "@/pages/dashboard/Owner/Business/EditBusinessView";
 import { useDeleteBusiness } from "@/mutations/useMutationBusiness";
-import DeleteBusinessView from "@/pages/dashboard/Owner/DeleteBusinessView";
+import DeleteBusinessView from "@/pages/dashboard/Owner/Business/DeleteBusinessView";
 
 export default function OwnerBusinessButtons() {
   const { businessId } = useParams<{ businessId: Business["_id"] }>();

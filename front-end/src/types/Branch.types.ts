@@ -22,5 +22,9 @@ export type Branch = Branches[number];
 
 export type getBranches = {
     businessId: string;
-    branchId: string;
+    branchId: Branch["_id"];
 };
+
+export type createNewBranch = Pick<Branch, "name" | "slug" | "phone" | "email" | "address">;
+
+export type updateBrach = createNewBranch;

@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import ModalLayout from "../../Modals/ModalLayout";
-import AddBusinessView from "@/pages/dashboard/Owner/AddBusinessView";
+import AddBusinessView from "@/pages/dashboard/Owner/Business/AddBusinessView";
 
 export function EmptySlotCard() {
   const [open, setOpen] = useState(false);

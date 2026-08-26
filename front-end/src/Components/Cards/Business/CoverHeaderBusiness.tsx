@@ -2,7 +2,7 @@ import { Pencil } from "lucide-react";
 import type { Business } from "@/types/Index.types";
 import { useState } from "react";
 import ModalLayout from "@/Components/Modals/ModalLayout";
-import UploadCoverBusinessView from "@/pages/dashboard/Owner/UploadCoverBusinessView";
+import UploadCoverBusinessView from "@/pages/dashboard/Owner/Business/UploadCoverBusinessView";
 
 type CoverHeaderBusinessProps = {
   business: Business;

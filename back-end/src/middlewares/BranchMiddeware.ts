@@ -98,8 +98,6 @@ export const createBranchRules = [
         .trim()
         .notEmpty()
         .withMessage("El país es obligatorio")
-        .isAlpha()
-        .withMessage("El país no es válido"),
 ];
 
 

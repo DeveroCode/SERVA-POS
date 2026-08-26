@@ -4,7 +4,7 @@ import BusinessBarStatus from "./BusinessBarStatus";
 import type { Business } from "@/types/Index.types";
 import { useState } from "react";
 import ModalLayout from "@/Components/Modals/ModalLayout";
-import UploadLogoBusinessView from "@/pages/dashboard/Owner/UploadLogoBusinessView";
+import UploadLogoBusinessView from "@/pages/dashboard/Owner/Business/UploadLogoBusinessView";
 
 type BusinessCoreInfoProps = {
   business: Business;

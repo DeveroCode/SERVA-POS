@@ -13,8 +13,10 @@ import { USER_ROLES } from "./types/Index.types";
 import OwnerLayout from "./layouts/OwnerLayout";
 import OIndexView from "./pages/dashboard/Owner/OIndexView";
 import ExampleOwerner from "./pages/dashboard/Owner/ExampleOwener";
-import BusinessView from "./pages/dashboard/Owner/BusinessView";
-import BranchesIndexView from "./pages/dashboard/Owner/BranchesIndexView";
+import BusinessView from "./pages/dashboard/Owner/Business/BusinessView";
+import BranchesIndexView from "./pages/dashboard/Owner/Branch/BranchesIndexView";
+import AddBranchView from "./pages/dashboard/Owner/Branch/AddBranchView";
+import UpdateBranchView from "./pages/dashboard/Owner/Branch/UpdateBranchView";
 
 export default function router() {
   return (
@@ -32,6 +34,8 @@ export default function router() {
               <Route index path="general" element={<OIndexView />} />
               <Route path="business/:businessId" element={<BusinessView />} />
               <Route path="business/:businessId/branches" element={<BranchesIndexView />}/>
+              <Route path="business/:businessId/branches/new" element={<AddBranchView />}/>
+              <Route path="business/:businessId/:branchId/update" element={<UpdateBranchView />}/>
               <Route index path="example" element={<ExampleOwerner />} />
             </Route>
           </Route>

@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import ModalLayout from "@/Components/Modals/ModalLayout";
-import AddBusinessView from "@/pages/dashboard/Owner/AddBusinessView";
+import AddBusinessView from "@/pages/dashboard/Owner/Business/AddBusinessView";
 
 export default function CAddBusiness() {
   const [open, setOpen] = useState(false);
