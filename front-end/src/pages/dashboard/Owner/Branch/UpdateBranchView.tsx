@@ -39,6 +39,24 @@ export default function UpdateBranchView() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!branch) return;
+
+    reset({
+      name: branch.name || "",
+      slug: branch.slug || "",
+      phone: branch.phone || "",
+      email: branch.email || "",
+      address: {
+        street: branch.address?.street || "",
+        city: branch.address?.city || "",
+        state: branch.address?.state || "",
+        country: branch.address?.country || "México",
+        zipCode: branch.address?.zipCode || "",
+      },
+    });
+  }, [branch, reset]);
+
+  useEffect(() => {
     if (name) {
       setValue("slug", slugify(name), {
         shouldValidate: true,

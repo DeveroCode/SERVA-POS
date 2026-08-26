@@ -161,6 +161,6 @@ export const updateBranch = [
         .trim()
         .notEmpty()
         .withMessage("El país es obligatorio")
-        .isAlpha()
+        .matches(/^[\p{L}\s]+$/u)
         .withMessage("El país no es válido"),
 ];
