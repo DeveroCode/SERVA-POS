@@ -24,7 +24,7 @@ const userSchema = new Schema<IUser>({
     name: { type: String, required: true },
     last_name: { type: String, default: "" },
     email: { type: String, required: true, unique: true },
-    phone_number: { type: String, required: false, unique: true, default: "" },
+    phone_number: { type: String, required: false, default: "" },
     password: { type: String, required: true },
     role: { type: String, required: true, enum: Object.values(USER_ROLES) },
     birthday: { type: Date, required: false, default: Date.now() },

@@ -5,6 +5,7 @@ import { connectDB } from './config/db';
 import { corsOptions } from './config/cors';
 import UserRoute from './route/UserRoute';
 import BusinessRoute from './route/BusinessRoute';
+import BusinessMemberRoute from './route/BusinessMemberRoute';
 import BranchRoute from './route/BranchRoute';
 const port = process.env.PORT || 4000;
 
@@ -20,4 +21,5 @@ app.use(cors(corsOptions));
 app.use('/api/auth', UserRoute);
 app.use('/api/business', BusinessRoute);
 app.use('/api/branch', BranchRoute);
+app.use('/api/business-member', BusinessMemberRoute);
 export default app;
