@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Business, IBusiness } from "../models/business";
 import { body } from "express-validator";
+import { USER_ROLES } from "../models/user";
 
 
 declare global {
@@ -108,4 +109,35 @@ export const updateBusiness = [
         .trim()
         .isMobilePhone("any")
         .withMessage("El número de teléfono no es válido"),
+];
+
+
+export const registerUserRules = [
+    body("name")
+        .trim()
+        .notEmpty()
+        .withMessage("El nombre es obligatorio")
+        .isLength({ min: 2, max: 50 })
+        .withMessage("El nombre debe tener entre 2 y 50 caracteres"),
+    body("last_name")
+        .trim()
+        .notEmpty()
+        .withMessage("El apellido es obligatorio")
+        .isLength({ min: 2, max: 50 })
+        .withMessage("El apellido debe tener entre 2 y 50 caracteres"),
+    body("email")
+        .trim()
+        .normalizeEmail()
+        .isEmail()
+        .withMessage("El correo electrónico no es válido"),
+    body("phone_number")
+        .trim()
+        .notEmpty()
+        .withMessage("El número de teléfono es obligatorio"),
+    body("role")
+        .trim()
+        .notEmpty()
+        .withMessage("El rol es obligatorio")
+        .isIn(Object.values(USER_ROLES))
+        .withMessage("El rol no es válido"),
 ];

@@ -20,6 +20,20 @@ export function useCreateBusiness() {
     }
   });
 }
+export function useRegisterUser() {
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: BusinessService.registerUser,
+    onSuccess: (data) => {
+      toast.success(data.message);
+      navigate('/dashboard/general');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    }
+  });
+}
 
 export function useUpdateBusiness() {
   const navigate = useNavigate();

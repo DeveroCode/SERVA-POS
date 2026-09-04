@@ -34,6 +34,8 @@ export type UpdateUser = Pick<User, "name" | "last_name" | "email" | "phone_numb
 export type UpdatePasswordForm = Pick<RegisterForm, "password"> & {
     currentPassword: string
 };
+export type RegisterUserForm = Pick<User,
+    "name" | "last_name" | "email" | "phone_number" | "birthday" | "role" | "isActive">
 
 export type uploadImageProfile = {
     image: File

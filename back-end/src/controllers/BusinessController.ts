@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { Business } from "../models/business";
-import { getPublicId } from "../utils";
+import { getPublicId, hashPassword } from "../utils";
 import { v4 as uuid } from 'uuid';
 import cloudinary from "../config/cloudinary";
+import { User } from "../models/user";
 
 const MAX_BUSINESS = 3;
 export class BusinessController {
@@ -141,6 +142,24 @@ export class BusinessController {
             res.status(200).json({ message: 'Cover actualizado correctamente' });
         } catch (e) {
             console.error(e);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    static registerUser = async (req: Request, res: Response) => {
+        try {
+            const { name, last_name, email, phone_number, role, birthday, isActive } = req.body;
+            const password = await hashPassword('12345678');
+            const findUser = await User.findOne({ where: { email } });
+            if (findUser) {
+                const error = new Error('Este correo ya se encuentra registrado, por favor ingrese otro.');
+                return res.status(400).json({ message: error.message });
+            }
+            const user = new User({ email, role, name, last_name, phone_number, birthday, isActive, password });
+            await user.save();
+            res.status(201).json({ message: 'Usuario registrado correctamente' });
+        } catch (e) {
+             console.error(e);
             res.status(500).json({ message: 'Internal server error' });
         }
     }
