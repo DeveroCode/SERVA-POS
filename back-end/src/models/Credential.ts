@@ -1,12 +1,14 @@
 import mongoose, { Document, Schema, PopulatedDoc } from "mongoose";
 import { IUser } from "./user";
 import { IBranch } from "./Branch";
+import { MEMBER_ROLES, MemberRoles } from "./Member";
 
 export interface ICredential extends Document {
     user: PopulatedDoc<IUser>;
     branch: PopulatedDoc<IBranch>;
     userKey: string;
     password: string;
+    role: MemberRoles;
 }
 
 const credentialSchema = new Schema<ICredential>({
@@ -29,7 +31,12 @@ const credentialSchema = new Schema<ICredential>({
         type: String,
         required: true,
         trim: true,
-    }
+    },
+    role: {
+        type: String,
+        required: true,
+        enum: Object.values(MEMBER_ROLES),
+    },
 });
 
 credentialSchema.index({ user: 1, branch: 1 }, { unique: true });

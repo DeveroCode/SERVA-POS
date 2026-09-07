@@ -17,6 +17,9 @@ import BusinessView from "./pages/dashboard/Owner/Business/BusinessView";
 import BranchesIndexView from "./pages/dashboard/Owner/Branch/BranchesIndexView";
 import AddBranchView from "./pages/dashboard/Owner/Branch/AddBranchView";
 import UpdateBranchView from "./pages/dashboard/Owner/Branch/UpdateBranchView";
+import PersonnelView from "./pages/dashboard/Owner/Business/PersonnelView";
+import RegisterPersonalView from "./pages/dashboard/Owner/Business/RegisterPersonalView";
+import AddPersonnelView from "./pages/dashboard/Owner/Business/AddPersonalView";
 
 export default function router() {
   return (
@@ -36,6 +39,9 @@ export default function router() {
               <Route path="business/:businessId/branches" element={<BranchesIndexView />}/>
               <Route path="business/:businessId/branches/new" element={<AddBranchView />}/>
               <Route path="business/:businessId/:branchId/update" element={<UpdateBranchView />}/>
+              <Route path="business/:businessId/personnel" element={<PersonnelView />}/>
+              <Route path="business/:businessId/register/member" element={<RegisterPersonalView />}/>
+              <Route path="business/:businessId/add/member" element={<AddPersonnelView />}/>
               <Route index path="example" element={<ExampleOwerner />} />
             </Route>
           </Route>

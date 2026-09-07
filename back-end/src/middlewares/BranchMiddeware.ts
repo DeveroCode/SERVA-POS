@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { body } from "express-validator";
 import { Branch, IBranch } from "../models/Branch";
+import { Credential } from "../models/Credential";
 
 declare global {
     namespace Express {
@@ -29,6 +30,25 @@ export async function existBranch(req: Request, res: Response, next: NextFunctio
         return res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+export async function existMemberInToBranch(req: Request, res: Response, next: NextFunction) {
+    try {
+        const {_id: branchId} = req.branch;
+        const {_id: user} = req.member;
+
+        const existMemberInBranch = await Credential.findOne({ user, branch: branchId });
+
+        if (!existMemberInBranch) {
+            const error = new Error("No existe un miembro con este ID en esta sucursal.");
+            return res.status(400).json(error.message);
+        }
+
+        next();
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 export async function existBranches(req: Request, res: Response, next: NextFunction) {
     try {
         const { _id: businessId } = req.business;

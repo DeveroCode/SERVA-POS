@@ -1,26 +1,25 @@
 import { UserPlus, HelpCircle } from "lucide-react";
 import RegisterPersonalForm from "@/forms/RegisterPersonalForm";
-import { useRegisterUser } from "@/mutations/useMutationBusiness";
 import { FormProvider, useForm } from "react-hook-form";
-import { type RegisterUserForm, USER_ROLES } from "@/types/User.types";
+import { MEMBER_ROLES, type RegisterMember } from "@/types/Index.types";
+import { useRegisterMember } from "@/mutations/useMutationBusinessMember";
 
-export default function RegisterUserModalContent() {
-  const { mutate } = useRegisterUser();
-  const methods = useForm<RegisterUserForm>({
+export default function RegisterPersonalView() {
+  const { mutate } = useRegisterMember();
+  const methods = useForm<RegisterMember>({
     defaultValues: {
       name: "",
       last_name: "",
       email: "",
       phone_number: "",
-      birthday: "",
       isActive: true,
-      role: Object.values(USER_ROLES)[0], // Set default role
+      role: MEMBER_ROLES.STAFF, // Set default role
     },
   });
 
   const { handleSubmit, reset } = methods;
 
-  const handleSendData = (formData: RegisterUserForm) => {
+  const handleSendData = (formData: RegisterMember) => {
     mutate(formData, {
       onSuccess: () => {
         reset();
@@ -58,7 +57,7 @@ export default function RegisterUserModalContent() {
 
       <FormProvider {...methods}>
         <form
-          className="space-y-5 max-h-[70vh] overflow-y-auto pr-1"
+          className="space-y-5 overflow-y-auto pr-1"
           onSubmit={handleSubmit(handleSendData)}
           noValidate
         >

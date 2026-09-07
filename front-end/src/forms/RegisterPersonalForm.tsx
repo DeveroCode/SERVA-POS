@@ -1,15 +1,13 @@
 import {
-  Calendar,
   CheckCircle2,
   Mail,
   Phone,
   ShieldCheck,
   User,
-  XCircle,
+  XCircle
 } from "lucide-react";
 
-import { USER_ROLES_EXPLAIN } from "../lib";
-import type { RegisterUserForm } from "@/types/Index.types";
+import { MEMBER_ROLES_EXPLAIN, type RegisterMember } from "@/types/Index.types";
 import { useFormContext } from "react-hook-form";
 import ErrorAlert from "@/Components/Alerts/ErrorAlert";
 
@@ -19,7 +17,7 @@ export default function RegisterPersonalForm() {
     watch,
     setValue,
     formState: { errors },
-  } = useFormContext<RegisterUserForm>();
+  } = useFormContext<RegisterMember>();
 
   const isActive = watch("isActive");
   return (
@@ -118,33 +116,6 @@ export default function RegisterPersonalForm() {
               <ErrorAlert>{errors.phone_number.message}</ErrorAlert>
             )}
           </div>
-
-          <div className="space-y-1">
-            <label
-              htmlFor="birthday"
-              className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider"
-            >
-              Fecha de Nacimiento <span className="text-orange-700">*</span>
-            </label>
-
-            <div className="relative">
-              <Calendar className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-
-              <input
-                id="birthday"
-                name="birthday"
-                type="date"
-                className="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50/60 border border-slate-200/90 rounded-xl font-medium text-slate-800 focus:bg-white focus:border-orange-700 focus:ring-4 focus:ring-orange-700/10 focus:outline-none transition-all"
-                {...register("birthday", {
-                  required: "La fecha de nacimiento es obligatoria",
-                })}
-              />
-
-              {errors.birthday && (
-                <ErrorAlert>{errors.birthday.message}</ErrorAlert>
-              )}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -226,7 +197,7 @@ export default function RegisterPersonalForm() {
             })}
             name="role"
           >
-            {Object.entries(USER_ROLES_EXPLAIN).map(([role, description]) => (
+            {Object.entries(MEMBER_ROLES_EXPLAIN).map(([role, description]) => (
               <option key={role} value={role.charAt(0).toLocaleLowerCase() + role.slice(1).toLowerCase()}>
                 {description}
               </option>

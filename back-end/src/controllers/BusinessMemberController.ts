@@ -1,13 +1,10 @@
 import { Request, Response } from "express";
-
-import { BusinessMember } from "../models/BusinessMember";
 import { Credential } from "../models/Credential";
-
 import { hashPassword } from "../utils";
 import { USER_ROLES } from "../models/user";
+import { Member, MEMBER_ROLES } from "../models/Member";
 
 export class BusinessMemberController {
-
     static members = async (req: Request, res: Response) => {
         try {
             return res.status(200).json(req.members);
@@ -32,34 +29,43 @@ export class BusinessMemberController {
 
     static add = async (req: Request, res: Response) => {
         try {
-            const { _id: business } = req.business;
             const { _id: branch } = req.branch;
+            const { _id: userId } = req.member;
 
             const {
-                userId,
                 role,
                 password,
                 userKey
             } = req.body;
 
-            const businessMember = new BusinessMember({
-                business,
+            const isValidRole = Object.values(MEMBER_ROLES).includes(role);
+
+            if (!isValidRole) {
+                const error = new Error("El rol proporcionado no es valido");
+                return res.status(400).json({ message: error.message });
+            }
+
+            const existMemberWithThisKey = await Credential.findOne({
                 user: userId,
-                role
+                branch
             });
+
+            if (existMemberWithThisKey) {
+                const error = new Error(
+                    "Ya existe un miembro con esta llave de acceso"
+                );
+                return res.status(400).json({ message: error.message });
+            }
 
             const memberCredentials = new Credential({
                 user: userId,
                 userKey,
                 branch,
+                role,
                 password: await hashPassword(password)
             });
 
-            await Promise.all([
-                businessMember.save(),
-                memberCredentials.save()
-            ]);
-
+            await memberCredentials.save();
             return res.status(201).json({
                 message: "Miembro agregado correctamente al negocio"
             });
@@ -73,37 +79,46 @@ export class BusinessMemberController {
         }
     };
 
-    static updateMember = async (req: Request, res: Response) => {
+    static updateMemberCredentials = async (req: Request, res: Response) => {
         try {
-
             const member = req.member;
-
             const { _id: branch } = req.branch;
+
             const { role, userKey, password } = req.body;
-            const validRoles = Object.values(USER_ROLES);
+
+            const validRoles = Object.values(MEMBER_ROLES);
 
             if (!validRoles.includes(role)) {
-                const error = new Error("El rol proporcionado no es valido");
-                return res.status(400).json({ message: error.message });
+                return res.status(400).json({
+                    message: "El rol proporcionado no es válido"
+                });
             }
 
-            member.role = role || member.role;
-            const credentials = await Credential.findOne({ user: member.user, branch });
+            const credentials = await Credential.findOne({
+                user: member._id,
+                branch
+            });
 
+            if (!credentials) {
+                return res.status(404).json({
+                    message: "No se encontraron las credenciales del miembro en esta sucursal"
+                });
+            }
+
+            credentials.role = role || credentials.role;
             credentials.userKey = userKey || credentials.userKey;
-            if (password) {
-                const newPasswordHash = await hashPassword(password);
-                credentials.password = newPasswordHash || credentials.password;
-            }
-            await Promise.all([member.save(), credentials.save()]);
 
+            if (password) {
+                credentials.password = await hashPassword(password);
+            }
+
+            await credentials.save();
 
             return res.status(200).json({
                 message: "Miembro actualizado correctamente"
             });
 
         } catch (e) {
-
             console.error(e);
 
             return res.status(500).json({
@@ -111,15 +126,14 @@ export class BusinessMemberController {
             });
         }
     };
-
     static deleteMember = async (req: Request, res: Response) => {
         try {
             const member = req.member;
 
             await Promise.all([
-                BusinessMember.findByIdAndDelete(member._id),
+                Member.findByIdAndDelete(member._id),
                 Credential.findOneAndDelete({
-                    user: member.user,
+                    email: member.email,
                     branch: req.branch._id
                 })
             ]);

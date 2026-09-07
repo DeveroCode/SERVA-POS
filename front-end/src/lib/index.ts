@@ -15,8 +15,14 @@ export function getGreeting(lang: "es" | "en" = "en"): string {
 
 
 export const USER_ROLES = {
+    OWNER: "owner",
     ADMIN: "admin",
     USER: "user",
+}
+export const USER_ROLES_EXPLAIN = {
+    OWNER: "Propietario (Owner)",
+    ADMIN: "Administrador Global (Admin)",
+    USER: "Usuario Estándar (User)",
 }
 
 export function getUserInitials(name: string, lastNames: string): string {

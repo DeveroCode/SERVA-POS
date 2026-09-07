@@ -1,4 +1,4 @@
-import type { Branch, Business } from "@/types/Index.types";
+import type { Branch, Business, Member } from "@/types/Index.types";
 
 export const queryKeys = {
     auth: {
@@ -10,6 +10,9 @@ export const queryKeys = {
 
         one: (id: Business["_id"]) =>
             ["bussines", "one", id] as const,
+        members: (id: Business["_id"]) => ["bussines", "members", id] as const,
+        member: (businessId: Business["_id"], memberId: Member["_id"]) =>
+            ["bussines", "memberId", businessId, memberId] as const,
     },
 
     branch: {

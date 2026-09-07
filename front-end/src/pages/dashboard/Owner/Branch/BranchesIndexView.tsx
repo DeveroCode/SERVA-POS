@@ -7,11 +7,8 @@ import BranchCard from "@/Components/Cards/Branch/BranchCard";
 
 export default function BranchesIndexView() {
   const businessId = localStorage.getItem(LAST_BUSINESS_KEY) || undefined;
-
   const navigate = useNavigate();
-
   const { data: branches = [], isLoading } = useBranches(businessId);
-
   const [searchQuery, setSearchQuery] = useState("");
 
   if (isLoading) {

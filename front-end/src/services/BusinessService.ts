@@ -1,6 +1,6 @@
 import api from "@/lib/axios";
 import { isAxiosError } from "axios";
-import { businessSchema, type Business, type Businesses, type CreateBusiness, type RegisterUserForm, type Response, type UpdateBusiness, type UploadLogoBusiness } from "../types/Index.types";
+import { businessSchema, type Business, type Businesses, type CreateBusiness, type Response, type UpdateBusiness, type UploadLogoBusiness } from "../types/Index.types";
 
 
 export class BusinessService {
@@ -79,17 +79,6 @@ export class BusinessService {
         try {
             const { data } = await api.patch<Response>(`/business/update/${businessId}/cover`, formData);
             return data.message;
-        } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                throw new Error(error.response?.data.message, { cause: error });
-            }
-        }
-    }
-
-    static async registerUser(formData: RegisterUserForm): Promise<Response> {
-        try {
-            const { data } = await api.post<Response>('/business/register-user', formData);
-            return data;
         } catch (error) {
             if (isAxiosError(error) && error.response) {
                 throw new Error(error.response?.data.message, { cause: error });
