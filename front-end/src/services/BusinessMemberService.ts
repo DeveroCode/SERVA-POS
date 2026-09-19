@@ -53,11 +53,9 @@ export class BusinessMemberService {
             }
         }
     }
-    static async update(formData: UpdateMemberToBusiness, memberId: GetMemberById["memberId"]): Promise<Response> {
-        const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
-        const branchId = localStorage.getItem(LAST_BRANCH_KEY);
+    static async update(formData: UpdateMemberToBusiness): Promise<Response> {
         try {
-            const { data } = await api.patch<Response>(`/business-member/${businessId}/${branchId}/${memberId}/update/member`, formData);
+            const { data } = await api.patch<Response>(`/business-member/${formData.businessId}/${formData.branchId}/${formData.memberId}/update/member`, formData);
             return data;
         } catch (error) {
             if (isAxiosError(error) && error.response) {
@@ -82,7 +80,7 @@ export class BusinessMemberService {
     static async create(formData: RegisterMember): Promise<Response> {
         const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
         try {
-            const {data} = await api.post<Response>(`/business-member/${businessId}/register/member`, formData);
+            const { data } = await api.post<Response>(`/business-member/${businessId}/register/member`, formData);
             return data
         } catch (error) {
             if (isAxiosError(error) && error.response) {
@@ -90,10 +88,10 @@ export class BusinessMemberService {
             }
         }
     }
-    static async updateMember({memberId, formData}: UpdateMember): Promise<Response> {
+    static async updateMember({ memberId, formData }: UpdateMember): Promise<Response> {
         const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
         try {
-            const {data} = await api.patch<Response>(`/business-member/${businessId}/update/${memberId}`, formData);
+            const { data } = await api.patch<Response>(`/business-member/${businessId}/update/${memberId}`, formData);
             return data
         } catch (error) {
             if (isAxiosError(error) && error.response) {
@@ -101,10 +99,10 @@ export class BusinessMemberService {
             }
         }
     }
-    static async deleteMember({memberId}: UpdateMember): Promise<Response> {
+    static async deleteMember(memberId: UpdateMember["memberId"]): Promise<Response> {
         const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
         try {
-            const {data} = await api.delete<Response>(`/business-member/${businessId}/delete/${memberId}`);
+            const { data } = await api.delete<Response>(`/business-member/${businessId}/delete/${memberId}`);
             return data
         } catch (error) {
             if (isAxiosError(error) && error.response) {

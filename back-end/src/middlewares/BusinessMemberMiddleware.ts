@@ -46,12 +46,21 @@ export const updateMemberRules = [
         .normalizeEmail()
         .isEmail()
         .withMessage("El correo électronico no es valido"),
-
+     body("role")
+        .notEmpty()
+        .optional()
+        .withMessage("El rol es obligatorio")
+        .isIn(Object.values(MEMBER_ROLES))
+        .withMessage("El rol no es válido"),
     body("phone_number")
         .optional()
         .trim()
         .notEmpty()
-        .withMessage("El número de teléfono es obligatorio")
+        .withMessage("El número de teléfono es obligatorio"),
+    body("isActive")
+        .optional()
+        .isBoolean()
+        .withMessage("El estado es obligatorio")
 ];
 export const addMemberToBusinessRules = [
     body("role")

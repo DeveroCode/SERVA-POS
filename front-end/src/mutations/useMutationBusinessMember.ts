@@ -1,13 +1,14 @@
+import useBusinessContext from "@/hooks/useBusinessContext";
 import { queryKeys } from "@/lib/queryKeys";
 import { BusinessMemberService } from "@/services/BusinessMemberService";
-import type { AddMemberToBranch, SearchMemberParams } from "@/types/Member.types";
+import type { AddMemberToBranch, GetMemberById, SearchMemberParams, UpdateMember } from "@/types/Member.types";
 import { LAST_BUSINESS_KEY } from "@/utils/key";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 
-export function useAddMemberToBusiness(){
+export function useAddMemberToBusiness() {
     const navigate = useNavigate();
     const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
     const QC = useQueryClient();
@@ -24,7 +25,44 @@ export function useAddMemberToBusiness(){
     });
 }
 
-export function useRegisterMember(){
+export function useUpdateMember() {
+    const { QC, navigate, currentBusinessId: businessId } = useBusinessContext();
+
+    return useMutation({
+        mutationFn: (formData: UpdateMember) => BusinessMemberService.updateMember(formData),
+        onSuccess: async (data) => {
+            toast.success(data.message);
+            await QC.invalidateQueries({
+                queryKey: queryKeys.bussiness.members(businessId),
+            });
+            navigate(`/dashboard/business/${businessId}/personnel`);
+        },
+        onError: (error: Error) => {
+            toast.error(error.message);
+        }
+    });
+}
+
+
+export function useDeleteMember() {
+    const { QC, navigate, currentBusinessId: businessId } = useBusinessContext();
+
+    return useMutation({
+        mutationFn: (memberId: UpdateMember["memberId"]) => BusinessMemberService.deleteMember(memberId),
+        onSuccess: async (data) => {
+            toast.success(data.message);
+            await QC.invalidateQueries({
+                queryKey: queryKeys.bussiness.members(businessId),
+            });
+            navigate(`/dashboard/business/${businessId}/personnel`);
+        },
+        onError: (error: Error) => {
+            toast.error(error.message);
+        }
+    });
+}
+
+export function useRegisterMember() {
     const navigate = useNavigate();
     const QC = useQueryClient();
     const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
@@ -41,9 +79,9 @@ export function useRegisterMember(){
     });
 }
 
-export function useSearchMember(){
+export function useSearchMember() {
     return useMutation({
-        mutationFn: (email: SearchMemberParams["email"]) =>BusinessMemberService.searchMember(email),
+        mutationFn: (email: SearchMemberParams["email"]) => BusinessMemberService.searchMember(email),
         onSuccess: (data) => {
             toast.success(data.message);
         },
@@ -51,4 +89,13 @@ export function useSearchMember(){
             toast.error(error.message);
         }
     })
+}
+
+export function useGetMember({ _id, memberId }: GetMemberById) {
+    return useQuery({
+        queryKey: queryKeys.bussiness.member(memberId, _id),
+        queryFn: () =>
+            BusinessMemberService.getMember({ _id, memberId }),
+        enabled: Boolean(_id) && Boolean(memberId),
+    });
 }

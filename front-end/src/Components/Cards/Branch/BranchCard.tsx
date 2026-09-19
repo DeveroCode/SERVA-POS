@@ -26,7 +26,7 @@ export default function BranchCard({ branch, businessId }: BranchCardProps) {
   const navigate = useNavigate();
   const handleSendToken = () => {
     localStorage.setItem(LAST_BRANCH_KEY, branch._id);
-    navigate(`/dashboard/business/${businessId}/${branch._id}/update`);
+    navigate(`/dashboard/business/${businessId}/branches/${branch._id}/update`);
   };
 
  const handleDelete = () => {

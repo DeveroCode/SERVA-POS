@@ -25,7 +25,8 @@ export async function existMember(req: Request, res: Response, next: NextFunctio
                 path: "business",
                 select: "name -_id"
             })
-            .select("name last_name email phone_number image isActive lastLogin");
+            .select("name last_name email phone_number image isActive lastLogin role")
+            .sort({ updatedAt: -1 });
 
         if (!existMemberInBusiness) {
             const error = new Error("No existe un miembro con este ID en este negocio.");
@@ -77,7 +78,8 @@ export async function existMembers(req: Request, res: Response, next: NextFuncti
                 path: "business",
                 select: "name -_id"
             })
-            .select("name last_name email phone_number image isActive lastLogin role");
+            .select("name last_name email phone_number image isActive lastLogin role")
+            .sort({ updatedAt: -1 });
 
         if (!existMembersInBusiness.length) {
             const error = new Error("No hay miembros en este negocio.");

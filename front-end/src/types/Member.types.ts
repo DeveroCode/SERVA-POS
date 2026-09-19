@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Business } from "./Business.types";
+import type { Branch } from "./Branch.types";
 
 export const MEMBER_ROLES = {
     OWNER: "owner",
@@ -61,7 +62,11 @@ export type AddMemberToBranch = {
     branchId: string;
 }
 
-export type UpdateMemberToBusiness = Pick<AddMemberToBranch, "role" | "password" | "userKey">;
+export type UpdateMemberToBusiness = Pick<AddMemberToBranch, "role" | "password" | "userKey" | "passwordConfirm"> & {
+    memberId: Member["_id"];
+    branchId: Branch["_id"];
+    businessId: Business["_id"];
+};
 export type GetMemberById = {
     _id: Business["_id"];
     memberId: Member["_id"];

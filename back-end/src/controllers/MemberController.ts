@@ -50,11 +50,12 @@ export class MemberController {
         try {
             const member = req.member;
 
-            const { name, last_name, email, phone_number, role } = req.body;
-            member.name = name || member.name;
-            member.last_name = last_name || member.last_name;
-            member.email = email || member.email;
-            member.phone_number = phone_number || member.phone_number;
+            const { name, last_name, email, phone_number, role, isActive } = req.body;
+            member.name = name ?? member.name;
+            member.last_name = last_name ?? member.last_name;
+            member.isActive = isActive ?? member.isActive;
+            member.email = email ?? member.email;
+            member.phone_number = phone_number ?? member.phone_number;
 
             if (role !== member.role) {
                 const isValidRole = Object.values(MEMBER_ROLES).includes(role);
@@ -62,7 +63,7 @@ export class MemberController {
                     const error = new Error("El rol no es válido.");
                     return res.status(400).json({ message: error.message });
                 }
-                member.role = role || member.role;
+                member.role = role ?? member.role;
             }
             await member.save();
             res.status(200).json({ message: "Miembro actualizado correctamente" });

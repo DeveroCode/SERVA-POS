@@ -20,6 +20,7 @@ import UpdateBranchView from "./pages/dashboard/Owner/Branch/UpdateBranchView";
 import PersonnelView from "./pages/dashboard/Owner/Business/PersonnelView";
 import RegisterPersonalView from "./pages/dashboard/Owner/Business/RegisterPersonalView";
 import AddPersonnelView from "./pages/dashboard/Owner/Business/AddPersonalView";
+import UpdatePersonnelView from "./pages/dashboard/Owner/Business/UpdatePersonnelView";
 
 export default function router() {
   return (
@@ -34,15 +35,29 @@ export default function router() {
           {/* Owner - Routes */}
           <Route element={<RoleMiddleware allowedRoles={[USER_ROLES.OWNER]} />}>
             <Route path="/dashboard" element={<OwnerLayout />}>
-              <Route index path="general" element={<OIndexView />} />
-              <Route path="business/:businessId" element={<BusinessView />} />
-              <Route path="business/:businessId/branches" element={<BranchesIndexView />}/>
-              <Route path="business/:businessId/branches/new" element={<AddBranchView />}/>
-              <Route path="business/:businessId/:branchId/update" element={<UpdateBranchView />}/>
-              <Route path="business/:businessId/personnel" element={<PersonnelView />}/>
-              <Route path="business/:businessId/register/member" element={<RegisterPersonalView />}/>
-              <Route path="business/:businessId/add/member" element={<AddPersonnelView />}/>
-              <Route index path="example" element={<ExampleOwerner />} />
+              {/* Dashboard */}
+              <Route index element={<OIndexView />} />
+              <Route path="example" element={<ExampleOwerner />} />
+              {/* Business */}
+              <Route path="business/:businessId">
+                <Route index element={<BusinessView />} />
+                {/* Branches */}
+                <Route path="branches">
+                  <Route index element={<BranchesIndexView />} />
+                  <Route path="new" element={<AddBranchView />} />
+                  <Route
+                    path=":branchId/update"
+                    element={<UpdateBranchView />}
+                  />
+                </Route>
+                {/* Personnel */}
+                <Route path="personnel">
+                  <Route index element={<PersonnelView />} />
+                  <Route path="register" element={<RegisterPersonalView />} />
+                  <Route path="update/:memberId" element={<UpdatePersonnelView />} />
+                  <Route path="add" element={<AddPersonnelView />} />
+                </Route>
+              </Route>
             </Route>
           </Route>
           <Route path="/dashboard" element={<DIndex />}>

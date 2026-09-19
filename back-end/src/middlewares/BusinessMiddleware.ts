@@ -19,7 +19,7 @@ export async function existBusiness(req: Request, res: Response, next: NextFunct
         const { businessId } = req.params;
 
         const business = await Business.findById({ _id: businessId, owner: _id })
-            .select("-__v -createdAt -updatedAt -owner");
+            .select("-__v -createdAt -updatedAt -owner").sort({ updatedAt: -1 });
 
         if (!business) {
             const error = new Error('No existe un negocio con ese ID o no te pertenece.');

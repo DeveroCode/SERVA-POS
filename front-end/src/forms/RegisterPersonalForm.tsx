@@ -212,12 +212,11 @@ export default function RegisterPersonalForm() {
       <div className="space-y-3">
         <div>
           <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-            Estado Inicial de la Cuenta
+            Estado de la cuenta
           </h3>
 
           <p className="text-[11px] text-slate-400 mt-1">
-            Define si la cuenta estará disponible inmediatamente después de
-            registrarla.
+            Define el estado de la cuenta del usuario.
           </p>
         </div>
 

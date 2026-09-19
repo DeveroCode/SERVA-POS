@@ -11,7 +11,7 @@ export default function OwnerLayout() {
         <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col lg:flex-row overflow-hidden px-4 sm:px-6 lg:px-8 xl:px-10 py-6 lg:py-10 gap-6">
           <AdminAside />
 
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1">
             <Outlet />
           </main>
         </div>

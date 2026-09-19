@@ -1,40 +1,67 @@
 import { UserPlus, HelpCircle, ArrowLeft } from "lucide-react";
 import RegisterPersonalForm from "@/forms/RegisterPersonalForm";
 import { FormProvider, useForm } from "react-hook-form";
-import { MEMBER_ROLES, type Business, type RegisterMember } from "@/types/Index.types";
-import { useRegisterMember } from "@/mutations/useMutationBusinessMember";
-import { Link, useParams } from "react-router-dom";
-import { LAST_BUSINESS_KEY } from "@/utils/key";
+import {
+  type MemberRole,
+  type RegisterMember,
+  type UpdateMember,
+} from "@/types/Index.types";
+import {
+  useGetMember,
+  useUpdateMember,
+} from "@/mutations/useMutationBusinessMember";
+import { Link } from "react-router-dom";
+import useBusinessContext from "@/hooks/useBusinessContext";
+import { useEffect } from "react";
+import Loader from "@/pages/Loader";
 
-export default function RegisterPersonalView() {
-  const business = useParams<{ businessId: Business["_id"] }>().businessId;
-  const businessId = localStorage.getItem(LAST_BUSINESS_KEY) || business;
-  const { mutate } = useRegisterMember();
+export default function UpdatePersonnelView() {
+  const { currentBusinessId: _id, currentMemberId: memberId } =
+    useBusinessContext();
+  const { data: member, isLoading } = useGetMember({ _id, memberId });
+
+  const { mutate } = useUpdateMember(); // BusinessId and MemberId for found member and update the credentials
   const methods = useForm<RegisterMember>({
     defaultValues: {
       name: "",
       last_name: "",
       email: "",
       phone_number: "",
-      isActive: true,
-      role: MEMBER_ROLES.STAFF, // Set default role
+      isActive: false,
+      role: member?.role as MemberRole,
     },
   });
 
   const { handleSubmit, reset } = methods;
 
   const handleSendData = (formData: RegisterMember) => {
-    mutate(formData, {
-      onSuccess: () => {
-        reset();
-      },
-    });
+    const dataSend: UpdateMember = {
+      formData,
+      memberId,
+    };
+    mutate(dataSend);
   };
+
+  useEffect(() => {
+    if (!member) return;
+
+    reset({
+      name: member.name,
+      last_name: member.last_name,
+      email: member.email,
+      phone_number: member.phone_number,
+      isActive: member.isActive,
+      role: member.role,
+    });
+  }, [member, reset]);
+
+  if(isLoading) return <Loader />
+
   return (
     <div className="w-full font-sans text-slate-900 space-y-5">
       <div className="space-y-2">
         <Link
-          to={`/dashboard/business/${businessId}/personnel`}
+          to={`/dashboard/business/${_id}/personnel`}
           type="button"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors"
         >
