@@ -34,7 +34,7 @@ const BusinessSchema = new Schema<IBusiness>({
         linkedin: { type: String, required: false, defualt: "" },
     },
     owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
-})
+}, { timestamps: true });
 
 
 export const Business = mongoose.model<IBusiness>("Business", BusinessSchema);

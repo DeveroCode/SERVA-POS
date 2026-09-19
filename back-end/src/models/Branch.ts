@@ -31,6 +31,6 @@ const BusinessSchema = new Schema<IBranch>({
         country: { type: String, required: true, trim: true },
     },
     business: { type: Schema.Types.ObjectId, ref: "Business", required: true },
-});
+}, { timestamps: true });
 
 export const Branch = mongoose.model<IBranch>("Branch", BusinessSchema);

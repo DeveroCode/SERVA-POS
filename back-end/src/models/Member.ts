@@ -32,7 +32,7 @@ const memberSchema = new Schema<IMember>({
     lastLogin: { type: Date, default: Date.now() },
     business: { type: Schema.Types.ObjectId, ref: "Business", required: true },
     role: { type: String, required: true, enum: Object.values(MEMBER_ROLES) },
-});
+}, { timestamps: true });
 
 memberSchema.index({ business: 1, email: 1 }, { unique: true });
 

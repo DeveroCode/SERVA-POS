@@ -37,7 +37,7 @@ const credentialSchema = new Schema<ICredential>({
         required: true,
         enum: Object.values(MEMBER_ROLES),
     },
-});
+}, { timestamps: true });
 
 credentialSchema.index({ user: 1, branch: 1 }, { unique: true });
 export const Credential = mongoose.model<ICredential>("Credential", credentialSchema);
