@@ -48,3 +48,6 @@ export function getApiErrorMessage(error: Error): string {
 
     return "Ocurrió un error inesperado.";
 }
+
+export const pluralize = (count: number, singular: string, plural: string) =>
+  count === 1 ? singular : plural;

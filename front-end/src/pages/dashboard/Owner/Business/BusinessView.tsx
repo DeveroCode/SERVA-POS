@@ -23,8 +23,8 @@ export default function BusinessView() {
     return <Navigate to="/dashboard/general" replace />;
   }
   return (
-    <>
+    <div className="bg-gray-100 p-3">
       <CBusiness business={business} />
-    </>
+    </div>
   );
 }
