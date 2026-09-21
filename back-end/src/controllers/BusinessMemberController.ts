@@ -132,19 +132,16 @@ export class BusinessMemberController {
 
             await Promise.all([
                 Member.findByIdAndDelete(member._id),
-                Credential.findOneAndDelete({
-                    email: member.email,
-                    branch: req.branch._id
+                Credential.deleteMany({
+                    user: member._id
                 })
             ]);
 
             return res.status(200).json({
                 message: "Miembro eliminado correctamente"
             });
-
         } catch (e) {
             console.error(e);
-
             return res.status(500).json({
                 message: "Internal server error"
             });

@@ -1,10 +1,15 @@
 import api from "@/lib/axios";
+
 import type { AddMemberToBranch, FoundMember, RegisterMember, Response, SearchMemberParams, UpdateMember, UpdateMemberToBusiness } from "@/types/Index.types";
+
 import { MembersSchema, type GetMemberByBusiness, type GetMemberById, type Member, type Members } from "@/types/Member.types";
+
 import { LAST_BRANCH_KEY, LAST_BUSINESS_KEY } from "@/utils/key";
-import { isAxiosError } from "axios";
+
+import { getApiErrorMessage } from "../lib";
 
 export class BusinessMemberService {
+
     static async getMembers(_id: GetMemberByBusiness["_id"]): Promise<Members> {
         try {
             const { data } = await api<Members>(`/business-member/${_id}/members`);
@@ -13,9 +18,7 @@ export class BusinessMemberService {
                 return response.data
             }
         } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                throw new Error(error.response?.data.message, { cause: error });
-            }
+            throw new Error(getApiErrorMessage(error), { cause: error });
         }
     }
 
@@ -24,9 +27,7 @@ export class BusinessMemberService {
             const { data } = await api<Member>(`/business-member/${_id}/${memberId}/member`)
             return data;
         } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                throw new Error(error.response?.data.message, { cause: error });
-            }
+            throw new Error(getApiErrorMessage(error), { cause: error });
         }
     }
 
@@ -36,9 +37,7 @@ export class BusinessMemberService {
             const { data } = await api<FoundMember>(`/business-member/${_id}/${email}/search-member`);
             return data;
         } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                throw new Error(error.response?.data.message, { cause: error });
-            }
+            throw new Error(getApiErrorMessage(error), { cause: error });
         }
     }
 
@@ -48,66 +47,61 @@ export class BusinessMemberService {
             const { data } = await api.post<Response>(`/business-member/${businessId}/${formData.branchId}/${formData.memberId}/add/member`, formData);
             return data;
         } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                throw new Error(error.response?.data.message, { cause: error });
-            }
+            throw new Error(getApiErrorMessage(error), { cause: error });
         }
     }
+
     static async update(formData: UpdateMemberToBusiness): Promise<Response> {
         try {
             const { data } = await api.patch<Response>(`/business-member/${formData.businessId}/${formData.branchId}/${formData.memberId}/update/member`, formData);
             return data;
         } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                throw new Error(error.response?.data.message, { cause: error });
-            }
+            throw new Error(getApiErrorMessage(error), { cause: error });
         }
     }
-    static async delete(memberId: GetMemberById["memberId"]): Promise<Response> {
+
+    static async deleteMemberToBusiness(memberId: GetMemberById["memberId"]): Promise<Response> {
         const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
         const branchId = localStorage.getItem(LAST_BRANCH_KEY);
         try {
             const { data } = await api.delete<Response>(`/business-member/${businessId}/${branchId}/${memberId}/delete/member`);
             return data;
         } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                throw new Error(error.response?.data.message, { cause: error });
-            }
+            throw new Error(getApiErrorMessage(error), { cause: error });
         }
     }
 
     /** Start register Member to Business */
+
     static async create(formData: RegisterMember): Promise<Response> {
         const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
         try {
             const { data } = await api.post<Response>(`/business-member/${businessId}/register/member`, formData);
             return data
         } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                throw new Error(error.response?.data.message, { cause: error });
-            }
+            throw new Error(getApiErrorMessage(error), { cause: error });
         }
     }
+
     static async updateMember({ memberId, formData }: UpdateMember): Promise<Response> {
         const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
         try {
             const { data } = await api.patch<Response>(`/business-member/${businessId}/update/${memberId}`, formData);
             return data
         } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                throw new Error(error.response?.data.message, { cause: error });
-            }
+            throw new Error(getApiErrorMessage(error), { cause: error });
         }
     }
+
     static async deleteMember(memberId: UpdateMember["memberId"]): Promise<Response> {
         const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
+        const branchId = localStorage.getItem(LAST_BRANCH_KEY);
         try {
-            const { data } = await api.delete<Response>(`/business-member/${businessId}/delete/${memberId}`);
+            const { data } = await api.delete<Response>(`/business-member/${businessId}/${branchId}/${memberId}/delete/member`);
             return data
         } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                throw new Error(error.response?.data.message, { cause: error });
-            }
+            throw new Error(getApiErrorMessage(error), { cause: error });
         }
     }
+
 }

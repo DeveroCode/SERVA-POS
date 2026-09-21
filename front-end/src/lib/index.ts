@@ -1,3 +1,5 @@
+import { isAxiosError } from "axios";
+
 export function getGreeting(lang: "es" | "en" = "en"): string {
     const hour = new Date().getHours();
 
@@ -29,4 +31,20 @@ export function getUserInitials(name: string, lastNames: string): string {
     const firstInitial = name.charAt(0).toUpperCase();
     const lastInitial = lastNames.charAt(0).toUpperCase();
     return `${firstInitial}${lastInitial}`
+}
+
+export function getApiErrorMessage(error: Error): string {
+    if (isAxiosError(error) && error.response) {
+        const data = error.response.data;
+
+        if (data?.message) {
+            return data.message;
+        }
+
+        if (Array.isArray(data?.errors) && data.errors.length > 0) {
+            return data.errors[0];
+        }
+    }
+
+    return "Ocurrió un error inesperado.";
 }

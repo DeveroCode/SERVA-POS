@@ -2,45 +2,87 @@ import { Request, Response, NextFunction } from "express";
 import { Business, IBusiness } from "../models/business";
 import { body } from "express-validator";
 import { USER_ROLES } from "../models/user";
-
+import { Branch } from "../models/Branch";
+import { Credential } from "../models/Credential";
+import { MEMBER_ROLES } from "../models/Member";
 
 declare global {
     namespace Express {
         interface Request {
             business: IBusiness;
             businesses: IBusiness[];
+            businessStats: {
+                activeBranches: number;
+                employees: number;
+                administrators: number;
+            };
         }
     }
 }
 
 export async function existBusiness(req: Request, res: Response, next: NextFunction) {
     try {
-        const { _id } = req.user._id;
+        const userId = req.user._id;
         const { businessId } = req.params;
 
-        const business = await Business.findById({ _id: businessId, owner: _id })
-            .select("-__v -createdAt -updatedAt -owner").sort({ updatedAt: -1 });
+        const business = await Business.findOne({ _id: businessId, owner: userId })
+            .select("-__v -createdAt -updatedAt -owner");
 
         if (!business) {
             const error = new Error('No existe un negocio con ese ID o no te pertenece.');
-            return res.status(400).json({ message: error.message });
+            return res.status(404).json({ message: error.message });
         }
 
+        const branches = await Branch.find({
+            business: businessId
+        }).select("_id");
+
+        const branchIds = branches.map(branch => branch._id);
+
+        if (branchIds.length === 0) {
+            req.business = business;
+            req.businessStats = {
+                activeBranches: 0,
+                employees: 0,
+                administrators: 0
+            };
+            return next();
+        }
+
+        const [employees, administrators] = await Promise.all([
+            Credential.distinct("user", {
+                branch: { $in: branchIds }
+            }),
+            Credential.distinct("user", {
+                branch: { $in: branchIds },
+                role: MEMBER_ROLES.ADMIN
+            })
+        ]);
+
         req.business = business;
+        req.businessStats = {
+            activeBranches: branches.length,
+            employees: employees.length,
+            administrators: administrators.length
+        };
+
         next();
+
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error' });
     }
 }
+
 export async function existBusinesses(req: Request, res: Response, next: NextFunction) {
     try {
-        const { _id } = req.user._id;
-        const businesses = await Business.find({ owner: _id })
-            .select("-__v -createdAt -updatedAt -owner");
+        const userId = req.user._id;
+        const businesses = await Business.find({ owner: userId })
+            .select("-__v -createdAt -updatedAt -owner")
+            .sort({ updatedAt: -1 });
 
-        if (!businesses) {
+        if (!businesses || businesses.length === 0) {
             const error = new Error('No tienes un negocio creado, crea uno primero.');
-            return res.status(400).json({ message: error.message });
+            return res.status(404).json({ message: error.message });
         }
 
         req.businesses = businesses;
@@ -81,7 +123,6 @@ export const createBusinessRules = [
         .withMessage("El número de teléfono no es válido"),
 ];
 
-
 export const updateBusiness = [
     body("name")
         .optional()
@@ -110,7 +151,6 @@ export const updateBusiness = [
         .isMobilePhone("any")
         .withMessage("El número de teléfono no es válido"),
 ];
-
 
 export const registerUserRules = [
     body("name")

@@ -17,7 +17,7 @@ export class BusinessController {
     }
     static getBusinessById = async (req: Request, res: Response) => {
         try {
-            return res.status(200).json(req.business);
+            return res.status(200).json({...req.business.toObject(), stats: req.businessStats});
         } catch (e) {
             console.error(e);
             res.status(500).json({ message: 'Internal server error' });

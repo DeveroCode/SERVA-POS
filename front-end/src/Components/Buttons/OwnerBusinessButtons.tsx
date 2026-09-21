@@ -42,7 +42,7 @@ export default function OwnerBusinessButtons() {
       </div>
 
       <ModalLayout open={open} setOpen={setOpen} className="w-175">
-        <EditBusinessView />
+        <EditBusinessView onClose={() => setOpen(false)} />
       </ModalLayout>
       <ModalLayout open={isDelete} setOpen={setIsDelete}>
         <DeleteBusinessView onCancel={() => setIsDelete(false)} onConfirm={() => mutate(businessId)} />

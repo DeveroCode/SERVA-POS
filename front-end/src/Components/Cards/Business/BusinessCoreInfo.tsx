@@ -16,8 +16,8 @@ export default function BusinessCoreInfo({ business }: BusinessCoreInfoProps) {
     <div className="px-6 sm:px-8 pb-6 pt-0 relative">
       <div className="flex flex-col md:flex-row md:items-end justify-between -mt-16 sm:-mt-20 gap-6">
         {/* Logo + Identity */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-end gap-5">
-          <div className="relative group/logo">
+        <div className="flex flex-col sm:flex-row items-start sm:items-start gap-5">
+          <div className="relative group/logo shrink-0">
             <img
               src={`${business?.logo ? business.logo : "/logo.png"}`}
               alt={business.name}
@@ -29,16 +29,16 @@ export default function BusinessCoreInfo({ business }: BusinessCoreInfoProps) {
             </button>
           </div>
 
-          <div className="space-y-1 mb-1">
+          <div className="space-y-2 pt-10 sm:pt-10">
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white pb-5">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white drop-shadow-sm">
                 {business.name}
               </h1>
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-600 border border-orange-200/60">
                 Owner Portal
               </span>
             </div>
-            <p className="text-sm text-gray-500 max-w-xl font-normal leading-relaxed">
+            <p className="text-sm text-gray-500 max-w-xl font-normal leading-relaxed wrap-break-word line-clamp-3">
               {business.description}
             </p>
           </div>

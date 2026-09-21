@@ -12,7 +12,7 @@ export function useCreateBusiness() {
     mutationFn: BusinessService.create,
     onSuccess: (data: string) => {
       toast.success(data);
-      navigate('/dashboard/general');
+      navigate('/dashboard');
       queryClient.invalidateQueries({ queryKey: queryKeys.bussiness.all });
     },
     onError: (error: Error) => {

@@ -5,7 +5,7 @@ export const OwnerAside : SidebarItem[] = [
   {
     type: "link",
     title: "General",
-    url: "/dashboard/general",
+    url: "/dashboard",
     icon: <LayoutDashboard size={24} />
   },
   {

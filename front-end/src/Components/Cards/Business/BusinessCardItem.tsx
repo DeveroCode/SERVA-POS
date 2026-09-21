@@ -55,10 +55,10 @@ export function BusinessCardItem({ business }: { business: Business }) {
 
           {/* Business Name & Description */}
           <div className="space-y-1 mb-4">
-            <h3 className="text-base font-bold text-slate-900 tracking-tight leading-snug group-hover:text-orange-600 transition-colors duration-200">
+            <h3 className="text-base font-bold text-slate-900 tracking-tight leading-snug group-hover:text-orange-600 transition-colors duration-200 truncate">
               {business.name}
             </h3>
-            <p className="text-xs text-slate-500 font-normal line-clamp-2 leading-relaxed min-h-9">
+            <p className="text-xs text-slate-500 font-normal line-clamp-2 wrap-break-word overflow-hidden leading-relaxed h-10">
               {business.description ||
                 "Sin descripción registrada para este establecimiento."}
             </p>

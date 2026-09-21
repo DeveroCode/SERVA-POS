@@ -1,10 +1,9 @@
 import mongoose, { Document, Schema, PopulatedDoc } from "mongoose";
-import { IUser } from "./user";
 import { IBranch } from "./Branch";
-import { MEMBER_ROLES, MemberRoles } from "./Member";
+import { IMember, MEMBER_ROLES, MemberRoles } from "./Member";
 
 export interface ICredential extends Document {
-    user: PopulatedDoc<IUser>;
+    user: PopulatedDoc<IMember>;
     branch: PopulatedDoc<IBranch>;
     userKey: string;
     password: string;
@@ -14,7 +13,7 @@ export interface ICredential extends Document {
 const credentialSchema = new Schema<ICredential>({
     user: {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Member",
         required: true,
     },
     branch: {

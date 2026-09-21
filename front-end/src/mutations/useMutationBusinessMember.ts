@@ -48,10 +48,10 @@ export function useDeleteMember() {
     const { QC, navigate, currentBusinessId: businessId } = useBusinessContext();
 
     return useMutation({
-        mutationFn: (memberId: UpdateMember["memberId"]) => BusinessMemberService.deleteMember(memberId),
+        mutationFn: (memberId: UpdateMember["memberId"]) => BusinessMemberService.deleteMemberToBusiness(memberId),
         onSuccess: async (data) => {
             toast.success(data.message);
-            await QC.invalidateQueries({
+           await QC.invalidateQueries({
                 queryKey: queryKeys.bussiness.members(businessId),
             });
             navigate(`/dashboard/business/${businessId}/personnel`);
