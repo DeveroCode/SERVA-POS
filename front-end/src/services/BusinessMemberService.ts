@@ -1,11 +1,7 @@
 import api from "@/lib/axios";
-
-import type { AddMemberToBranch, FoundMember, RegisterMember, Response, SearchMemberParams, UpdateMember, UpdateMemberToBusiness } from "@/types/Index.types";
-
-import { MembersSchema, type GetMemberByBusiness, type GetMemberById, type Member, type Members } from "@/types/Member.types";
-
+import type { AddMemberToBranch, Credentials, GetMemberByBusiness, GetMemberById, Member, Members, FoundMember, GetByParams, RegisterMember, Response, SearchMemberParams, UpdateMember, UpdateMemberCredentials } from "@/types/Index.types";
+import { CredentialsSchema, MembersSchema } from "@/types/Index.types";
 import { LAST_BRANCH_KEY, LAST_BUSINESS_KEY } from "@/utils/key";
-
 import { getApiErrorMessage } from "../lib";
 
 export class BusinessMemberService {
@@ -51,9 +47,9 @@ export class BusinessMemberService {
         }
     }
 
-    static async update(formData: UpdateMemberToBusiness): Promise<Response> {
+    static async update({ formData, memberId, branchId, businessId }: UpdateMemberCredentials): Promise<Response> {
         try {
-            const { data } = await api.patch<Response>(`/business-member/${formData.businessId}/${formData.branchId}/${formData.memberId}/update/member`, formData);
+            const { data } = await api.patch<Response>(`/business-member/${businessId}/${branchId}/${memberId}/update/member`, formData);
             return data;
         } catch (error) {
             throw new Error(getApiErrorMessage(error), { cause: error });
@@ -66,6 +62,18 @@ export class BusinessMemberService {
         try {
             const { data } = await api.delete<Response>(`/business-member/${businessId}/${branchId}/${memberId}/delete/member`);
             return data;
+        } catch (error) {
+            throw new Error(getApiErrorMessage(error), { cause: error });
+        }
+    }
+
+    static async getMemberCredentials({ memberId, businessId, branchId }: GetByParams): Promise<Credentials> {
+        try {
+            const { data } = await api.get<Credentials>(`/business-member/${businessId}/${branchId}/${memberId}/get/credentials`);
+            const response = CredentialsSchema.safeParse(data);
+            if (response.success) {
+                return response.data
+            }
         } catch (error) {
             throw new Error(getApiErrorMessage(error), { cause: error });
         }

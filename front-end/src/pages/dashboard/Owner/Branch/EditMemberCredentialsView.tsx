@@ -1,63 +1,72 @@
-import ModalLayout from "@/Components/Modals/ModalLayout";
-import AddPersonnelForm from "@/forms/AddPersonnelForm";
-import SearchMemberForm from "@/forms/SearchMemberForm";
-import { useAddMemberToBusiness } from "@/mutations/useMutationBusinessMember";
-import SearchMemberFormView from "@/pages/dashboard/Owner/Business/SearchMemberFormView";
+import UpdateMemberCredentialsForm from "@/forms/UpdateMemberCredentialsForm";
+import useBusinessContext from "@/hooks/useBusinessContext";
+import { useGetMemberCredentials, useUpdateMemberCredentials } from "@/mutations/useMutationBusinessMember";
 import Loader from "@/pages/Loader";
 import {
-  type AddMemberToBranch,
   MEMBER_ROLES,
-  type FoundMember,
+  type UpdateCredentialsForm,
+  type UpdateMemberCredentials
 } from "@/types/Index.types";
-import { LAST_BUSINESS_KEY } from "@/utils/key";
 import { ArrowLeft, UserCheck } from "lucide-react";
-import { useState } from "react";
+import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
-export default function AddPersonnelView() {
-  const { mutate, isPending } = useAddMemberToBusiness();
-  const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
+export default function EditMemberCredentialsView() {
+  const {
+    currentBranchId: branchId,
+    currentBusinessId: businessId,
+    currentMemberId: memberId,
+  } = useBusinessContext();
+  const { data: credentials, isLoading } = useGetMemberCredentials({
+    branchId,
+    businessId,
+    memberId,
+  });
 
-  /** Search Member */
-  const [openModalSearch, setOpenModalSearch] = useState(false);
-  const [foundMember, setFoundMember] = useState<
-    FoundMember["foundMember"] | null
-  >(null);
+  const {mutate, isPending} = useUpdateMemberCredentials();
 
   /** Add Member to Business */
-  const methods = useForm<AddMemberToBranch>({
+  const methods = useForm<UpdateCredentialsForm>({
     defaultValues: {
-      role: MEMBER_ROLES.STAFF,
+      role: MEMBER_ROLES.OWNER,
+      name: "",
       password: "",
+      branchName: "",
       passwordConfirm: "",
       userKey: "",
-      branchId: "",
-      memberId: "",
     },
   });
 
-  const { handleSubmit, reset, setValue } = methods;
+  const { handleSubmit, reset } = methods;
 
-  const handleMemberFound = (member: FoundMember) => {
-    setFoundMember(member.foundMember);
-    setOpenModalSearch(false);
-
-    setValue("memberId", member.foundMember._id, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
+  const handleSendData = (data: UpdateCredentialsForm) => {
+    // Send data to backend
+    const sendData: UpdateMemberCredentials = {
+      formData: data,
+      memberId,
+      branchId,
+      businessId,
+    };
+    mutate(sendData);
   };
 
-  const handleSendData = (formData: AddMemberToBranch) => {
-    mutate(formData, {
-      onSuccess: () => {
-        reset();
-      },
-    });
-  };
+  useEffect(() => {
+    if (!credentials) return;
 
-  if(isPending) return <Loader />
+    reset({
+      role: credentials.role,
+      password: "",
+      passwordConfirm: "",
+      userKey: credentials.userKey,
+      branchName: credentials.branch.name,
+      name: `${credentials.user.name} ${credentials.user.last_name}`,
+    });
+  }, [credentials, reset]);
+
+  if (isPending) return <Loader />;
+
+  if (isLoading) return <Loader />;
 
   return (
     <>
@@ -87,12 +96,7 @@ export default function AddPersonnelView() {
 
         <FormProvider {...methods}>
           <form className="space-y-6" onSubmit={handleSubmit(handleSendData)} noValidate>
-            {/* Form */}
-            <SearchMemberFormView
-              member={foundMember}
-              onOpenSearchModal={() => setOpenModalSearch(true)}
-            />
-            <AddPersonnelForm />
+            <UpdateMemberCredentialsForm />
             {/* Actions */}
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
@@ -108,19 +112,12 @@ export default function AddPersonnelView() {
               >
                 <UserCheck className="w-4 h-4" />
 
-                <span>Agregar miembro</span>
+                <span>Actualizar</span>
               </button>
             </div>
           </form>
         </FormProvider>
       </div>
-
-      <ModalLayout open={openModalSearch} setOpen={setOpenModalSearch}>
-        <h2 className="text-xs font-semibold text-slate-700 uppercase tracking-wider py-2">
-          Buscar miembro
-        </h2>
-        <SearchMemberForm onMemberFound={handleMemberFound} />
-      </ModalLayout>
     </>
   );
 }

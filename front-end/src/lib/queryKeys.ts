@@ -13,6 +13,8 @@ export const queryKeys = {
         members: (id: Business["_id"]) => ["bussines", "members", id] as const,
         member: (businessId: Business["_id"], memberId: Member["_id"]) =>
             ["bussines", "memberId", businessId, memberId] as const,
+        credentials: (businessId: Business["_id"], branchId: Branch["_id"], memberId: Member["_id"]) =>
+            ["bussines", "credentials", businessId, branchId, memberId] as const,
     },
 
     branch: {

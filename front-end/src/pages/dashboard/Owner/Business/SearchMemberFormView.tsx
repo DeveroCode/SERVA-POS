@@ -3,7 +3,7 @@ import {
   type AddMemberToBranch,
   MEMBER_ROLES_EXPLAIN,
   type FoundMember,
-} from "@/types/Member.types";
+} from "@/types/Index.types";
 import { Users, Search } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 

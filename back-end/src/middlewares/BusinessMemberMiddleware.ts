@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { MEMBER_ROLES } from "../models/Member";
 
 export const registerMemberRules = [
@@ -46,7 +46,7 @@ export const updateMemberRules = [
         .normalizeEmail()
         .isEmail()
         .withMessage("El correo électronico no es valido"),
-     body("role")
+    body("role")
         .notEmpty()
         .optional()
         .withMessage("El rol es obligatorio")
@@ -81,6 +81,12 @@ export const addMemberToBusinessRules = [
         .withMessage("La contraseña debe tener al menos 8 caracteres")
 ];
 
+export const getCredentialsRules = [
+    param("businessId").isString().withMessage("El id del miembro no es valido"),
+    param("branchId").isString().withMessage("El id del miembro no es valido"),
+    param("memberId").isString().withMessage("El id del miembro no es valido")
+
+];
 export const updateMemberCredentialsRules = [
     body("role")
         .optional()
@@ -94,12 +100,9 @@ export const updateMemberCredentialsRules = [
         .withMessage("El userKey no puede estar vacío"),
 
     body("password")
-        .optional()
-        .notEmpty()
-        .withMessage("La contraseña no puede estar vacía")
+        .optional({ checkFalsy: true })
         .isLength({ min: 8 })
-        .withMessage("La contraseña debe tener al menos 8 caracteres")
-
+        .withMessage("La contraseña debe tener al menos 8 caracteres"),
 ];
 
 export const searchMember = [

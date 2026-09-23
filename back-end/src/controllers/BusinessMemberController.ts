@@ -79,6 +79,33 @@ export class BusinessMemberController {
         }
     };
 
+    static getCredentials = async (req: Request, res: Response) => {
+        try {
+            const memberId = req.member._id;
+            const branchId = req.branch._id;
+
+            const getCredentials = await Credential.findOne({
+                user: memberId,
+                branch: branchId
+            })
+                .populate("user", "name last_name _id")
+                .populate("branch", "name -_id")
+                .select("userKey role branch user");
+
+            if(!getCredentials) {
+                const error = new Error("No se encontraron las credenciales del miembro en esta sucursal");
+                return res.status(404).json({ message: error.message });
+            }
+
+            return res.status(200).json(getCredentials);
+        } catch (e) {
+            console.error(e);
+
+            return res.status(500).json({
+                message: "Internal server error"
+            });
+        }
+    };
     static updateMemberCredentials = async (req: Request, res: Response) => {
         try {
             const member = req.member;
@@ -126,6 +153,7 @@ export class BusinessMemberController {
             });
         }
     };
+
     static deleteMember = async (req: Request, res: Response) => {
         try {
             const member = req.member;

@@ -21,6 +21,7 @@ import PersonnelView from "./pages/dashboard/Owner/Business/PersonnelView";
 import RegisterPersonalView from "./pages/dashboard/Owner/Business/RegisterPersonalView";
 import AddPersonnelView from "./pages/dashboard/Owner/Business/AddPersonalView";
 import UpdatePersonnelView from "./pages/dashboard/Owner/Business/UpdatePersonnelView";
+import EditMemberCredentialsView from "./pages/dashboard/Owner/Branch/EditMemberCredentialsView";
 
 export default function router() {
   return (
@@ -56,6 +57,7 @@ export default function router() {
                   <Route path="register" element={<RegisterPersonalView />} />
                   <Route path="update/:memberId" element={<UpdatePersonnelView />} />
                   <Route path="add" element={<AddPersonnelView />} />
+                  <Route path="update/:memberId/credentials" element={<EditMemberCredentialsView />} />
                 </Route>
               </Route>
             </Route>

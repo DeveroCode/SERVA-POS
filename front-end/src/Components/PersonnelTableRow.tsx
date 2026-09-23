@@ -1,6 +1,6 @@
 import useBusinessContext from "@/hooks/useBusinessContext";
 import { useDeleteMember } from "@/mutations/useMutationBusinessMember";
-import type { Member } from "@/types/Member.types";
+import type { Member } from "@/types/Index.types";
 import { ROLE_LABELS } from "@/utils/index";
 import { SET_MEMBER_ID_KEY } from "@/utils/key";
 import { Shield, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
@@ -37,6 +37,12 @@ export default function PersonnelTableRow({
   const handleSendEdit = (id: Member["_id"]) => {
     navigate(
       `/dashboard/business/${businessId}/personnel/update/${member._id}`,
+    );
+    localStorage.setItem(SET_MEMBER_ID_KEY, id);
+  };
+  const handleSendEditCredentials = (id: Member["_id"]) => {
+    navigate(
+      `/dashboard/business/${businessId}/personnel/update/${member._id}/credentials`,
     );
     localStorage.setItem(SET_MEMBER_ID_KEY, id);
   };
@@ -163,6 +169,16 @@ export default function PersonnelTableRow({
               >
                 <Pencil className="w-3.5 h-3.5" />
                 Editar
+              </button>
+
+              <div className="my-1 h-px bg-slate-100" />
+              <button
+                onClick={() => handleSendEditCredentials(member._id)}
+                type="button"
+                className="w-full px-4 cursor-pointer py-2.5 flex items-center gap-2.5 text-left text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-orange-700 transition-colors"
+              >
+                <Shield className="w-3.5 h-3.5" />
+                Editar Credenciales
               </button>
 
               <div className="my-1 h-px bg-slate-100" />

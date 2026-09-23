@@ -3,7 +3,7 @@ import { BusinessMemberController } from "../controllers/BusinessMemberControlle
 import { isAuthenticate } from "../middlewares/UserMiddlewares";
 import { hasRole, parseImage } from "../middlewares/GlobalMiddleware";
 import { handleInputErrors } from "../utils/validator";
-import { addMemberToBusinessRules, registerMemberRules, searchMember, updateMemberCredentialsRules, updateMemberRules } from "../middlewares/BusinessMemberMiddleware";
+import { addMemberToBusinessRules, getCredentialsRules, registerMemberRules, searchMember, updateMemberCredentialsRules, updateMemberRules } from "../middlewares/BusinessMemberMiddleware";
 import { existBranch, existMemberInToBranch } from "../middlewares/BranchMiddeware";
 import { existBusiness } from "../middlewares/BusinessMiddleware";
 import { MEMBER_ROLES } from "../models/Member";
@@ -15,6 +15,7 @@ router.use(isAuthenticate, hasRole(MEMBER_ROLES.OWNER, MEMBER_ROLES.ADMIN));
 router.get('/:businessId/members', existBusiness, existMembers, handleInputErrors, BusinessMemberController.members); // Check
 router.get('/:businessId/:memberId/member', existBusiness, existMember, handleInputErrors, BusinessMemberController.member); // Check
 router.post('/:businessId/:branchId/:memberId/add/member', existBusiness, existBranch, existMember, addMemberToBusinessRules, handleInputErrors, BusinessMemberController.add); // Check
+router.get('/:businessId/:branchId/:memberId/get/credentials', existBusiness, existBranch, existMember, existMemberInToBranch, getCredentialsRules, handleInputErrors, BusinessMemberController.getCredentials); // Check
 router.patch('/:businessId/:branchId/:memberId/update/member', existBusiness, existBranch, existMember, existMemberInToBranch, updateMemberCredentialsRules, handleInputErrors, BusinessMemberController.updateMemberCredentials); // Check
 router.delete('/:businessId/:branchId/:memberId/delete/member', existBusiness, existBranch, existMember, existMemberInToBranch, handleInputErrors, BusinessMemberController.deleteMember); // Check
 router.get('/:businessId/:email/search-member', existBusiness, isFoundMemberInBusiness, searchMember,handleInputErrors, MemberController.search);
