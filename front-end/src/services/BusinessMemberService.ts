@@ -27,10 +27,10 @@ export class BusinessMemberService {
         }
     }
 
-    static async searchMember(email: SearchMemberParams["email"]): Promise<FoundMember> {
+    static async searchMember({search}: SearchMemberParams): Promise<FoundMember> {
         const _id = localStorage.getItem(LAST_BUSINESS_KEY);
         try {
-            const { data } = await api<FoundMember>(`/business-member/${_id}/${email}/search-member`);
+            const { data } = await api<FoundMember>(`/business-member/${_id}/${search}/search-member`);
             return data;
         } catch (error) {
             throw new Error(getApiErrorMessage(error), { cause: error });

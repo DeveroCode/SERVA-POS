@@ -18,7 +18,7 @@ router.post('/:businessId/:branchId/:memberId/add/member', existBusiness, existB
 router.get('/:businessId/:branchId/:memberId/get/credentials', existBusiness, existBranch, existMember, existMemberInToBranch, getCredentialsRules, handleInputErrors, BusinessMemberController.getCredentials); // Check
 router.patch('/:businessId/:branchId/:memberId/update/member', existBusiness, existBranch, existMember, existMemberInToBranch, updateMemberCredentialsRules, handleInputErrors, BusinessMemberController.updateMemberCredentials); // Check
 router.delete('/:businessId/:branchId/:memberId/delete/member', existBusiness, existBranch, existMember, existMemberInToBranch, handleInputErrors, BusinessMemberController.deleteMember); // Check
-router.get('/:businessId/:email/search-member', existBusiness, isFoundMemberInBusiness, searchMember,handleInputErrors, MemberController.search);
+router.get('/:businessId/:search/search-member', existBusiness, isFoundMemberInBusiness, searchMember,handleInputErrors, MemberController.search);
 
 // MemberController with Routes
 router.post('/:businessId/register/member', existBusiness, registerMemberRules, handleInputErrors, MemberController.create);

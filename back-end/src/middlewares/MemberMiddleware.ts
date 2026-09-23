@@ -42,27 +42,38 @@ export async function existMember(req: Request, res: Response, next: NextFunctio
     }
 };
 
-export async function isFoundMemberInBusiness(req: Request, res: Response, next: NextFunction) {
+export async function isFoundMemberInBusiness(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
     try {
-        const {_id: businessId} = req.business;
-        const { email } = req.params;
+        const { _id: businessId } = req.business;
+        const { search } = req.params;
 
         const existMemberInBusiness = await Member.findOne({
-            email,
-            business: businessId
-        })
-            .select("name last_name email phone_number role image");
+            business: businessId,
+            $or: [
+                { email: search },
+                { name: search },
+                { phone_number: search },
+            ],
+        }).select("name last_name email phone_number role image");
 
         if (!existMemberInBusiness) {
-            const error = new Error("No existe un miembro con este correo en este negocio.");
+            const error = new Error(
+                "No existe un miembro con ese correo, nombre o teléfono en este negocio."
+            );
+
             return res.status(400).json(error.message);
         }
 
         req.searchMember = existMemberInBusiness;
+
         next();
     } catch (e) {
-         return res.status(500).json({
-            message: "Internal server error"
+        return res.status(500).json({
+            message: "Internal server error",
         });
     }
 }

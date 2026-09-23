@@ -21,6 +21,7 @@ export function useAddMemberToBusiness() {
         },
         onError: (error: Error) => {
             toast.error(error.message);
+            return error;
         }
     });
 }
@@ -81,7 +82,7 @@ export function useRegisterMember() {
 
 export function useSearchMember() {
     return useMutation({
-        mutationFn: (email: SearchMemberParams["email"]) => BusinessMemberService.searchMember(email),
+        mutationFn: (search: SearchMemberParams) => BusinessMemberService.searchMember(search),
         onSuccess: (data) => {
             toast.success(data.message);
         },

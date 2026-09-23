@@ -138,10 +138,9 @@ export type GetByParams = {
     branchId: Branch["_id"];
 };
 
-export type SearchMemberParams = Pick<
-    Member,
-    "email"
->;
+export type SearchMemberParams = {
+    search: string;
+}
 
 export type GetMemberByBusiness = Pick<
     Business,

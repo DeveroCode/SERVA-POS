@@ -1,6 +1,6 @@
 import { useSearchMember } from "@/mutations/useMutationBusinessMember";
 import Loader from "@/pages/Loader";
-import type { FoundMember } from "@/types/Member.types";
+import { type SearchMemberParams, type FoundMember } from "@/types/Index.types";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
@@ -11,18 +11,22 @@ type SearchMemberFormProps = {
 export default function SearchMemberForm({
   onMemberFound,
 }: SearchMemberFormProps) {
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] =
+    useState<SearchMemberParams["search"]>("");
 
   const { mutate, isPending } = useSearchMember();
 
   const handleSearch = () => {
     if (!searchValue.trim()) return;
 
-    mutate(searchValue, {
-      onSuccess: (member) => {
-        onMemberFound(member);
+    mutate(
+      { search: searchValue.trim() },
+      {
+        onSuccess: (member) => {
+          onMemberFound(member);
+        },
       },
-    });
+    );
   };
 
   if (isPending) return <Loader />;

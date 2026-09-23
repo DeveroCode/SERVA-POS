@@ -52,8 +52,14 @@ export default function SearchMemberForm({
               value={member ? `${member.name} ${member.last_name}` : ""}
               placeholder="Buscar usuario..."
               readOnly
-              {...register("memberId", { required: true })}
               className="w-full pl-10 pr-3.5 py-2.5 text-sm bg-slate-50/60 border border-slate-200/90 rounded-xl font-medium placeholder:text-slate-400 focus:bg-white focus:border-orange-700 focus:ring-4 focus:ring-orange-700/10 focus:outline-none transition-all"
+            />
+
+            <input
+              type="hidden"
+              {...register("memberId", {
+                required: "Debes seleccionar un usuario",
+              })}
             />
 
             {errors.memberId && (
