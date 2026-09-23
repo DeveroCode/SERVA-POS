@@ -1,6 +1,6 @@
 export default function Loader() {
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-900  absolute top-0 left-0 w-full">
+    <div className="fixed inset-0 z-9999 flex items-center justify-center bg-gray-900">
       <div className="perspective-[1000px]">
         <img
           src="/isotipo.png"
@@ -9,5 +9,5 @@ export default function Loader() {
         />
       </div>
     </div>
-  )
+  );
 }
