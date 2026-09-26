@@ -1,21 +1,49 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { useBusinessMembers } from "@/hooks/useBusinessMembers";
-import type { Business } from "@/types/Index.types";
+import {
+  type FoundMember,
+  type Business,
+  type SearchMemberParams,
+} from "@/types/Index.types";
 import Loader from "@/pages/Loader";
 import AddPersonalButtons from "@/Components/Buttons/AddPersonalButtons";
 import PersonnelTable from "@/Components/PersonnelTable";
 import useBusinessContext from "@/hooks/useBusinessContext";
+import { useSearchMember } from "@/mutations/useMutationBusinessMember";
 
 export default function PersonnelView() {
-  const [search, setSearch] = useState("");
+  const [foundMember, setFoundMember] = useState<
+    FoundMember["foundMember"] | null
+  >(null);
+  const [searchValue, setSearchValue] =
+    useState<SearchMemberParams["search"]>("");
 
   const { currentBusinessId: businessId } = useBusinessContext();
+  const { mutate, isPending } = useSearchMember();
 
   const { data: personnel, isLoading } = useBusinessMembers(
     businessId as Business["_id"],
   );
 
+  const handleMemberFound = (member: FoundMember) => {
+    setFoundMember(member.foundMember);
+  };
+
+  const handleSearch = () => {
+    if (!searchValue.trim()) return;
+
+    mutate(
+      { search: searchValue.trim() },
+      {
+        onSuccess: (member) => {
+          handleMemberFound(member);
+        },
+      },
+    );
+  };
+
+  if (isPending) return <Loader />;
   if (isLoading) return <Loader />;
 
   return (
@@ -43,8 +71,21 @@ export default function PersonnelView() {
 
             <input
               type="text"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              value={searchValue}
+              onChange={(event) => {
+                const value = event.target.value;
+                setSearchValue(value);
+
+                if (!value) {
+                  setFoundMember(null);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSearch();
+                }
+              }}
               placeholder="Buscar por nombre, correo o teléfono..."
               className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-slate-50/60 border border-slate-200/90 rounded-xl font-medium placeholder:text-slate-400 focus:bg-white focus:border-orange-700 focus:ring-4 focus:ring-orange-700/10 focus:outline-none transition-all"
             />
@@ -68,7 +109,7 @@ export default function PersonnelView() {
           </p>
         </div>
       ) : (
-        <PersonnelTable members={personnel} />
+        <PersonnelTable foundMember={foundMember} members={personnel} />
       )}
     </div>
   );

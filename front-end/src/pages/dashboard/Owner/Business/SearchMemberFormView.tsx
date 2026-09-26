@@ -2,15 +2,16 @@ import ErrorAlert from "@/Components/Alerts/ErrorAlert";
 import {
   type AddMemberToBranch,
   MEMBER_ROLES_EXPLAIN,
-  type FoundMember,
+  type Member,
 } from "@/types/Index.types";
 import { Users, Search } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
 type SearchMemberFormProps = {
   onOpenSearchModal: () => void;
-  member: FoundMember["foundMember"] | null;
+  member: Member | null;
 };
+
 export default function SearchMemberForm({
   onOpenSearchModal,
   member,
@@ -19,6 +20,7 @@ export default function SearchMemberForm({
     register,
     formState: { errors },
   } = useFormContext<AddMemberToBranch>();
+
   return (
     <div className="bg-white rounded-[20px] border border-slate-200/90 p-6 sm:p-8 space-y-6 shadow-sm">
       {/* Section Header */}
@@ -26,10 +28,12 @@ export default function SearchMemberForm({
         <div className="w-8 h-8 rounded-lg bg-orange-50 text-orange-700 flex items-center justify-center">
           <Users className="w-4 h-4" />
         </div>
+
         <div>
           <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
             Información del miembro
           </h2>
+
           <p className="text-xs text-slate-400">
             Selecciona el usuario y define su función.
           </p>
@@ -46,6 +50,7 @@ export default function SearchMemberForm({
 
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+
             <input
               type="text"
               onFocus={onOpenSearchModal}
@@ -66,6 +71,7 @@ export default function SearchMemberForm({
               <ErrorAlert>{errors.memberId.message}</ErrorAlert>
             )}
           </div>
+
           <p className="text-[11px] text-slate-400">
             Selecciona el usuario que formará parte del negocio.
           </p>
@@ -80,7 +86,9 @@ export default function SearchMemberForm({
 
           <select
             defaultValue=""
-            {...register("role", { required: true })}
+            {...register("role", {
+              required: true,
+            })}
             className="w-full px-3.5 py-2.5 text-sm bg-slate-50/60 border border-slate-200/90 rounded-xl font-medium text-slate-700 focus:bg-white focus:border-orange-700 focus:ring-4 focus:ring-orange-700/10 focus:outline-none transition-all"
           >
             <option value="" disabled>

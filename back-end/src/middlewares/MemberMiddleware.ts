@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { IMember, Member } from "../models/Member";
+import mongoose, { Mongoose } from "mongoose";
 
 declare global {
     namespace Express {
         interface Request {
             members: IMember[];
             member: IMember;
-            searchMember: IMember;
+            searchMember: IMember[];
         }
     }
 }
@@ -51,33 +52,84 @@ export async function isFoundMemberInBusiness(
         const { _id: businessId } = req.business;
         const { search } = req.params;
 
-        const existMemberInBusiness = await Member.findOne({
-            business: businessId,
-            $or: [
-                { email: search },
-                { name: search },
-                { phone_number: search },
-            ],
-        }).select("name last_name email phone_number role image");
-
-        if (!existMemberInBusiness) {
-            const error = new Error(
-                "No existe un miembro con ese correo, nombre o teléfono en este negocio."
-            );
-
-            return res.status(400).json(error.message);
+        if (typeof search !== "string") {
+            return res.status(400).json({
+                message: "El parámetro de búsqueda no es válido.",
+            });
         }
 
-        req.searchMember = existMemberInBusiness;
+        const searchValue = search.trim();
+
+        const members = await Member.find({
+            business: businessId,
+            $or: [
+                // Email
+                {
+                    email: {
+                        $regex: searchValue,
+                        $options: "i",
+                    },
+                },
+
+                // Teléfono
+                {
+                    phone_number: {
+                        $regex: searchValue,
+                        $options: "i",
+                    },
+                },
+
+                // Nombre
+                {
+                    name: {
+                        $regex: searchValue,
+                        $options: "i",
+                    },
+                },
+
+                // Apellido
+                {
+                    last_name: {
+                        $regex: searchValue,
+                        $options: "i",
+                    },
+                },
+
+                // Nombre completo
+                {
+                    $expr: {
+                        $regexMatch: {
+                            input: {
+                                $concat: ["$name", " ", "$last_name"],
+                            },
+                            regex: searchValue,
+                            options: "i",
+                        },
+                    },
+                },
+            ],
+        }).select(
+            "name last_name email phone_number role image isActive lastLogin"
+        );
+
+        if (!members.length) {
+            return res.status(400).json({
+                message:
+                    "No existe un miembro con ese correo, nombre o teléfono en este negocio.",
+            });
+        }
+
+        req.searchMember = members;
 
         next();
     } catch (e) {
+        console.error(e);
+
         return res.status(500).json({
             message: "Internal server error",
         });
     }
 }
-
 export async function existMembers(req: Request, res: Response, next: NextFunction) {
     try {
         const { _id: businessId } = req.business;

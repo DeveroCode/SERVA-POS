@@ -1,15 +1,19 @@
 import PersonnelTableRow from "@/Components/PersonnelTableRow";
-
+import type { FoundMember } from "@/types/BusinessMember.type";
 import type { Members } from "@/types/Member.types";
-
 import { useState } from "react";
 
 type PersonnelTableProps = {
   members: Members;
+  foundMember?: FoundMember["foundMember"];
 };
 
-export default function PersonnelTable({ members }: PersonnelTableProps) {
+export default function PersonnelTable({
+  members,
+  foundMember,
+}: PersonnelTableProps) {
   const [openMenuActions, setOpenMenuActions] = useState<string | null>(null);
+  const membersToDisplay = foundMember ?? members;
 
   return (
     <div className="w-full rounded-[20px] border border-slate-200/90 bg-white shadow-sm">
@@ -36,12 +40,12 @@ export default function PersonnelTable({ members }: PersonnelTableProps) {
           </thead>
 
           <tbody>
-            {members.map((member) => (
+            {membersToDisplay.map((member) => (
               <PersonnelTableRow
                 key={member._id}
+                member={member}
                 openMenuActions={openMenuActions}
                 setOpenMenuActions={setOpenMenuActions}
-                member={member}
               />
             ))}
           </tbody>
