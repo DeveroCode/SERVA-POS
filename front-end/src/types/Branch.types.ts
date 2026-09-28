@@ -16,10 +16,10 @@ export const branchSchema = z.object({
     })
 })
 
-export const branchesSchema = {
+export const branchesSchema = z.object({
     data: z.array(branchSchema),
     pagination: paginationSchema
-}
+})
 
 export type Branches = z.infer<typeof branchesSchema>;
 export type Branch = z.infer<typeof branchSchema>;

@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Store, Plus, Search, Building2 } from "lucide-react";
+import { Store, Plus, Search } from "lucide-react";
 import { useBranches } from "@/hooks/useBranches";
-import { LAST_BUSINESS_KEY } from "@/utils/key";
 import BranchCard from "@/Components/Cards/Branch/BranchCard";
+import useBusinessContext from "@/hooks/useBusinessContext";
+import BranchEmptyCard from "@/Components/Cards/Branch/BranchEmptyCard";
 
 export default function BranchesIndexView() {
-  const businessId = localStorage.getItem(LAST_BUSINESS_KEY) || undefined;
-  const navigate = useNavigate();
-  const { data: branches = [], isLoading } = useBranches(businessId);
+  // Search Branch
   const [searchQuery, setSearchQuery] = useState("");
+  // Business context
+  const {currentBusinessId: businessId, navigate} = useBusinessContext();
+
+  // Branches
+  const { data, isLoading } = useBranches(businessId);
+  const branches = data?.data || [];
 
   if (isLoading) {
     return (
@@ -46,30 +50,8 @@ export default function BranchesIndexView() {
       </div>
 
       {/* Empty State */}
-      {branches.length === 0 ? (
-        <div className="bg-white rounded-[20px] border-2 border-dashed border-slate-200/90 p-12 text-center flex flex-col items-center justify-center min-h-100">
-          <div className="w-16 h-16 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-700 shadow-sm mb-4">
-            <Building2 className="w-8 h-8" />
-          </div>
-
-          <h3 className="text-lg font-bold text-slate-900 tracking-tight mb-1">
-            Aún no tienes sucursales
-          </h3>
-
-          <p className="text-xs sm:text-sm text-slate-500 font-normal max-w-md mb-6 leading-relaxed">
-            Agrega tu primera sucursal para comenzar a administrar este negocio.
-          </p>
-
-          <button
-            onClick={() =>
-              navigate(`/dashboard/business/${businessId}/branches/new`)
-            }
-            className="inline-flex items-center gap-2 px-6 py-2.5 text-xs font-semibold text-white bg-orange-700 hover:bg-orange-800 rounded-xl shadow-md shadow-orange-500/20 transition-all duration-200 active:scale-[0.98]"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Crear primera sucursal</span>
-          </button>
-        </div>
+      {!branches || branches.length === 0 ? (
+        <BranchEmptyCard />
       ) : (
         <>
           {/* Filter Bar */}

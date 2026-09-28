@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 export function useBusinesses(page: number) {
     const token = localStorage.getItem(SET_TOKEN_KEY);
     return useQuery({
-        queryKey: queryKeys.bussiness.all(page),
+        queryKey: queryKeys.bussiness.page(page),
         queryFn: () => BusinessService.getBusinesses(page),
         retry: false,
         enabled: !!token,

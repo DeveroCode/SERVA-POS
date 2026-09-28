@@ -4,9 +4,9 @@ import { branchesSchema, type Branch, type Branches, type Business, type createN
 import { LAST_BRANCH_KEY, LAST_BUSINESS_KEY } from "@/utils/key";
 
 export class BranchService {
-    static async getBranches(businessId: Business["_id"]): Promise<Branches> {
+    static async getBranches(businessId: Business["_id"], page: number = 1): Promise<Branches> {
         try {
-            const { data } = await api.get<Branches>(`/branch/${businessId}/branches`);
+            const { data } = await api.get<Branches>(`/branch/${businessId}/branches?page=${page}`);
             const response = branchesSchema.safeParse(data);
             if (response.success) {
                 return response.data

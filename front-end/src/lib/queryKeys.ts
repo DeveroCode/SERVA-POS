@@ -6,9 +6,8 @@ export const queryKeys = {
   },
 
   bussiness: {
-    all: (page: number) =>
-      ["bussines", "all", page] as const,
-
+    all: ["bussines", "all"] as const,
+    page: (page: number) => ["bussines", "page", page] as const,
     one: (id: Business["_id"]) =>
       ["bussines", "one", id] as const,
 
@@ -31,6 +30,7 @@ export const queryKeys = {
 
   branch: {
     all: ["branch", "all"] as const,
+    page: (page: number) => ["branch", "page", page] as const,
 
     byBusiness: (businessId: Business["_id"]) =>
       ["branch", "byBusiness", businessId] as const,
