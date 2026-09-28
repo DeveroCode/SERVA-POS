@@ -1,6 +1,6 @@
 import type { Model } from "mongoose";
 
-const DEFAULT_PAGE_SIZE = 2;
+const DEFAULT_PAGE_SIZE = 20;
 
 interface PaginationOptions {
     page?: unknown;
