@@ -18,13 +18,16 @@ export default function PersonnelView() {
   >(null);
   const [searchValue, setSearchValue] =
     useState<SearchMemberParams["search"]>("");
-
+  const [page, setPage] = useState(1);
   const { currentBusinessId: businessId } = useBusinessContext();
   const { mutate, isPending } = useSearchMember();
 
   const { data: personnel, isLoading } = useBusinessMembers(
     businessId as Business["_id"],
+    page,
   );
+
+  const members = personnel?.data ?? [];
 
   const handleMemberFound = (member: FoundMember) => {
     setFoundMember(member.foundMember);
@@ -32,6 +35,8 @@ export default function PersonnelView() {
 
   const handleSearch = () => {
     if (!searchValue.trim()) return;
+
+    setPage(1);
 
     mutate(
       { search: searchValue.trim() },
@@ -78,6 +83,7 @@ export default function PersonnelView() {
 
                 if (!value) {
                   setFoundMember(null);
+                  setPage(1);
                 }
               }}
               onKeyDown={(e) => {
@@ -92,13 +98,13 @@ export default function PersonnelView() {
           </div>
 
           <span className="text-xs text-slate-400 font-medium shrink-0">
-            Total: {personnel?.length ?? 0} miembros
+            {/* Total: {personnel?.pagination.total ?? 0} miembros */}
           </span>
         </div>
       </div>
 
       {/* Personnel Table */}
-      {!personnel?.length ? (
+      {!members.length && !foundMember ? (
         <div className="bg-white rounded-[20px] border border-slate-200/90 shadow-sm p-8 sm:p-12 text-center">
           <h2 className="text-sm font-semibold text-slate-700">
             No hay miembros registrados en este negocio
@@ -109,7 +115,12 @@ export default function PersonnelView() {
           </p>
         </div>
       ) : (
-        <PersonnelTable foundMember={foundMember} members={personnel} />
+        <PersonnelTable
+          foundMember={foundMember}
+          members={members}
+          pagination={personnel?.pagination}
+          onPageChange={setPage}
+        />
       )}
     </div>
   );

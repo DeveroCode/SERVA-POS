@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import type { Business } from "./Business.types";
 import type { Branch } from "./Branch.types";
-import type { Member, Members } from "./Member.types";
+import type { Member } from "./Member.types";
 
 // ==========================================
 // 0 - ENUMS
@@ -79,7 +79,7 @@ export type Credentials = z.infer<
 >;
 
 export type FoundMember = {
-    foundMember: Members;
+    foundMember: Member[];
     message: string;
 };
 

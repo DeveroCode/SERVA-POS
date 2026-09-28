@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { MEMBER_ROLES } from "./BusinessMember.type";
+import { paginationSchema } from "./Pagination.type";
 
 // ==========================================
 // 0 - SCHEMAS
@@ -13,11 +14,17 @@ export const MemberSchema = z.object({
     phone_number: z.string(),
     image: z.string().optional(),
     isActive: z.boolean(),
+    business: z.object({
+        name: z.string(),
+    }),
     role: z.enum(Object.values(MEMBER_ROLES)),
     lastLogin: z.string().optional(),
 });
 
-export const MembersSchema = z.array(MemberSchema);
+export const MembersSchema = z.object({
+    data: z.array(MemberSchema),
+    pagination: paginationSchema
+});
 
 // ==========================================
 // 1 - TYPES

@@ -6,9 +6,9 @@ import { getApiErrorMessage } from "../lib";
 
 export class BusinessMemberService {
 
-    static async getMembers(_id: GetMemberByBusiness["_id"]): Promise<Members> {
+    static async getMembers(_id: GetMemberByBusiness["_id"], page: number = 1): Promise<Members> {
         try {
-            const { data } = await api<Members>(`/business-member/${_id}/members`);
+            const { data } = await api<Members>(`/business-member/${_id}/members?page=${page}`);
             const response = MembersSchema.safeParse(data);
             if (response.success) {
                 return response.data
