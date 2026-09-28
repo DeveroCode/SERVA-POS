@@ -1,30 +1,39 @@
 import UpdateMemberCredentialsForm from "@/forms/UpdateMemberCredentialsForm";
 import useBusinessContext from "@/hooks/useBusinessContext";
-import { useGetMemberCredentials, useUpdateMemberCredentials } from "@/mutations/useMutationBusinessMember";
+import {
+  useGetMemberCredentials,
+  useUpdateMemberCredentials,
+} from "@/mutations/useMutationBusinessMember";
 import Loader from "@/pages/Loader";
 import {
   MEMBER_ROLES,
   type UpdateCredentialsForm,
-  type UpdateMemberCredentials
+  type UpdateMemberCredentials,
 } from "@/types/Index.types";
 import { ArrowLeft, UserCheck } from "lucide-react";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function EditMemberCredentialsView() {
   const {
     currentBranchId: branchId,
     currentBusinessId: businessId,
     currentMemberId: memberId,
+    navigate,
   } = useBusinessContext();
-  const { data: credentials, isLoading } = useGetMemberCredentials({
+  const {
+    data: credentials,
+    isLoading,
+    isError,
+  } = useGetMemberCredentials({
     branchId,
     businessId,
     memberId,
   });
 
-  const {mutate, isPending} = useUpdateMemberCredentials();
+  const { mutate, isPending } = useUpdateMemberCredentials();
 
   /** Add Member to Business */
   const methods = useForm<UpdateCredentialsForm>({
@@ -64,6 +73,13 @@ export default function EditMemberCredentialsView() {
     });
   }, [credentials, reset]);
 
+  useEffect(() => {
+    if (!isError) return;
+
+    toast.error("Este miembro aún no tiene credenciales.");
+    navigate(`/dashboard/business/${businessId}/personnel`);
+  }, [isError, businessId, navigate]);
+
   if (isPending) return <Loader />;
 
   if (isLoading) return <Loader />;
@@ -95,7 +111,11 @@ export default function EditMemberCredentialsView() {
         <div className="h-px w-full bg-slate-200/80" />
 
         <FormProvider {...methods}>
-          <form className="space-y-6" onSubmit={handleSubmit(handleSendData)} noValidate>
+          <form
+            className="space-y-6"
+            onSubmit={handleSubmit(handleSendData)}
+            noValidate
+          >
             <UpdateMemberCredentialsForm />
             {/* Actions */}
             <div className="flex items-center justify-end gap-3 pt-2">

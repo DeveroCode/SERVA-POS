@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { IMember, Member } from "../models/Member";
-import mongoose, { Mongoose } from "mongoose";
 import { paginate, PaginationResult } from "../lib/pagination";
 
 declare global {
