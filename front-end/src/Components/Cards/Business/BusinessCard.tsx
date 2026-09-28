@@ -1,9 +1,17 @@
 import { useBusinesses } from "@/hooks/useBusinesses";
 import { BusinessCardItem } from "./BusinessCardItem";
 import { EmptySlotCard } from "./EmptySlotCard";
+import usePagination from "@/hooks/usePagination";
+import Pagination from "@/Components/Pagination";
 
 export default function BusinessCard() {
-  const { data: businesses } = useBusinesses();
+  // Pagination
+  const { page, setPage } = usePagination();
+  // Businesses
+  const { data: business } = useBusinesses(page);
+  const businesses = business?.data ?? [];
+
+  // Empty Slots
   const maxBusinesses = 3;
   const emptySlotsCount = Math.max(0, maxBusinesses - businesses.length);
 
@@ -16,7 +24,8 @@ export default function BusinessCard() {
             Mis Negocios
           </h2>
           <p className="text-xs text-slate-500 font-normal">
-            Gestiona los perfiles y la configuración general de tus establecimientos.
+            Gestiona los perfiles y la configuración general de tus
+            establecimientos.
           </p>
         </div>
         <div className="mt-2 sm:mt-0">
@@ -39,6 +48,11 @@ export default function BusinessCard() {
           <EmptySlotCard key={`empty-slot-${index}`} />
         ))}
       </div>
+
+      {/* Pagination */}
+      {business?.pagination && business.pagination.totalPages > 1 && (
+        <Pagination pagination={business.pagination} onPageChange={setPage} />
+      )}
     </div>
   );
 }

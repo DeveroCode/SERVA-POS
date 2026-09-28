@@ -5,12 +5,13 @@ import { USER_ROLES } from "../models/user";
 import { Branch } from "../models/Branch";
 import { Credential } from "../models/Credential";
 import { MEMBER_ROLES } from "../models/Member";
+import { paginate, PaginationResult } from "../lib/pagination";
 
 declare global {
     namespace Express {
         interface Request {
             business: IBusiness;
-            businesses: IBusiness[];
+            businesses: PaginationResult<IBusiness>;
             businessStats: {
                 activeBranches: number;
                 employees: number;
@@ -76,16 +77,25 @@ export async function existBusiness(req: Request, res: Response, next: NextFunct
 export async function existBusinesses(req: Request, res: Response, next: NextFunction) {
     try {
         const userId = req.user._id;
-        const businesses = await Business.find({ owner: userId })
-            .select("-__v -createdAt -updatedAt -owner")
-            .sort({ updatedAt: -1 });
 
-        if (!businesses || businesses.length === 0) {
+        const result = await paginate(
+            Business,
+            {
+                owner: userId
+            },
+            {
+                page: req.query.page,
+                sort: { updatedAt: -1 },
+                select: "-__v -createdAt -updatedAt -owner"
+            }
+        );
+
+        if (!result.data.length || result.data.length === 0) {
             const error = new Error('No tienes un negocio creado, crea uno primero.');
             return res.status(404).json({ message: error.message });
         }
 
-        req.businesses = businesses;
+        req.businesses = result;
         next();
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error' });

@@ -1,27 +1,34 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { useBusinessMembers } from "@/hooks/useBusinessMembers";
-import {
-  type FoundMember,
-  type Business,
-  type SearchMemberParams,
+import type {
+  FoundMember,
+  Business,
+  SearchMemberParams,
 } from "@/types/Index.types";
 import Loader from "@/pages/Loader";
 import AddPersonalButtons from "@/Components/Buttons/AddPersonalButtons";
 import PersonnelTable from "@/Components/PersonnelTable";
 import useBusinessContext from "@/hooks/useBusinessContext";
 import { useSearchMember } from "@/mutations/useMutationBusinessMember";
+import usePagination from "@/hooks/usePagination";
 
 export default function PersonnelView() {
+  // Search
   const [foundMember, setFoundMember] = useState<
     FoundMember["foundMember"] | null
   >(null);
+
   const [searchValue, setSearchValue] =
     useState<SearchMemberParams["search"]>("");
-  const [page, setPage] = useState(1);
-  const { currentBusinessId: businessId } = useBusinessContext();
+
   const { mutate, isPending } = useSearchMember();
 
+  // Pagination & Business Context
+  const { page, setPage, resetPage } = usePagination();
+  const { currentBusinessId: businessId } = useBusinessContext();
+
+  // Members
   const { data: personnel, isLoading } = useBusinessMembers(
     businessId as Business["_id"],
     page,
@@ -29,6 +36,7 @@ export default function PersonnelView() {
 
   const members = personnel?.data ?? [];
 
+  // Search Handlers
   const handleMemberFound = (member: FoundMember) => {
     setFoundMember(member.foundMember);
   };
@@ -36,7 +44,7 @@ export default function PersonnelView() {
   const handleSearch = () => {
     if (!searchValue.trim()) return;
 
-    setPage(1);
+    resetPage();
 
     mutate(
       { search: searchValue.trim() },
@@ -79,11 +87,12 @@ export default function PersonnelView() {
               value={searchValue}
               onChange={(event) => {
                 const value = event.target.value;
+
                 setSearchValue(value);
 
                 if (!value) {
                   setFoundMember(null);
-                  setPage(1);
+                  resetPage();
                 }
               }}
               onKeyDown={(e) => {

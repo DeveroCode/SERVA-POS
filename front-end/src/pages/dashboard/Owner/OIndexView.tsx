@@ -3,11 +3,16 @@ import { useBusinesses } from "@/hooks/useBusinesses";
 import { motion } from "framer-motion";
 import Loader from "./../../Loader";
 import BusinessCard from "@/Components/Cards/Business/BusinessCard";
+import usePagination from "@/hooks/usePagination";
 
 export default function OIndexView() {
-  const { data: business, isPending } = useBusinesses();
+  // Pagination
+  const { page } = usePagination();
+  // Business
+  const { data: business, isPending } = useBusinesses(page);
+  const businesses = business?.data ?? [];
 
-  if(isPending) return <Loader />
+  if (isPending) return <Loader />;
 
   const containerVariants = {
     hidden: { opacity: 0, y: 15 },
@@ -28,7 +33,7 @@ export default function OIndexView() {
       variants={containerVariants}
       className="min-h-screen bg-gray-50/60 p-4 sm:p-6 lg:p-8 space-y-8 font-sans text-gray-900 max-w-[1600px] mx-auto pb-24"
     >
-      {business ? <BusinessCard /> : <CAddBusiness />}
+      {businesses ? <BusinessCard /> : <CAddBusiness />}
     </motion.div>
   );
 }

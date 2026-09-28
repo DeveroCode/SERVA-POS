@@ -2,12 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { body } from "express-validator";
 import { Branch, IBranch } from "../models/Branch";
 import { Credential } from "../models/Credential";
+import { paginate, PaginationResult } from "../lib/pagination";
 
 declare global {
     namespace Express {
         interface Request {
             branch: IBranch,
-            branches: IBranch[]
+            branches: PaginationResult<IBranch>
         }
     }
 }
@@ -53,14 +54,24 @@ export async function existBranches(req: Request, res: Response, next: NextFunct
     try {
         const { _id: businessId } = req.business;
 
-        const branches = await Branch.find({ business: businessId }).select("-__v -createdAt -updatedAt -business");
+        const resul = await paginate(
+            Branch,
+            {
+                business: businessId
+            },
+            {
+                page: req.query.page,
+                sort: { updatedAt: -1 },
+                select: "-__v -createdAt -updatedAt -business"
+            }
+        );
 
-        if (!branches) {
+        if (!resul.data.length || resul.data.length === 0) {
             const error = new Error('No existe una sucursal con ese ID o no te pertenece.');
             return res.status(400).json({ message: error.message });
         }
 
-        req.branches = branches;
+        req.branches = resul;
         next();
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error' });

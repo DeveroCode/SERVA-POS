@@ -1,24 +1,28 @@
 import { z } from "zod";
+import { paginationSchema } from "./Pagination.type";
 
-export const branchesSchema = z.array(
-    z.object({
-        _id: z.string(),
-        name: z.string(),
-        slug: z.string(),
-        phone: z.string(),
-        email: z.string().email(),
-        address: z.object({
-            "street": z.string(),
-            "city": z.string(),
-            "state": z.string(),
-            "country": z.string(),
-            "zipCode": z.string(),
-        })
+export const branchSchema = z.object({
+    _id: z.string(),
+    name: z.string(),
+    slug: z.string(),
+    phone: z.string(),
+    email: z.string().email(),
+    address: z.object({
+        "street": z.string(),
+        "city": z.string(),
+        "state": z.string(),
+        "country": z.string(),
+        "zipCode": z.string(),
     })
-);
+})
+
+export const branchesSchema = {
+    data: z.array(branchSchema),
+    pagination: paginationSchema
+}
 
 export type Branches = z.infer<typeof branchesSchema>;
-export type Branch = Branches[number];
+export type Branch = z.infer<typeof branchSchema>;
 
 export type getBranches = {
     businessId: string;
