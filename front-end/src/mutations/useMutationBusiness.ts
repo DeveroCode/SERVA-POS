@@ -76,7 +76,7 @@ export function useUploadLogoBusiness() {
         }),
       ]);
 
-      navigate("/dashboard/general");
+      navigate("/dashboard");
     },
     onError: (error: Error) => {
       toast.error(error.message);
