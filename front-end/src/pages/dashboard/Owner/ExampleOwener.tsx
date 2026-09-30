@@ -625,7 +625,6 @@ export default function ExampleOwerner() {
           6. BUSINESS INFO & BRANDING SECTION (SIDE BY SIDE)
       ========================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
         {/* Business Info (2 cols) */}
         <motion.section variants={itemVariants} className="lg:col-span-2 bg-white rounded-2xl border border-gray-200/80 p-6 shadow-sm space-y-6">
           <div className="flex items-center justify-between pb-4 border-b border-gray-100">

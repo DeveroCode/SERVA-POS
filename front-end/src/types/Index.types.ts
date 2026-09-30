@@ -21,8 +21,17 @@ export interface SidebarItem {
     title: string;
     url: string;
     icon: ReactNode;
+    macro?: MacroKey
 }
 
 export type UploadImage = {
     image: File
 }
+
+export type MacroKey =
+    | "NEW_BRANCH"
+    | "POS"
+    | "GENERAL_ROLES"
+    | "SAAS_BILLING"
+    | "NEW_PERSONNEL"
+    | "LOGOUT";

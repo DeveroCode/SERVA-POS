@@ -1,8 +1,10 @@
 import AdminAside from "@/Components/Asides/AdminAside";
 import AHeader from "@/Components/Headers/AHeader";
+import useServaMacros from "@/hooks/useServaMacros";
 import { Outlet } from "react-router-dom";
 
 export default function OwnerLayout() {
+  useServaMacros();
   return (
     <div className="p-6">
       <div className="min-h-screen bg-white flex flex-col">

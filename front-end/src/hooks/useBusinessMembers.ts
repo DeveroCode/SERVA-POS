@@ -1,15 +1,14 @@
 import { queryKeys } from "@/lib/queryKeys";
 import { BusinessMemberService } from "@/services/BusinessMemberService";
 import type { GetMemberByBusiness } from "@/types/Index.types";
-import { LAST_BUSINESS_KEY, SET_TOKEN_KEY } from "@/utils/key";
+import { SET_TOKEN_KEY } from "@/utils/key";
 import { useQuery } from "@tanstack/react-query";
 
 export function useBusinessMembers(businessId: GetMemberByBusiness["_id"], page: number) {
     const token = localStorage.getItem(SET_TOKEN_KEY);
-    const business = localStorage.getItem(LAST_BUSINESS_KEY) || businessId;
 
     return useQuery({
-        queryKey: queryKeys.bussiness.members(business, page),
+        queryKey: queryKeys.bussiness.members(businessId, page),
         queryFn: () => BusinessMemberService.getMembers(businessId, page),
         retry: false,
         enabled: !!token,

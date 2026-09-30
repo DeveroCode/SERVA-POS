@@ -7,17 +7,21 @@ import EditBusinessView from "@/pages/dashboard/Owner/Business/EditBusinessView"
 import { useDeleteBusiness } from "@/mutations/useMutationBusiness";
 import DeleteBusinessView from "@/pages/dashboard/Owner/Business/DeleteBusinessView";
 
-export default function OwnerBusinessButtons() {
+type OwnerBusinessButtonsProps = {
+  openEdit: boolean;
+  setOpenEdit: (open: boolean) => void;
+}
+
+export default function OwnerBusinessButtons({ openEdit, setOpenEdit }: OwnerBusinessButtonsProps) {
   const { businessId } = useParams<{ businessId: Business["_id"] }>();
   const { mutate } = useDeleteBusiness();
-  const [open, setOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
 
   return (
     <>
       <div className="flex items-center gap-2 ">
         <button
-          onClick={() => setOpen(true)}
+          onClick={() => setOpenEdit(true)}
           className="px-4 py-2.5 text-xs font-semibold cursor-pointer text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl transition-all shadow-sm flex items-center gap-2"
         >
           <Edit className="w-3.5 h-3.5" />
@@ -41,8 +45,8 @@ export default function OwnerBusinessButtons() {
         </button>
       </div>
 
-      <ModalLayout open={open} setOpen={setOpen} className="w-175">
-        <EditBusinessView onClose={() => setOpen(false)} />
+      <ModalLayout open={openEdit} setOpen={setOpenEdit} className="w-175">
+        <EditBusinessView onClose={() => setOpenEdit(false)} />
       </ModalLayout>
       <ModalLayout open={isDelete} setOpen={setIsDelete}>
         <DeleteBusinessView onCancel={() => setIsDelete(false)} onConfirm={() => mutate(businessId)} />

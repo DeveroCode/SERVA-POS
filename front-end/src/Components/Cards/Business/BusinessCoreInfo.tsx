@@ -2,16 +2,18 @@ import OwnerBusinessButtons from "@/Components/Buttons/OwnerBusinessButtons";
 import { Edit3 } from "lucide-react";
 import BusinessBarStatus from "./BusinessBarStatus";
 import type { Business } from "@/types/Index.types";
-import { useState } from "react";
 import ModalLayout from "@/Components/Modals/ModalLayout";
 import UploadLogoBusinessView from "@/pages/dashboard/Owner/Business/UploadLogoBusinessView";
+import { useState } from "react";
 
 type BusinessCoreInfoProps = {
   business: Business;
+  openEdit: boolean;
+  setOpenEdit: (open: boolean) => void;
 };
 
-export default function BusinessCoreInfo({ business }: BusinessCoreInfoProps) {
-  const [open, setOpen] = useState(false);
+export default function BusinessCoreInfo({ business, openEdit, setOpenEdit }: BusinessCoreInfoProps) {
+  const [openUploadLogo, setOpenUploadLogo] = useState(false);
   return (
     <div className="px-6 sm:px-8 pb-6 pt-0 relative">
       <div className="flex flex-col md:flex-row md:items-end justify-between -mt-16 sm:-mt-20 gap-6">
@@ -24,7 +26,7 @@ export default function BusinessCoreInfo({ business }: BusinessCoreInfoProps) {
               loading="lazy"
               className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl object-cover border-4 border-white shadow-xl bg-white transition-transform duration-300"
             />
-            <button onClick={() => setOpen(true)} className="absolute bottom-2 cursor-pointer right-2 p-1.5 bg-gray-900/80 hover:bg-gray-900 text-white rounded-lg opacity-0 group-hover/logo:opacity-100 transition-opacity duration-200 backdrop-blur-sm">
+            <button onClick={() => setOpenUploadLogo(true)} className="absolute bottom-2 cursor-pointer right-2 p-1.5 bg-gray-900/80 hover:bg-gray-900 text-white rounded-lg opacity-0 group-hover/logo:opacity-100 transition-opacity duration-200 backdrop-blur-sm">
               <Edit3 className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -45,14 +47,14 @@ export default function BusinessCoreInfo({ business }: BusinessCoreInfoProps) {
         </div>
 
         {/* Header Action Buttons */}
-        <OwnerBusinessButtons />
+        <OwnerBusinessButtons openEdit={openEdit} setOpenEdit={setOpenEdit} />
       </div>
 
       {/* Quick Meta Stats Line */}
       <BusinessBarStatus />
 
 
-      <ModalLayout open={open} setOpen={setOpen}>
+      <ModalLayout open={openUploadLogo} setOpen={setOpenUploadLogo}>
         <UploadLogoBusinessView />
       </ModalLayout>
     </div>

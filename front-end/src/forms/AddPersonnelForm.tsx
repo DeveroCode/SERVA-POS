@@ -1,4 +1,4 @@
-import { type AddMemberToBranch } from "@/types/Member.types";
+import { type AddMemberToBranch } from "@/types/Index.types";
 import { ShieldCheck, Key, Lock, Eye } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import ErrorAlert from "@/Components/Alerts/ErrorAlert";
@@ -16,8 +16,8 @@ export default function AddPersonnelForm() {
   const businessParam = useParams().businessId;
   const businessId = localStorage.getItem(LAST_BUSINESS_KEY) || businessParam;
 
-  const { data: branches, isLoading } = useBranches(businessId);
-
+  const { data, isLoading } = useBranches(businessId);
+  const branches = data?.data ? data.data : [];
   if (isLoading) return <Loader />;
 
   return (
