@@ -8,7 +8,7 @@ export function useBusinessMembers(businessId: GetMemberByBusiness["_id"], page:
     const token = localStorage.getItem(SET_TOKEN_KEY);
 
     return useQuery({
-        queryKey: queryKeys.bussiness.members(businessId, page),
+        queryKey: queryKeys.bussiness.members.page(businessId, page),
         queryFn: () => BusinessMemberService.getMembers(businessId, page),
         retry: false,
         enabled: !!token,

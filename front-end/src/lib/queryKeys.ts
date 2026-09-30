@@ -11,14 +11,22 @@ export const queryKeys = {
     one: (id: Business["_id"]) =>
       ["bussines", "one", id] as const,
 
-    members: (id: Business["_id"], page: number) =>
-      ["bussines", "members", id, page] as const,
+    members: {
+      all: (businessId: Business["_id"]) =>
+        ["bussines", "members", businessId] as const,
+
+      page: (
+        businessId: Business["_id"],
+        page: number
+      ) =>
+        ["bussines", "members", businessId, page] as const,
+    },
 
     member: (
       businessId: Business["_id"],
       memberId: Member["_id"]
     ) =>
-      ["bussines", "memberId", businessId, memberId] as const,
+      ["bussines", "member", businessId, memberId] as const,
 
     credentials: (
       businessId: Business["_id"],
