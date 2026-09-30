@@ -82,6 +82,10 @@ export type FoundMember = {
     foundMember: Member[];
     message: string;
 };
+export type FoundBranch = {
+    foundBranch: Branch[];
+    message: string;
+};
 
 export type AddMemberToBranch = {
     role: MemberRole;

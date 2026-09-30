@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import type { AddMemberToBranch, Credentials, GetMemberByBusiness, GetMemberById, Member, Members, FoundMember, GetByParams, RegisterMember, Response, SearchMemberParams, UpdateMember, UpdateMemberCredentials } from "@/types/Index.types";
+import type { AddMemberToBranch, Credentials, GetMemberByBusiness, GetMemberById, Member, Members, FoundMember, GetByParams, RegisterMember, Response, SearchMemberParams, UpdateMember, UpdateMemberCredentials, FoundBranch } from "@/types/Index.types";
 import { CredentialsSchema, MembersSchema } from "@/types/Index.types";
 import { LAST_BRANCH_KEY, LAST_BUSINESS_KEY } from "@/utils/key";
 import { getApiErrorMessage } from "../lib";
@@ -31,6 +31,15 @@ export class BusinessMemberService {
         const _id = localStorage.getItem(LAST_BUSINESS_KEY);
         try {
             const { data } = await api<FoundMember>(`/business-member/${_id}/${search}/search-member`);
+            return data;
+        } catch (error) {
+            throw new Error(getApiErrorMessage(error), { cause: error });
+        }
+    }
+    static async searchBranche({search}: SearchMemberParams): Promise<FoundBranch> {
+        const _id = localStorage.getItem(LAST_BUSINESS_KEY);
+        try {
+            const { data } = await api<FoundBranch>(`/business-member/${_id}/${search}/search-branch`);
             return data;
         } catch (error) {
             throw new Error(getApiErrorMessage(error), { cause: error });

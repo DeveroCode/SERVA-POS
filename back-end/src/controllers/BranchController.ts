@@ -100,4 +100,15 @@ export class BranchController {
             });
         }
     }
+    static search = async (req: Request, res: Response) => {
+        const foundBranch = req.searchBranch;
+        try {
+          return res.status(200).json({foundBranch, message: "Sucursal encontrada"});
+        } catch (e) {
+            console.error(e);
+            return res.status(500).json({
+                message: 'Internal server error',
+            });
+        }
+    }
 }

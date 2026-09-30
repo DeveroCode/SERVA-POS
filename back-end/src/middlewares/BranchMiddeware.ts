@@ -9,6 +9,7 @@ declare global {
         interface Request {
             branch: IBranch,
             branches: PaginationResult<IBranch>
+            searchBranch: IBranch[]
         }
     }
 }
@@ -34,8 +35,8 @@ export async function existBranch(req: Request, res: Response, next: NextFunctio
 
 export async function existMemberInToBranch(req: Request, res: Response, next: NextFunction) {
     try {
-        const {_id: branchId} = req.branch;
-        const {_id: user} = req.member;
+        const { _id: branchId } = req.branch;
+        const { _id: user } = req.member;
 
         const existMemberInBranch = await Credential.findOne({ user, branch: branchId });
 
@@ -75,6 +76,77 @@ export async function existBranches(req: Request, res: Response, next: NextFunct
         next();
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export async function foundBranch(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { _id: businessId } = req.business;
+        const { search } = req.params;
+
+        if (typeof search !== 'string') {
+            const error = new Error('El parámetro de búsqueda no es valido.');
+            return res.status(400).json({ message: error.message });
+        }
+
+        const searchValue = search.trim();
+
+        const branches = await Branch.find({
+            business: businessId,
+            $or: [
+                // Nombre
+                {
+                    name: {
+                        $regex: searchValue,
+                        $options: 'i'
+                    }
+                },
+                // Descripción
+                {
+                    description: {
+                        $regex: searchValue,
+                        $options: 'i'
+                    }
+                },
+                // Ciudad
+                {
+                    city: {
+                        $regex: searchValue,
+                        $options: 'i'
+                    }
+                },
+                // Slug
+                {
+                    slug: {
+                        $regex: searchValue,
+                        $options: 'i'
+                    }
+                },
+                // Email
+                {
+                    email: {
+                        $regex: searchValue,
+                        $options: 'i'
+                    }
+                },
+                // Teléfono
+                {
+                    phone: {
+                        $regex: searchValue,
+                        $options: 'i'
+                    }
+                }
+            ]
+        }).select('-__v -createdAt -updatedAt');
+
+        req.searchBranch = branches;
+        next();
+    } catch (e) {
+        console.error(e);
+
+        return res.status(500).json({
+            message: "Internal server error",
+        });
     }
 }
 
@@ -130,7 +202,6 @@ export const createBranchRules = [
         .notEmpty()
         .withMessage("El país es obligatorio")
 ];
-
 
 export const updateBranch = [
     body("name")

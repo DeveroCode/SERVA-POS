@@ -3,12 +3,13 @@ import { BusinessMemberController } from "../controllers/BusinessMemberControlle
 import { isAuthenticate } from "../middlewares/UserMiddlewares";
 import { hasRole, parseImage } from "../middlewares/GlobalMiddleware";
 import { handleInputErrors } from "../utils/validator";
-import { addMemberToBusinessRules, getCredentialsRules, registerMemberRules, searchMember, updateMemberCredentialsRules, updateMemberRules } from "../middlewares/BusinessMemberMiddleware";
-import { existBranch, existMemberInToBranch } from "../middlewares/BranchMiddeware";
+import { addMemberToBusinessRules, getCredentialsRules, registerMemberRules, searchRule, updateMemberCredentialsRules, updateMemberRules } from "../middlewares/BusinessMemberMiddleware";
+import { existBranch, existMemberInToBranch, foundBranch } from "../middlewares/BranchMiddeware";
 import { existBusiness } from "../middlewares/BusinessMiddleware";
 import { MEMBER_ROLES } from "../models/Member";
 import { existMember, existMembers, isFoundMemberInBusiness } from "../middlewares/MemberMiddleware";
 import { MemberController } from "../controllers/MemberController";
+import { BranchController } from "../controllers/BranchController";
 
 const router: Router = Router();
 router.use(isAuthenticate, hasRole(MEMBER_ROLES.OWNER, MEMBER_ROLES.ADMIN));
@@ -18,7 +19,8 @@ router.post('/:businessId/:branchId/:memberId/add/member', existBusiness, existB
 router.get('/:businessId/:branchId/:memberId/get/credentials', existBusiness, existBranch, existMember, existMemberInToBranch, getCredentialsRules, handleInputErrors, BusinessMemberController.getCredentials); // Check
 router.patch('/:businessId/:branchId/:memberId/update/member', existBusiness, existBranch, existMember, existMemberInToBranch, updateMemberCredentialsRules, handleInputErrors, BusinessMemberController.updateMemberCredentials); // Check
 router.delete('/:businessId/:branchId/:memberId/delete/member', existBusiness, existBranch, existMember, existMemberInToBranch, handleInputErrors, BusinessMemberController.deleteMember); // Check
-router.get('/:businessId/:search/search-member', existBusiness, isFoundMemberInBusiness, searchMember,handleInputErrors, MemberController.search);
+router.get('/:businessId/:search/search-member', existBusiness, searchRule, isFoundMemberInBusiness,handleInputErrors, MemberController.search);
+router.get('/:businessId/:search/search-branch', existBusiness, searchRule, foundBranch, handleInputErrors, BranchController.search);
 
 // MemberController with Routes
 router.post('/:businessId/register/member', existBusiness, registerMemberRules, handleInputErrors, MemberController.create);

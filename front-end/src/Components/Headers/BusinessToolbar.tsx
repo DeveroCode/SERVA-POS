@@ -1,6 +1,20 @@
-import { Filter, Search, Store, ArrowUpDown, Plus } from "lucide-react";
+import type { FoundBranch } from "@/types/BusinessMember.type";
+import { Search, Store } from "lucide-react";
+import type { Dispatch, SetStateAction } from "react";
 
-export default function BusinessToolbar() {
+type BusinessToolbarProps = {
+  searchValue: string;
+  setSearchValue: Dispatch<React.SetStateAction<string>>;
+  setFoundBranch: Dispatch<SetStateAction<FoundBranch["foundBranch"] | null>>;
+  handleSearch: () => void;
+};
+
+export default function BusinessToolbar({
+  searchValue,
+  setSearchValue,
+  setFoundBranch,
+  handleSearch,
+}: BusinessToolbarProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
       <div>
@@ -9,37 +23,35 @@ export default function BusinessToolbar() {
           Gestión de Sucursales
         </h2>
         <p className="text-xs text-gray-500 font-normal">
-          Acceso directo y control operativo independiente por ubicación
+          Acceso directo y control operativo independiente
         </p>
       </div>
 
       <div className="flex items-center gap-2.5 flex-wrap">
         {/* Search Input */}
-        <div className="relative flex-1 sm:w-64">
+        <div className="relative flex-1 sm:w-72">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             placeholder="Buscar sucursal o dirección..."
-            value={""}
-            onChange={() => {}}
+            value={searchValue}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearchValue(value);
+
+              if(!value) {
+                setFoundBranch(null);
+              }
+            }}
+            onKeyDown={(e) => {
+              if(e.key === "Enter") {
+                e.preventDefault()
+                handleSearch();
+              }
+            }}
             className="w-full pl-9 pr-4 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-700/20 focus:border-orange-700 transition-all"
           />
         </div>
-
-        {/* Filter Buttons */}
-        <button className="p-2 text-gray-600 cursor-pointer bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl transition-colors text-xs font-medium flex items-center gap-1.5">
-          <Filter className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Filtrar</span>
-        </button>
-        <button className="p-2 text-gray-600 cursor-pointer bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl transition-colors text-xs font-medium flex items-center gap-1.5">
-          <ArrowUpDown className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Ordenar</span>
-        </button>
-
-        <button className="px-3.5 py-2 text-xs cursor-pointer font-semibold text-white bg-orange-700 hover:bg-[#e05302] rounded-xl transition-all duration-200 shadow-sm flex items-center gap-1.5 active:scale-[0.98]">
-          <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">Agregar Sucursal</span>
-        </button>
       </div>
     </div>
   );

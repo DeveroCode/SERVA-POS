@@ -105,11 +105,11 @@ export const updateMemberCredentialsRules = [
         .withMessage("La contraseña debe tener al menos 8 caracteres"),
 ];
 
-export const searchMember = [
-    body("email")
+export const searchRule = [
+    body("search")
         .trim()
         .optional()
         .normalizeEmail()
         .isEmail()
-        .withMessage("El correo électronico no es valido"),
+        .withMessage("El texto de busqueda no es valido"),
 ];

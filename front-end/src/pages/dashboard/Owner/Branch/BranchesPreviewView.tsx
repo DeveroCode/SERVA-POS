@@ -1,20 +1,22 @@
 import CreateBranch from "@/Components/Cards/Branch/CreateBranch";
-import { useBranches } from "@/hooks/useBranches";
-import useBusinessContext from "@/hooks/useBusinessContext";
+import type { Branch } from "@/types/Branch.types";
+import type { FoundBranch } from "@/types/BusinessMember.type";
 import { motion } from "framer-motion";
 import {
     MapPin,
     Phone, ExternalLink
 } from "lucide-react";
 
-export default function BranchesPreviewView() {
-  const { currentBusinessId } = useBusinessContext();
-  const { data } = useBranches(currentBusinessId);
+type BranchesPreviewViewProps = {
+  branches: Branch[]
+  foundBranch?: FoundBranch["foundBranch"]
+}
 
-  const previewBranches = data?.data.slice(0, 3) ? data.data : [];
+export default function BranchesPreviewView({branches, foundBranch}: BranchesPreviewViewProps) {
+ const branchesPreviewDisplay = foundBranch ?? branches;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      {previewBranches.map((branch) => (
+      {branchesPreviewDisplay.slice(0, 3).map((branch) => (
         <motion.div
           key={branch._id}
           whileHover={{ y: -4 }}
@@ -92,7 +94,7 @@ export default function BranchesPreviewView() {
         </motion.div>
       ))}
 
-      {previewBranches.length < 3 && <CreateBranch />}
+      {branchesPreviewDisplay.length < 3 && <CreateBranch />}
     </div>
   );
 }

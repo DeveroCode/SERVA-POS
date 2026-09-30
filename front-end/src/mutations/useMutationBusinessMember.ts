@@ -17,7 +17,7 @@ export function useAddMemberToBusiness() {
         onSuccess: (data) => {
             toast.success(data.message);
             navigate(`/dashboard/business/${businessId}/personnel`);
-            QC.invalidateQueries({ queryKey: queryKeys.bussiness.members(businessId) });
+            QC.invalidateQueries({ queryKey: queryKeys.bussiness.members.all(businessId) });
         },
         onError: (error: Error) => {
             toast.error(error.message);
@@ -34,7 +34,7 @@ export function useUpdateMember() {
         onSuccess: async (data) => {
             toast.success(data.message);
             await QC.invalidateQueries({
-                queryKey: queryKeys.bussiness.members(businessId),
+                queryKey: queryKeys.bussiness.members.all(businessId),
             });
             navigate(`/dashboard/business/${businessId}/personnel`);
         },
@@ -53,7 +53,7 @@ export function useDeleteMember() {
         onSuccess: async (data) => {
             toast.success(data.message);
             await QC.invalidateQueries({
-                queryKey: queryKeys.bussiness.members(businessId),
+                queryKey: queryKeys.bussiness.members.all(businessId),
             });
             navigate(`/dashboard/business/${businessId}/personnel`);
         },
@@ -72,7 +72,7 @@ export function useRegisterMember() {
         onSuccess: (data) => {
             toast.success(data.message);
             navigate(`/dashboard/business/${businessId}/personnel`);
-            QC.invalidateQueries({ queryKey: queryKeys.bussiness.members(businessId) });
+            QC.invalidateQueries({ queryKey: queryKeys.bussiness.members.all(businessId) });
         },
         onError: (error: Error) => {
             toast.error(error.message);
@@ -91,10 +91,21 @@ export function useSearchMember() {
         }
     })
 }
+export function useSearchBranch() {
+    return useMutation({
+        mutationFn: (search: SearchMemberParams) => BusinessMemberService.searchBranche(search),
+        onSuccess: (data) => {
+            toast.success(data.message);
+        },
+        onError: (error: Error) => {
+            toast.error(error.message);
+        }
+    })
+}
 
 export function useGetMember({ _id, memberId }: GetMemberById) {
     return useQuery({
-        queryKey: queryKeys.bussiness.member(memberId, _id),
+        queryKey: queryKeys.bussiness.member(_id, memberId),
         queryFn: () =>
             BusinessMemberService.getMember({ _id, memberId }),
         enabled: Boolean(_id) && Boolean(memberId),

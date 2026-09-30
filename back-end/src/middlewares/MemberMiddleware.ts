@@ -171,30 +171,3 @@ export async function existMembers(
         });
     }
 }
-// export async function existMembers(req: Request, res: Response, next: NextFunction) {
-//     try {
-//         const { _id: businessId } = req.business;
-
-//         const existMembersInBusiness = await Member.find({
-//             business: businessId
-//         })
-//             .populate({
-//                 path: "business",
-//                 select: "name -_id"
-//             })
-//             .select("name last_name email phone_number image isActive lastLogin role")
-//             .sort({ updatedAt: -1 });
-
-//         if (!existMembersInBusiness.length) {
-//             const error = new Error("No hay miembros en este negocio.");
-//             return res.status(400).json(error.message);
-//         }
-
-//         req.members = existMembersInBusiness;
-//         next();
-//     } catch (error) {
-//         return res.status(500).json({
-//             message: "Internal server error"
-//         });
-//     }
-// }
