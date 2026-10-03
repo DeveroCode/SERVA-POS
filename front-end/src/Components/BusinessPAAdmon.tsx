@@ -95,15 +95,6 @@ export default function BusinessPAAdmon() {
                     <span className="text-gray-600">{userActivityDate}</span>
                   </div>
                 </div>
-
-                <div className="mt-3 pt-2 flex items-center justify-end gap-1 border-t border-gray-50">
-                  <button className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
-                    <Edit3 className="w-3.5 h-3.5" />
-                  </button>
-                  <button className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
               </motion.div>
             );
           })}
