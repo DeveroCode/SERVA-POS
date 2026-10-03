@@ -17,7 +17,7 @@ export class BusinessController {
     }
     static getBusinessById = async (req: Request, res: Response) => {
         try {
-            return res.status(200).json({...req.business.toObject(), stats: req.businessStats});
+            return res.status(200).json({ ...req.business.toObject(), stats: req.businessStats });
         } catch (e) {
             console.error(e);
             res.status(500).json({ message: 'Internal server error' });
@@ -159,7 +159,22 @@ export class BusinessController {
             await user.save();
             res.status(201).json({ message: 'Usuario registrado correctamente' });
         } catch (e) {
-             console.error(e);
+            console.error(e);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    static updateIsActive = async (req: Request, res: Response) => {
+        try {
+            const { isActive } = req.body;
+            const business = req.business;
+
+            business.isActive = isActive ?? business.isActive;
+
+            await business.save();
+            res.status(200).json({ message: 'Estado de negocio actualizado correctamente' });
+        } catch (e) {
+            console.error(e);
             res.status(500).json({ message: 'Internal server error' });
         }
     }

@@ -30,6 +30,7 @@ const itemVariants = {
 export default function CBusiness({ business }: CBusinessProps) {
   // Open Modal
   const [open, setOpen] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
 
   // Search Branches
   const [foundBranch, setFoundBranch] = useState<
@@ -75,6 +76,8 @@ export default function CBusiness({ business }: CBusinessProps) {
             openEdit={open}
             setOpenEdit={setOpen}
             business={business}
+            isDelete={isDelete}
+            setIsDelete={setIsDelete}
           />
         </div>
 
@@ -101,7 +104,7 @@ export default function CBusiness({ business }: CBusinessProps) {
         {/* Shorcurts */}
         <BusinessShorcurts />
         {/* Danger Zone */}
-        <BusinessDangerZone />
+        <BusinessDangerZone setIsDelete={setIsDelete} />
       </motion.section>
     </>
   );

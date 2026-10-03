@@ -191,3 +191,9 @@ export const registerUserRules = [
         .isIn(Object.values(USER_ROLES))
         .withMessage("El rol no es válido"),
 ];
+
+export const updateActive = [
+    body("isActive")
+        .isBoolean()
+        .withMessage("El estado es obligatorio")
+]

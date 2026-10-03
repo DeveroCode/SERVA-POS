@@ -34,10 +34,17 @@ export default function CoverHeaderBusiness({
 
       {/* Status Badge */}
       <div className="absolute top-4 right-4 flex items-center space-x-2 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 shadow-sm">
-        <span className="relative flex h-2 w-2">
+       {business.isActive ? (
+         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
         </span>
+       ) : (
+         <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75 animate-ping" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-orange-500" />
+        </span>
+       )}
 
         <span className="text-xs font-semibold text-gray-800 tracking-wide uppercase">
           {business.slug}

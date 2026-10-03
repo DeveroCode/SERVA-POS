@@ -3,7 +3,7 @@ import { BusinessController } from "../controllers/BusinessController";
 import { isAuthenticate } from "../middlewares/UserMiddlewares";
 import { hasRole, parseImage } from "../middlewares/GlobalMiddleware";
 import { USER_ROLES } from "../models/user";
-import { createBusinessRules, existBusiness, existBusinesses, registerUserRules, updateBusiness } from "../middlewares/BusinessMiddleware";
+import { createBusinessRules, existBusiness, existBusinesses, registerUserRules, updateActive, updateBusiness } from "../middlewares/BusinessMiddleware";
 import { handleInputErrors } from "../utils/validator";
 
 const router: Router = Router();
@@ -16,4 +16,5 @@ router.put('/update/:businessId', existBusiness, updateBusiness, handleInputErro
 router.patch('/update/:businessId/logo', existBusiness, parseImage, handleInputErrors, BusinessController.uploadLogo);
 router.patch('/update/:businessId/cover', existBusiness, parseImage, handleInputErrors, BusinessController.uploadCover);
 router.delete('/delete/:businessId', existBusiness, handleInputErrors, BusinessController.deleteBusiness);
+router.patch('/update/:businessId/isActive', existBusiness, updateActive, handleInputErrors, BusinessController.updateIsActive);
 export default router;

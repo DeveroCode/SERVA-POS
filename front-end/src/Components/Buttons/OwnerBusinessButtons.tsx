@@ -1,5 +1,4 @@
 import { Edit, Plus, Trash2, UserPlus } from "lucide-react";
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import type { Business } from "@/types/Business.types";
 import ModalLayout from "../Modals/ModalLayout";
@@ -10,12 +9,13 @@ import DeleteBusinessView from "@/pages/dashboard/Owner/Business/DeleteBusinessV
 type OwnerBusinessButtonsProps = {
   openEdit: boolean;
   setOpenEdit: (open: boolean) => void;
+  isDelete?: boolean;
+  setIsDelete?: (open: boolean) => void;
 }
 
-export default function OwnerBusinessButtons({ openEdit, setOpenEdit }: OwnerBusinessButtonsProps) {
+export default function OwnerBusinessButtons({ openEdit, setOpenEdit, isDelete, setIsDelete }: OwnerBusinessButtonsProps) {
   const { businessId } = useParams<{ businessId: Business["_id"] }>();
   const { mutate } = useDeleteBusiness();
-  const [isDelete, setIsDelete] = useState(false);
 
   return (
     <>

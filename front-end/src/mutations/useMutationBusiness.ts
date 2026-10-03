@@ -33,7 +33,26 @@ export function useUpdateBusiness() {
         QC.invalidateQueries({ queryKey: queryKeys.bussiness.all }),
         QC.invalidateQueries({ queryKey: queryKeys.bussiness.one(variables.businessId) }),
       ]);
-      navigate('/dashboard/general');
+      navigate('/dashboard');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    }
+  });
+}
+export function useUpdateActiveBusiness() {
+  const navigate = useNavigate();
+  const QC = useQueryClient();
+
+  return useMutation({
+    mutationFn: BusinessService.updateActive,
+    onSuccess: async (data, variables) => {
+      toast.success(data);
+      await Promise.all([
+        QC.invalidateQueries({ queryKey: queryKeys.bussiness.all }),
+        QC.invalidateQueries({ queryKey: queryKeys.bussiness.one(variables.businessId) }),
+      ]);
+      navigate('/dashboard');
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -50,7 +69,7 @@ export function useDeleteBusiness() {
     onSuccess: (data) => {
       toast.success(data.message);
       QC.invalidateQueries({ queryKey: queryKeys.bussiness.all });
-      navigate('/dashboard/general');
+      navigate('/dashboard');
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -101,7 +120,7 @@ export function useUploadCoverBusiness() {
         }),
       ]);
 
-      navigate("/dashboard/general");
+      navigate("/dashboard");
     },
     onError: (error: Error) => {
       toast.error(error.message);

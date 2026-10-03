@@ -9,6 +9,7 @@ import {
     type Response,
     type UpdateBusiness,
     type UploadBusinessImage,
+    type UpdateActive,
 } from "../types/Index.types";
 import { getApiErrorMessage } from "../lib";
 
@@ -97,6 +98,22 @@ export class BusinessService {
         }
     }
 
+    static async updateActive({ isActive, businessId }: UpdateActive): Promise<string> {
+        try {
+            const { data } = await api.patch<Response>(
+                `/business/update/${businessId}/isActive`,
+                { isActive }
+            );
+
+            return data.message;
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(getApiErrorMessage(error), { cause: error });
+            }
+
+            throw error;
+        }
+    }
     static async delete(
         businessId: Business["_id"]
     ): Promise<Response> {

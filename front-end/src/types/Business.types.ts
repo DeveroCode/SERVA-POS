@@ -14,7 +14,7 @@ export const businessSchema = z.object({
     description: z.string().optional(),
     email: z.string().email(),
     phone: z.string(),
-
+    isActive: z.boolean().optional(),
     socialMedia: z.object({
         facebook: z.string().optional(),
         instagram: z.string().optional(),
@@ -65,6 +65,10 @@ export type CreateBusiness = Pick<
 
 export type UpdateBusiness = {
     formData: CreateBusiness;
+    businessId: Business["_id"];
+};
+export type UpdateActive = {
+    isActive: Business["isActive"];
     businessId: Business["_id"];
 };
 

@@ -11,6 +11,7 @@ export interface IBusiness extends Document {
     description?: string; //
     email: string; //
     phone: string; //
+    isActive?: boolean;
     socialMedia: {
         facebook?: string;
         instagram?: string;
@@ -33,6 +34,7 @@ const BusinessSchema = new Schema<IBusiness>({
         instagram: { type: String, required: false, defualt: "" },
         linkedin: { type: String, required: false, defualt: "" },
     },
+    isActive: { type: Boolean, required: false, defualt: true },
     owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
 }, { timestamps: true });
 

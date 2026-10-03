@@ -10,9 +10,11 @@ type BusinessCoreInfoProps = {
   business: Business;
   openEdit: boolean;
   setOpenEdit: (open: boolean) => void;
+  isDelete?: boolean;
+  setIsDelete?: (open: boolean) => void;
 };
 
-export default function BusinessCoreInfo({ business, openEdit, setOpenEdit }: BusinessCoreInfoProps) {
+export default function BusinessCoreInfo({ business, openEdit, setOpenEdit, isDelete, setIsDelete }: BusinessCoreInfoProps) {
   const [openUploadLogo, setOpenUploadLogo] = useState(false);
   return (
     <div className="px-6 sm:px-8 pb-6 pt-0 relative">
@@ -47,7 +49,7 @@ export default function BusinessCoreInfo({ business, openEdit, setOpenEdit }: Bu
         </div>
 
         {/* Header Action Buttons */}
-        <OwnerBusinessButtons openEdit={openEdit} setOpenEdit={setOpenEdit} />
+        <OwnerBusinessButtons isDelete={isDelete} setIsDelete={setIsDelete} openEdit={openEdit} setOpenEdit={setOpenEdit} />
       </div>
 
       {/* Quick Meta Stats Line */}
