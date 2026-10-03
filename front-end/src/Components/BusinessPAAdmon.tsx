@@ -3,7 +3,7 @@ import { useBusinessMembers } from "@/hooks/useBusinessMembers";
 import Loader from "@/pages/Loader";
 import { MEMBER_ROLES } from "@/types/BusinessMember.type";
 import { motion } from "framer-motion";
-import { ChevronRight, Users, Edit3, Trash2 } from "lucide-react";
+import { ChevronRight, Users } from "lucide-react";
 import { formatActivityDate } from "../lib";
 import AddNewUserCard from "./Cards/Business/AddNewUserCard";
 import { Link } from "react-router-dom";
