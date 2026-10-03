@@ -40,12 +40,14 @@ export default function PersonnelTableRow({
     );
     localStorage.setItem(SET_MEMBER_ID_KEY, id);
   };
-  const handleSendEditCredentials = (id: Member["_id"]) => {
-    navigate(
-      `/dashboard/business/${businessId}/personnel/update/${member._id}/credentials`,
-    );
-    localStorage.setItem(SET_MEMBER_ID_KEY, id);
-  };
+
+  //TODO: You cannot edit a credential directly from this table; it must be done from the branch.
+  // const handleSendEditCredentials = (id: Member["_id"]) => {
+  //   navigate(
+  //     `/dashboard/business/${businessId}/personnel/update/${member._id}/credentials`,
+  //   );
+  //   localStorage.setItem(SET_MEMBER_ID_KEY, id);
+  // };
 
   const role = ROLE_LABELS[member.role] ?? {
     label: member.role,
@@ -173,7 +175,7 @@ export default function PersonnelTableRow({
 
               <div className="my-1 h-px bg-slate-100" />
               <button
-                onClick={() => handleSendEditCredentials(member._id)}
+                // onClick={() => handleSendEditCredentials(member._id)}
                 type="button"
                 className="w-full px-4 cursor-pointer py-2.5 flex items-center gap-2.5 text-left text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-orange-700 transition-colors"
               >
