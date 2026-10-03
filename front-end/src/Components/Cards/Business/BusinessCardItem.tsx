@@ -1,21 +1,25 @@
+import useBusinessContext from "@/hooks/useBusinessContext";
 import type { Business } from "@/types/Index.types";
 import { LAST_BUSINESS_KEY } from "@/utils/key";
 import {
   Mail,
   Phone, ChevronRight
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 export function BusinessCardItem({ business }: { business: Business }) {
-  const navigate = useNavigate();
+  const {navigate} = useBusinessContext();
+
+
 
   const initialLetter = business.name
     ? business.name.charAt(0).toUpperCase()
     : "B";
 
-  const handleSendBusinessId = (id: Business["_id"]) => {
-    localStorage.setItem(LAST_BUSINESS_KEY, id);
-    navigate(`/dashboard/business/${id}`);
+  const handleSendBusinessId = () => {
+    localStorage.removeItem(LAST_BUSINESS_KEY);
+
+    localStorage.setItem(LAST_BUSINESS_KEY, business._id);
+    navigate(`/dashboard/business/${business._id}`);
   };
 
   return (
@@ -115,7 +119,7 @@ export function BusinessCardItem({ business }: { business: Business }) {
       {/* Footer / Manage CTA */}
       <div className="px-5 pb-5 pt-2 border-t border-slate-100/60 bg-slate-50/50">
         <button
-          onClick={() => handleSendBusinessId(business._id)}
+          onClick={() => handleSendBusinessId()}
           type="button"
           className="w-full cursor-pointer py-2.5 px-4 text-xs font-semibold text-slate-800 bg-white hover:bg-orange-600 hover:text-white border border-slate-200/90 rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center gap-1.5 group/btn"
         >
