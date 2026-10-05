@@ -1,3 +1,4 @@
+import { GET_TOKEN_KEY } from '@/utils/key';
 import axios from 'axios';
 
 const api = axios.create({
@@ -6,7 +7,7 @@ const api = axios.create({
 
 /** Send token to backend */
 api.interceptors.request.use(config => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(GET_TOKEN_KEY);
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }

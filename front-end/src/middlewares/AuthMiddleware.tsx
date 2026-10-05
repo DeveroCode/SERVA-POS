@@ -5,19 +5,14 @@ import { toast } from "react-toastify";
 
 export default function AuthMiddleware() {
   const { data: user, isPending } = useUser();
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    toast.error("Por favor inicie sesión para ver esta página");
-    return <Navigate to="/auth/login" />;
-  }
 
   if (isPending) {
+    toast.error("Cargando...");
     return <Loader/>;
   }
 
   if (!user) {
-    toast.error("Por favor inicie sesión para ver esta página");
+    toast.error("Debes iniciar sesión");
     return <Navigate to="/auth/login" />;
   }
 

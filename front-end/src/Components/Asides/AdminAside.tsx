@@ -1,7 +1,6 @@
 import { ASideLink } from "@/data/ASide";
 import { OwnerAside } from "@/data/OwnerAside";
 import { useUser } from "@/hooks/useUser";
-import { USER_ROLES } from "@/types/User.types";
 import { useLocation, useParams } from "react-router-dom";
 import { Building2, GitBranch, Plus, Users } from "lucide-react";
 import { useBusiness } from "@/hooks/useBusiness";
@@ -9,6 +8,7 @@ import { useEffect } from "react";
 import type { Business } from "@/types/Business.types";
 import { LAST_BUSINESS_KEY } from "@/utils/key";
 import AdminSidebarLink from "../Links/AdminSidebarLink";
+import { MEMBER_ROLES } from "@/types/BusinessMember.type";
 
 
 export default function AdminAside() {
@@ -32,7 +32,7 @@ export default function AdminAside() {
       localStorage.setItem(LAST_BUSINESS_KEY, businessId);
     }
   }, [businessId]);
-  const sidebarItems = user?.role === USER_ROLES.OWNER ? OwnerAside : ASideLink;
+  const sidebarItems = user?.role === MEMBER_ROLES.OWNER ? OwnerAside : ASideLink;
 
   /** We determine whether we are currently operating within the business */
   const isInsideBusiness =

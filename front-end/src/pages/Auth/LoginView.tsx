@@ -1,9 +1,8 @@
 import LoginForm from "@/forms/LoginForm";
-import { useUser } from "@/hooks/useUser";
 import { useLoginUser } from "@/mutations/useMutationAuth";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { USER_ROLES, type LoginUser } from "@/types/Index.types";
+import { type LoginUser } from "@/types/Index.types";
 
 export default function LoginView() {
   const { mutate } = useLoginUser();
@@ -16,17 +15,12 @@ export default function LoginView() {
   });
 
   const { handleSubmit, reset } = methods;
-  const { data: user } = useUser();
+  // const { refetch } = useUser();
   const handleSendForm = (data: LoginUser) => {
     mutate(data, {
-      onSuccess: () => {
+      onSuccess: async () => {
         reset();
-        if (user.role === USER_ROLES.OWNER) {
-          navigate("/dashboard/general");
-          return;
-        }
-
-        navigate("/dashboard");
+        navigate("/dashboard/redirect");
       },
     });
   };

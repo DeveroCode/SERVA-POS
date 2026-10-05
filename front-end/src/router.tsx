@@ -2,14 +2,13 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AuthLayout from "./layouts/AuthLayout";
 import LoginView from "./pages/Auth/LoginView";
 import RegisterView from "./pages/Auth/RegisterView";
-import DIndex from "./layouts/DashboardLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 import ProfileSettingLayout from "./layouts/ProfileSettingLayout";
 import ProfileView from "./pages/dashboard/ProfileView";
 import SecurityProfileView from "./pages/dashboard/SecurityProfileView";
 import AuthMiddleware from "./middlewares/AuthMiddleware";
 import RoleMiddleware from "./middlewares/RoleMiddleware";
-import { USER_ROLES } from "./types/Index.types";
+import { MEMBER_ROLES } from "./types/Index.types";
 import OwnerLayout from "./layouts/OwnerLayout";
 import OIndexView from "./pages/dashboard/Owner/OIndexView";
 import ExampleOwerner from "./pages/dashboard/Owner/ExampleOwener";
@@ -22,6 +21,9 @@ import RegisterPersonalView from "./pages/dashboard/Owner/Business/RegisterPerso
 import AddPersonnelView from "./pages/dashboard/Owner/Business/AddPersonalView";
 import UpdatePersonnelView from "./pages/dashboard/Owner/Business/UpdatePersonnelView";
 import EditMemberCredentialsView from "./pages/dashboard/Owner/Branch/EditMemberCredentialsView";
+import BranchesLayout from "./layouts/BranchesLayout";
+import BranchLayout from "./layouts/BranchLayout";
+import DashboardRedirect from "./pages/DashboardRedirect";
 
 export default function router() {
   return (
@@ -33,8 +35,9 @@ export default function router() {
         </Route>
 
         <Route element={<AuthMiddleware />}>
+        <Route path="/dashboard/redirect" element={<DashboardRedirect />} />
           {/* Owner - Routes */}
-          <Route element={<RoleMiddleware allowedRoles={[USER_ROLES.OWNER]} />}>
+          <Route element={<RoleMiddleware allowedRoles={[MEMBER_ROLES.OWNER]} />}>
             <Route path="/dashboard" element={<OwnerLayout />}>
               {/* Dashboard */}
               <Route index element={<OIndexView />} />
@@ -62,13 +65,19 @@ export default function router() {
               </Route>
             </Route>
           </Route>
-          <Route path="/dashboard" element={<DIndex />}>
+
+          <Route element={<RoleMiddleware allowedRoles={[MEMBER_ROLES.ADMIN , MEMBER_ROLES.MANAGER, MEMBER_ROLES.STAFF]} />}>
+            {/* Layout for Branch - Role["ADMIN | MANAGER | STAFF | OWNER"] */}
+               <Route path="branches" element={<BranchesLayout />}></Route>
+               <Route path="branch" element={<BranchLayout />}></Route>
+          </Route>
+          {/* <Route path="/dashboard" element={<DIndex />}>
             <Route index element={<DIndex />} />
             <Route path="menu" element={<DIndex />} />
             <Route path="orders" element={<DIndex />} />
             <Route path="tables" element={<DIndex />} />
             <Route path="pos" element={<DashboardLayout />} />
-          </Route>
+          </Route> */}
 
           {/* Profile Settings */}
           <Route path="/profile" element={<DashboardLayout />}>

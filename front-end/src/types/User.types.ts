@@ -1,11 +1,7 @@
 import { z } from "zod";
-export const USER_ROLES = {
-    OWNER: "owner",
-    ADMIN: "admin",
-    USER: "user",
-} as const;
+import { MEMBER_ROLES } from "./BusinessMember.type";
 
-export type UserRoles = typeof USER_ROLES[keyof typeof USER_ROLES];
+export type UserRoles = typeof MEMBER_ROLES[keyof typeof MEMBER_ROLES];
 
 export const userSchema = z.object({
     _id: z.string(),
@@ -14,7 +10,7 @@ export const userSchema = z.object({
     email: z.string().email(),
     phone_number: z.string(),
     birthday: z.string(),
-    role: z.enum(Object.values(USER_ROLES)),
+    role: z.enum(Object.values(MEMBER_ROLES)),
     image: z.string(),
     isActive: z.boolean(),
     lastLogin: z.string().optional(),

@@ -28,7 +28,7 @@ export function useLoginUser(){
         onSuccess: async (data) => {
             toast.success(data);
             await QC.invalidateQueries({ queryKey: ['user'] });
-            navigate('/');
+            navigate('/branch');
         },
         onError: (err: Error) => {
             toast.error(err.message);
