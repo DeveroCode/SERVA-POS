@@ -41,10 +41,11 @@ export const userExist = async (req: Request, res: Response, next: NextFunction)
 
 export const loginIdentity = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, userKey } = req.body;
-        // For Owner
-        if (email) {
-            const findUser = await User.findOne({ email });
+        const { identifier } = req.body;
+
+        // For owner
+        if (identifier.includes("@")) {
+            const findUser = await User.findOne({ email: identifier });
             if (!findUser) {
                 const error = new Error('User not found');
                 return res.status(404).json({ message: error.message });
@@ -56,12 +57,9 @@ export const loginIdentity = async (req: Request, res: Response, next: NextFunct
                 type: "owner"
             };
             next();
-        }
-
-        // For Employee
-        if (userKey) {
+        } else {
             const credential = await Credential.findOne({
-                userKey
+                userKey: identifier
             }).populate("user");
 
             if (!credential || !credential.user) {
@@ -88,42 +86,70 @@ export const loginIdentity = async (req: Request, res: Response, next: NextFunct
 
 }
 
-export async function isAuthenticate(req: Request, res: Response, next: NextFunction) {
-    const token = req.headers.authorization?.split(' ')[1];
+export async function isAuthenticate(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+    const token = req.headers.authorization?.split(" ")[1];
+
     if (!token) {
-        const error = new Error('No token provided');
-        return res.status(401).json({ message: error.message });
+        return res.status(401).json({
+            message: "No token provided"
+        });
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string, type: AuthType };
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET as string
+        ) as {
+            id: string;
+            type: AuthType;
+        };
+
         req.auth = {
             id: decoded.id,
             type: decoded.type
         };
 
         if (decoded.type === "owner") {
-            const user = await User.findById(decoded.id).select('-password -__v -createdAt -updatedAt');
+            const user = await User.findById(decoded.id)
+                .select("-password -__v -createdAt -updatedAt");
+
             if (!user) {
-                const error = new Error('Owner no encontrado');
-                return res.status(404).json({ message: error.message });
+                return res.status(404).json({
+                    message: "Owner no encontrado"
+                });
             }
 
             req.user = user;
         }
 
         if (decoded.type === "employee") {
-            const member = await Member.findById(decoded.id).select('-password -__v -createdAt -updatedAt');
+            const member = await Member.findById(decoded.id)
+                .select("-password -__v -createdAt -updatedAt")
+                .populate("business", "name -_id");
+
             if (!member) {
-                const error = new Error('Empleado no encontrado');
-                return res.status(404).json({ message: error.message });
+                return res.status(404).json({
+                    message: "Empleado no encontrado"
+                });
             }
 
             req.member = member;
+
+            return next();
         }
-        next();
+
+        return next();
+
     } catch (error) {
-        return res.status(401).json({ message: 'Invalid token' });
+        console.error(error);
+
+        return res.status(401).json({
+            message: "Invalid token"
+        });
     }
 }
 
@@ -197,18 +223,12 @@ export const updateUser = [
 ];
 
 export const loginUser = [
-    body('email')
-        .optional()
-        .isEmail()
-        .withMessage('El correo electrónico no es válido'),
-
     body('password')
         .notEmpty()
         .withMessage('La contraseña es obligatoria'),
-    body('userKey')
-        .optional()
+    body('identifier')
         .isString()
-        .withMessage('El userKey debe ser una cadena de texto')
+        .withMessage('El identificador debe ser una cadena de texto')
 ];
 
 export const updatePassword = [

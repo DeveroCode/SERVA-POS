@@ -9,7 +9,7 @@ export default function LoginView() {
   const navigate = useNavigate();
   const methods = useForm<LoginUser>({
     defaultValues: {
-      email: "",
+      identifier: "",
       password: "",
     },
   });

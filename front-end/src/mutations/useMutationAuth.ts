@@ -27,7 +27,7 @@ export function useLoginUser(){
         mutationFn: AuthService.login,
         onSuccess: async (data) => {
             toast.success(data);
-            await QC.invalidateQueries({ queryKey: ['user'] });
+            await QC.invalidateQueries({ queryKey: ['auth', "me"] });
             navigate('/branch');
         },
         onError: (err: Error) => {

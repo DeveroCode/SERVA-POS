@@ -11,14 +11,14 @@ export default function LoginForm() {
           Email
         </label>
         <input
-          type="email"
-          id="email"
+          type="identifier"
+          id="identifier"
           className="input-form"
-          placeholder="Type your email"
-          {...register("email", { required: "The email field is required" })}
+          placeholder="Type your email or userKey"
+          {...register("identifier", { required: "El email o userKey es obligatorio" })}
         />
-        {errors.email && (
-          <ErrorAlert>{errors.email.message}</ErrorAlert>
+        {errors.identifier && (
+          <ErrorAlert>{errors.identifier.message}</ErrorAlert>
         )}
       </fieldset>
       <fieldset className="flex flex-col">
@@ -30,7 +30,7 @@ export default function LoginForm() {
           id="password"
           className="input-form"
           placeholder="Type your password"
-          {...register("password", { required: "The password field is required" })}
+          {...register("password", { required: "La password es obligatoria" })}
         />
         {errors.password && (
           <ErrorAlert>{errors.password.message}</ErrorAlert>

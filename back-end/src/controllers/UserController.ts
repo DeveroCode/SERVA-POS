@@ -9,7 +9,13 @@ import { MEMBER_ROLES } from '../models/Member';
 export class UserController {
     static getMe = async (req: Request, res: Response) => {
         try {
-            return res.status(200).json(req.user);
+            if(req.auth.type === "owner"){
+                return res.status(200).json(req.user);
+            }
+
+            if(req.auth.type === "employee"){
+                return res.status(200).json(req.member);
+            }
         } catch (e) {
             console.error(e);
             res.status(500).json({ message: 'Internal server error' });
