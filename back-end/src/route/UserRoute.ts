@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { UserController } from "../controllers/UserController";
 import { handleInputErrors } from "../utils/validator";
-import { createUser, isAuthenticate, loginUser, updatePassword, updateUser, userExist } from "../middlewares/UserMiddlewares";
+import { createUser, isAuthenticate, loginIdentity, loginUser, updatePassword, updateUser, userExist } from "../middlewares/UserMiddlewares";
 import { parseImage } from "../middlewares/GlobalMiddleware";
 
 
 const router: Router = Router();
 router.post('/create', handleInputErrors, createUser,UserController.create);
-router.post('/login', userExist, loginUser,handleInputErrors, UserController.login);
+router.post('/login', loginIdentity, loginUser,handleInputErrors, UserController.login);
 
 router.use(isAuthenticate);
 router.get('/me', UserController.getMe);

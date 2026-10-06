@@ -4,6 +4,7 @@ import { checkPassword, getPublicId, hashPassword } from '../utils';
 import { generateJWT } from '../utils/generateJWT';
 import { v4 as uuid } from 'uuid';
 import cloudinary from '../config/cloudinary';
+import { MEMBER_ROLES } from '../models/Member';
 
 export class UserController {
     static getMe = async (req: Request, res: Response) => {
@@ -115,13 +116,26 @@ export class UserController {
     static login = async (req: Request, res: Response) => {
         const { password } = req.body;
         try {
-            const passwordMatch = await checkPassword(password, req.user.password);
-            if (!passwordMatch) {
-                const error = new Error('Invalid password');
-                return res.status(400).json({ message: error.message });
+            // For owner login
+            if (req.auth.type === "owner") {
+                const passwordMatch = await checkPassword(password, req.user.password);
+                if (!passwordMatch) {
+                    const error = new Error('Invalid password');
+                    return res.status(400).json({ message: error.message });
+                }
+                const token = generateJWT({ id: req.user._id, type: "owner" });
+                res.status(200).json({ message: `Welcome ${req.user.name}`, token });
             }
-            const token = generateJWT({ id: req.user._id });
-            res.status(200).json({ message: `Welcome ${req.user.name}`, token });
+
+            if (req.auth.type === "employee") {
+                const passwordMatch = await checkPassword(password, req.credential.password);
+                if (!passwordMatch) {
+                    const error = new Error('Invalid password');
+                    return res.status(400).json({ message: error.message });
+                }
+                const token = generateJWT({ id: req.member._id, type: "employee" });
+                res.status(200).json({ message: `Welcome ${req.member.name}`, token });
+            }
         } catch (e) {
             console.error(e);
             res.status(500).json({ message: 'Internal server error' });

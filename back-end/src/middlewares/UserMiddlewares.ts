@@ -1,13 +1,23 @@
 import { Request, Response, NextFunction } from "express";
 import { IUser, User } from "../models/user";
 import { body } from "express-validator";
-import jwt from 'jsonwebtoken';
 import { Files } from "formidable";
+import { IMember, Member } from "../models/Member";
+import jwt from 'jsonwebtoken';
+import { Credential, ICredential } from "../models/Credential";
 
+export type AuthType = "owner" | "employee"
+export interface AuthIdentity {
+    id: string,
+    type: AuthType
+}
 declare global {
     namespace Express {
         interface Request {
             user: IUser;
+            member: IMember;
+            auth: AuthIdentity;
+            credential: ICredential;
             files: Files;
         }
     }
@@ -29,6 +39,55 @@ export const userExist = async (req: Request, res: Response, next: NextFunction)
     }
 }
 
+export const loginIdentity = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, userKey } = req.body;
+        // For Owner
+        if (email) {
+            const findUser = await User.findOne({ email });
+            if (!findUser) {
+                const error = new Error('User not found');
+                return res.status(404).json({ message: error.message });
+            }
+
+            req.user = findUser;
+            req.auth = {
+                id: findUser._id.toString(),
+                type: "owner"
+            };
+            next();
+        }
+
+        // For Employee
+        if (userKey) {
+            const credential = await Credential.findOne({
+                userKey
+            }).populate("user");
+
+            if (!credential || !credential.user) {
+                const error = new Error("Member not found");
+                return res.status(404).json({
+                    message: error.message
+                });
+            }
+
+            req.credential = credential;
+            req.member = credential.user as IMember;
+
+            req.auth = {
+                id: req.member._id.toString(),
+                type: "employee"
+            };
+
+            return next();
+        }
+
+    } catch (error) {
+        next(error);
+    }
+
+}
+
 export async function isAuthenticate(req: Request, res: Response, next: NextFunction) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -37,13 +96,30 @@ export async function isAuthenticate(req: Request, res: Response, next: NextFunc
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
-        const user = await User.findById(decoded.id).select('-password -__v -createdAt -updatedAt');
-        if (user) {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string, type: AuthType };
+        req.auth = {
+            id: decoded.id,
+            type: decoded.type
+        };
+
+        if (decoded.type === "owner") {
+            const user = await User.findById(decoded.id).select('-password -__v -createdAt -updatedAt');
+            if (!user) {
+                const error = new Error('Owner no encontrado');
+                return res.status(404).json({ message: error.message });
+            }
+
             req.user = user;
-        } else {
-            const error = new Error('User not found');
-            return res.status(404).json({ message: error.message });
+        }
+
+        if (decoded.type === "employee") {
+            const member = await Member.findById(decoded.id).select('-password -__v -createdAt -updatedAt');
+            if (!member) {
+                const error = new Error('Empleado no encontrado');
+                return res.status(404).json({ message: error.message });
+            }
+
+            req.member = member;
         }
         next();
     } catch (error) {
@@ -122,12 +198,17 @@ export const updateUser = [
 
 export const loginUser = [
     body('email')
+        .optional()
         .isEmail()
         .withMessage('El correo electrónico no es válido'),
 
     body('password')
         .notEmpty()
         .withMessage('La contraseña es obligatoria'),
+    body('userKey')
+        .optional()
+        .isString()
+        .withMessage('El userKey debe ser una cadena de texto')
 ];
 
 export const updatePassword = [
