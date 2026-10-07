@@ -2,12 +2,12 @@ import { Router } from "express";
 import { BusinessController } from "../controllers/BusinessController";
 import { isAuthenticate } from "../middlewares/UserMiddlewares";
 import { hasRole, parseImage } from "../middlewares/GlobalMiddleware";
-import { USER_ROLES } from "../models/user";
 import { createBusinessRules, existBusiness, existBusinesses, registerUserRules, updateActive, updateBusiness } from "../middlewares/BusinessMiddleware";
 import { handleInputErrors } from "../utils/validator";
+import { MEMBER_ROLES } from "../models/Member";
 
 const router: Router = Router();
-router.use(isAuthenticate, hasRole(USER_ROLES.OWNER));
+router.use(isAuthenticate, hasRole(MEMBER_ROLES.OWNER));
 router.get('/my-business', existBusinesses, handleInputErrors, BusinessController.getBusiness);
 router.get('/:businessId', existBusiness, handleInputErrors, BusinessController.getBusinessById);
 router.post('/create', createBusinessRules, handleInputErrors, BusinessController.createBusiness);

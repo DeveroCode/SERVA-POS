@@ -3,12 +3,12 @@ import { BranchController } from "../controllers/BranchController";
 import { isAuthenticate } from "../middlewares/UserMiddlewares";
 import { handleInputErrors } from "../utils/validator";
 import { hasRole } from "../middlewares/GlobalMiddleware";
-import { USER_ROLES } from "../models/user";
 import { existBusiness } from "../middlewares/BusinessMiddleware";
 import { createBranchRules, existBranch, existBranches, updateBranch } from "../middlewares/BranchMiddeware";
+import { MEMBER_ROLES } from "../models/Member";
 
 const router: Router = Router();
-router.use(isAuthenticate, hasRole(USER_ROLES.OWNER));
+router.use(isAuthenticate, hasRole(MEMBER_ROLES.OWNER));
 router.get('/:businessId/branches', existBusiness, existBranches, handleInputErrors, BranchController.getBranches);
 router.get('/:businessId/:branchId', existBusiness, existBranch, handleInputErrors, BranchController.getBranchById);
 router.post('/:businessId/add', existBusiness,createBranchRules, handleInputErrors, BranchController.create);

@@ -2,8 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import { UserRoles } from "../models/user";
 import formidable from "formidable";
 import { body } from "express-validator";
+import { MemberRoles } from "../models/Member";
 
-export const hasRole = (...roles: UserRoles[]) => {
+export const hasRole = (...roles: MemberRoles[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
         if (!roles.includes(req.user.role)) {
             return res.status(403).json({

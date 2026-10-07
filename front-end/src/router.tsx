@@ -24,6 +24,7 @@ import EditMemberCredentialsView from "./pages/dashboard/Owner/Branch/EditMember
 import BranchesLayout from "./layouts/BranchesLayout";
 import BranchLayout from "./layouts/BranchLayout";
 import DashboardRedirect from "./pages/DashboardRedirect";
+import BranchesLayoutExample from "./layouts/BranchesLayoutExample";
 
 export default function router() {
   return (
@@ -41,7 +42,6 @@ export default function router() {
             <Route path="/dashboard" element={<OwnerLayout />}>
               {/* Dashboard */}
               <Route index element={<OIndexView />} />
-              <Route path="example" element={<ExampleOwerner />} />
               {/* Business */}
               <Route path="business/:businessId">
                 <Route index element={<BusinessView />} />
@@ -68,8 +68,10 @@ export default function router() {
 
           <Route element={<RoleMiddleware allowedRoles={[MEMBER_ROLES.ADMIN , MEMBER_ROLES.MANAGER, MEMBER_ROLES.STAFF]} />}>
             {/* Layout for Branch - Role["ADMIN | MANAGER | STAFF | OWNER"] */}
+               <Route path="branches-example" element={<BranchesLayoutExample />}></Route>
                <Route path="branches" element={<BranchesLayout />}></Route>
                <Route path="branch" element={<BranchLayout />}></Route>
+                <Route path="example" element={<ExampleOwerner />} />
           </Route>
           {/* <Route path="/dashboard" element={<DIndex />}>
             <Route index element={<DIndex />} />

@@ -6,6 +6,7 @@ import { corsOptions } from './config/cors';
 import UserRoute from './route/UserRoute';
 import BusinessRoute from './route/BusinessRoute';
 import BusinessMemberRoute from './route/BusinessMemberRoute';
+import EmployeeRoute from './route/EmployeeRoute';
 import BranchRoute from './route/BranchRoute';
 const port = process.env.PORT || 4000;
 
@@ -22,4 +23,5 @@ app.use('/api/auth', UserRoute);
 app.use('/api/business', BusinessRoute);
 app.use('/api/branch', BranchRoute);
 app.use('/api/business-member', BusinessMemberRoute);
+app.use('/api/employee', EmployeeRoute);
 export default app;
