@@ -25,6 +25,7 @@ import BranchesLayout from "./layouts/BranchesLayout";
 import BranchLayout from "./layouts/BranchLayout";
 import DashboardRedirect from "./pages/DashboardRedirect";
 import BranchesLayoutExample from "./layouts/BranchesLayoutExample";
+import EBranchIndex from "./pages/dashboard/Employee/EBranchIndex";
 
 export default function router() {
   return (
@@ -36,9 +37,11 @@ export default function router() {
         </Route>
 
         <Route element={<AuthMiddleware />}>
-        <Route path="/dashboard/redirect" element={<DashboardRedirect />} />
+          <Route path="/dashboard/redirect" element={<DashboardRedirect />} />
           {/* Owner - Routes */}
-          <Route element={<RoleMiddleware allowedRoles={[MEMBER_ROLES.OWNER]} />}>
+          <Route
+            element={<RoleMiddleware allowedRoles={[MEMBER_ROLES.OWNER]} />}
+          >
             <Route path="/dashboard" element={<OwnerLayout />}>
               {/* Dashboard */}
               <Route index element={<OIndexView />} />
@@ -58,20 +61,41 @@ export default function router() {
                 <Route path="personnel">
                   <Route index element={<PersonnelView />} />
                   <Route path="register" element={<RegisterPersonalView />} />
-                  <Route path="update/:memberId" element={<UpdatePersonnelView />} />
+                  <Route
+                    path="update/:memberId"
+                    element={<UpdatePersonnelView />}
+                  />
                   <Route path="add" element={<AddPersonnelView />} />
-                  <Route path="update/:memberId/credentials" element={<EditMemberCredentialsView />} />
+                  <Route
+                    path="update/:memberId/credentials"
+                    element={<EditMemberCredentialsView />}
+                  />
                 </Route>
               </Route>
             </Route>
           </Route>
 
-          <Route element={<RoleMiddleware allowedRoles={[MEMBER_ROLES.ADMIN , MEMBER_ROLES.MANAGER, MEMBER_ROLES.STAFF]} />}>
+          <Route
+            element={
+              <RoleMiddleware
+                allowedRoles={[
+                  MEMBER_ROLES.ADMIN,
+                  MEMBER_ROLES.MANAGER,
+                  MEMBER_ROLES.STAFF,
+                ]}
+              />
+            }
+          >
             {/* Layout for Branch - Role["ADMIN | MANAGER | STAFF | OWNER"] */}
-               <Route path="branches-example" element={<BranchesLayoutExample />}></Route>
-               <Route path="branches" element={<BranchesLayout />}></Route>
-               <Route path="branch" element={<BranchLayout />}></Route>
-                <Route path="example" element={<ExampleOwerner />} />
+            <Route
+              path="branches-example"
+              element={<BranchesLayoutExample />}
+            ></Route>
+            <Route path="branches" element={<BranchesLayout />}>
+              <Route index element={<EBranchIndex />} />
+            </Route>
+            <Route path="branch" element={<BranchLayout />}></Route>
+            <Route path="example" element={<ExampleOwerner />} />
           </Route>
           {/* <Route path="/dashboard" element={<DIndex />}>
             <Route index element={<DIndex />} />

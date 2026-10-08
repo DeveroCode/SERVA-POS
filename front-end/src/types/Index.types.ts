@@ -6,6 +6,8 @@ export * from './Branch.types.ts';
 export * from './Member.types.ts';
 export * from './BusinessMember.type.ts';
 export * from './Pagination.type.ts';
+export * from './Order.type.ts';
+export * from './Employee.type.ts';
 
 // Global Types
 export type Response = {

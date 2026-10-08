@@ -7,6 +7,7 @@ export const branchSchema = z.object({
     slug: z.string(),
     phone: z.string(),
     email: z.string().email(),
+    isActive: z.boolean(),
     address: z.object({
         "street": z.string(),
         "city": z.string(),

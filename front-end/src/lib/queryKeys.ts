@@ -1,4 +1,4 @@
-import type { Branch, Business, Member } from "@/types/Index.types";
+import type { Branch, Business, Category, Member } from "@/types/Index.types";
 
 export const queryKeys = {
   auth: {
@@ -21,7 +21,6 @@ export const queryKeys = {
       ) =>
         ["bussines", "members", businessId, page] as const,
     },
-
     member: (
       businessId: Business["_id"],
       memberId: Member["_id"]
@@ -34,6 +33,20 @@ export const queryKeys = {
       memberId: Member["_id"]
     ) =>
       ["bussines", "credentials", businessId, branchId, memberId] as const,
+  },
+  employee: {
+    all: ["employee", "all"] as const,
+    page: (
+      page: number
+    ) =>
+      ["employee", "page", page] as const,
+    one: (id: Member["_id"]) =>
+      ["employee", "one", id] as const,
+    oneBranch: (branchId: Branch["_id"]) =>
+      ["employee", "oneBranch", branchId] as const,
+    branchesPage: (page: number) =>
+      ["employee", "branches", "page", page] as const,
+    branches: () => ["employee", "branches", "all"] as const,
   },
 
   branch: {
@@ -53,4 +66,8 @@ export const queryKeys = {
     ) =>
       ["branch", "one", businessId, branchId] as const,
   },
+  categories: {
+    all: ["categories", "all"] as const,
+    one: (id: Category["_id"]) => ["categories", "one", id] as const,
+  }
 };

@@ -7,6 +7,7 @@ export interface IBranch extends Document {
     description?: string;
     email: string;
     phone: string;
+    isActive: boolean;
     address: {
         street: string;
         city: string;
@@ -22,6 +23,7 @@ const BusinessSchema = new Schema<IBranch>({
     slug: { type: String, required: true, unique: true, trim: true },
     description: { type: String, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
+    isActive: { type: Boolean, required: true, default: true },
     phone: { type: String, required: true, trim: true },
     address: {
         street: { type: String, required: true, trim: true },

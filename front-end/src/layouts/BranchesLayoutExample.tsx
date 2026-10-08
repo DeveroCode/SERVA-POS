@@ -417,6 +417,59 @@ export default function BranchesLayoutExample() {
             )}
           </div>
         )}
+
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-8 sm:p-12 text-center max-w-md mx-auto my-6 shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 text-orange-700 flex items-center justify-center mx-auto mb-4">
+              {searchQuery ? (
+                <Search className="w-6 h-6" />
+              ) : (
+                <AlertCircle className="w-6 h-6" />
+              )}
+            </div>
+
+            {searchQuery ? (
+              <>
+                <h3 className="text-base font-bold text-slate-900">
+                  Sin coincidencias
+                </h3>
+                <p className="text-xs text-slate-500 mt-1 mb-6 leading-relaxed">
+                  No encontramos ninguna sucursal que coincida con{" "}
+                  <strong className="text-slate-700">"{searchQuery}"</strong>.
+                </p>
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="px-4 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                >
+                  Ver todas las sucursales
+                </button>
+              </>
+            ) : (
+              <>
+                <h3 className="text-base font-bold text-slate-900">
+                  No tienes sucursales asignadas
+                </h3>
+                <p className="text-xs text-slate-500 mt-1 mb-6 leading-relaxed">
+                  Tu cuenta actualmente no tiene acceso a ninguna sucursal
+                  activa dentro de {MOCK_BUSINESS.name}.
+                </p>
+
+                {userCanCreateBranch ? (
+                  <button
+                    onClick={() => console.log("Abrir modal de crear sucursal")}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-orange-700 hover:bg-orange-800 rounded-xl transition-all shadow-sm shadow-orange-700/20 active:scale-95"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Crear primera sucursal
+                  </button>
+                ) : (
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs text-slate-600">
+                    Pide al administrador del negocio que modifique tus permisos
+                    de acceso.
+                  </div>
+                )}
+              </>
+            )}
+          </div>
       </main>
 
       {/* ─────────────────────────────────────────────────────────────────────────────
