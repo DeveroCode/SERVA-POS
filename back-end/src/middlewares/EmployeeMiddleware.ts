@@ -69,8 +69,8 @@ export async function getMyBranches(
         next(error);
     }
 }
-
-export async function getMyBranch(req: Request, res: Response, next: NextFunction) {
+// Valida si pertenece la branch a cierto user
+export async function accessToBranch(req: Request, res: Response, next: NextFunction) {
     try {
         const { _id } = req.member as IMember;
         const { branchId } = req.params;

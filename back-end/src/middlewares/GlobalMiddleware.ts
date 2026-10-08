@@ -11,7 +11,6 @@ export const hasRole = (...roles: MemberRoles[]) => {
                 message: 'Acceso no autorizado'
             });
         }
-
         next();
     };
 };

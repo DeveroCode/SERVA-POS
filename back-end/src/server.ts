@@ -8,6 +8,7 @@ import BusinessRoute from './route/BusinessRoute';
 import BusinessMemberRoute from './route/BusinessMemberRoute';
 import EmployeeRoute from './route/EmployeeRoute';
 import BranchRoute from './route/BranchRoute';
+import ProductRoute from './route/ProductRoute';
 const port = process.env.PORT || 4000;
 
 dotenv.config();
@@ -24,4 +25,5 @@ app.use('/api/business', BusinessRoute);
 app.use('/api/branch', BranchRoute);
 app.use('/api/business-member', BusinessMemberRoute);
 app.use('/api/employee', EmployeeRoute);
+app.use('/api/product', ProductRoute);
 export default app;
