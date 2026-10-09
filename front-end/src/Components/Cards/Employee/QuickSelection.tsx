@@ -24,8 +24,9 @@ export default function QuickSelection() {
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-semibold text-slate-900 text-base group-hover:text-orange-700 transition-colors">
+              <h3 className="font-semibold text-slate-900 text-base group-hover:text-orange-700 transition-colors capitalize">
                 {/* {lastUsedBranch.name} */}
+                La cafetera norte
               </h3>
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
                 Última sesión
@@ -34,6 +35,7 @@ export default function QuickSelection() {
             <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               {/* {lastUsedBranch.address}, {lastUsedBranch.city} */}
+              Av. Bogota No. 234, Nuevo Casas Grandes CP. 45678
             </p>
           </div>
         </div>

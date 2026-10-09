@@ -11,7 +11,6 @@ import RoleMiddleware from "./middlewares/RoleMiddleware";
 import { MEMBER_ROLES } from "./types/Index.types";
 import OwnerLayout from "./layouts/OwnerLayout";
 import OIndexView from "./pages/dashboard/Owner/OIndexView";
-import ExampleOwerner from "./pages/dashboard/Owner/ExampleOwener";
 import BusinessView from "./pages/dashboard/Owner/Business/BusinessView";
 import BranchesIndexView from "./pages/dashboard/Owner/Branch/BranchesIndexView";
 import AddBranchView from "./pages/dashboard/Owner/Branch/AddBranchView";
@@ -22,10 +21,11 @@ import AddPersonnelView from "./pages/dashboard/Owner/Business/AddPersonalView";
 import UpdatePersonnelView from "./pages/dashboard/Owner/Business/UpdatePersonnelView";
 import EditMemberCredentialsView from "./pages/dashboard/Owner/Branch/EditMemberCredentialsView";
 import BranchesLayout from "./layouts/BranchesLayout";
-import BranchLayout from "./layouts/BranchLayout";
 import DashboardRedirect from "./pages/DashboardRedirect";
 import BranchesLayoutExample from "./layouts/BranchesLayoutExample";
 import EBranchIndex from "./pages/dashboard/Employee/EBranchIndex";
+import BranchExampleLayout from "./layouts/BranchExampleLayout";
+import BranchLayout from "./layouts/BranchLayout";
 
 export default function router() {
   return (
@@ -94,8 +94,17 @@ export default function router() {
             <Route path="branches" element={<BranchesLayout />}>
               <Route index element={<EBranchIndex />} />
             </Route>
-            <Route path="branch" element={<BranchLayout />}></Route>
-            <Route path="example" element={<ExampleOwerner />} />
+
+
+            <Route path="branch" element={<BranchLayout />}>
+              {/* <Route index element={<EBranchIndex />} /> */}
+            </Route>
+
+            <Route
+              path="branch-example"
+              element={<BranchExampleLayout />}
+            ></Route>
+            {/* <Route path="example" element={<ExampleOwerner />} /> */}
           </Route>
           {/* <Route path="/dashboard" element={<DIndex />}>
             <Route index element={<DIndex />} />

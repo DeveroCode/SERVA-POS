@@ -11,6 +11,7 @@ import type { Member } from "./Member.types";
 export const MEMBER_ROLES = {
     OWNER: "owner",
     ADMIN: "admin",
+    EMPLOYEE: "employee",
     MANAGER: "manager",
     STAFF: "staff"
 } as const;

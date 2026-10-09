@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { MemberRole } from "./BusinessMember.type.ts";
 
 export * from './User.types.ts';
 export * from './Business.types.ts';
@@ -25,6 +26,19 @@ export interface SidebarItem {
     url: string;
     icon: ReactNode;
     macro?: MacroKey
+}
+
+export type NavItem = {
+  id: string;
+  label: string;
+  icon: React.ElementType;
+  badge?: number;
+  roles?: MemberRole[];
+}
+
+export type NavGroup = {
+  groupLabel?: string;
+  items: NavItem[];
 }
 
 export type UploadImage = {
