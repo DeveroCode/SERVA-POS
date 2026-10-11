@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { createHash } from 'node:crypto';
 
 export const hashPassword = async(password: string): Promise<string> => {
     const salt = await bcrypt.genSalt(10);
@@ -18,3 +19,7 @@ export const getPublicId = (url: string) => {
   }
   return publicId.replace(/\.[^/.]+$/, '');
 };
+
+export function hashAccessToken(token: string): string {
+  return createHash('sha256').update(token).digest('hex');
+}
