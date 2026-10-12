@@ -16,7 +16,7 @@ export class EmployeeController {
     // POST: Create access to branch by ID and userKey
     static async accessBranch(req: Request, res: Response, next: NextFunction) {
         try {
-            const token = req.headers.authorization?.match(/^Bearer\s+(\S+)$/i)?.[1];
+            const token = req.headers.authorization?.split(" ")[1];
             const branchId = req.params.branchId;
 
             if (!token || req.auth.type !== "employee" || !req.member?._id) {
@@ -28,10 +28,13 @@ export class EmployeeController {
             await BranchSession.findOneAndUpdate(
                 {
                     member: req.member._id,
-                    branch: branchId,
-                    tokenHash: hashAccessToken(token)
+
                 },
-                { $set: { expiresAt } },
+                { $set: {
+                    branch: branchId,
+                    tokenHash: hashAccessToken(token),
+                    expiresAt
+                 } },
                 { upsert: true, new: true, runValidators: true }
             );
 

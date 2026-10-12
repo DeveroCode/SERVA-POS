@@ -41,10 +41,7 @@ branchSessionSchema.index(
     { expireAfterSeconds: 0 }
 );
 
-branchSessionSchema.index(
-    { member: 1, branch: 1, tokenHash: 1 },
-    { unique: true }
-);
+branchSessionSchema.index({ member: 1 }, { unique: true });
 
 export const BranchSession = mongoose.model<IBranchSession>(
     "BranchSession",
