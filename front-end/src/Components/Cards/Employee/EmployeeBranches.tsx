@@ -1,26 +1,37 @@
 import NotEmployeeBranches from "@/Components/NoData/NotEmployeeBranches";
-import type { Branch, Branches } from "@/types/Index.types";
+import ModalLayout from "@/Components/Modals/ModalLayout";
+import StartBranchModal from "@/pages/dashboard/Employee/StartBranchView";
+import { type Branch, type Branches } from "@/types/Index.types";
 import { ChevronRight, MapPin, ShieldAlert, Store } from "lucide-react";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import { SET_BRANCH_KEY } from "@/utils/key";
 
 type EmployeeBranchesProps = {
   branches: Branches;
-  handleSelectBranch: (branch: Branch) => void;
-  selectedBranchId: Branch["_id"] | null;
+  openModalCredential: boolean;
+  setOpenModalCredential: Dispatch<SetStateAction<boolean>>
 };
 
 export default function EmployeeBranches({
   branches,
-  handleSelectBranch,
-  selectedBranchId,
+  openModalCredential,
+  setOpenModalCredential
 }: EmployeeBranchesProps) {
+  const [selectedBranchId, setSelectedBranchId] = useState<Branch | null>(null);
   const filteredBranches = branches?.data ?? [];
+
+  const handleSelectBranch = (branch: Branch) => {
+    localStorage.setItem(SET_BRANCH_KEY, branch._id);
+    setSelectedBranchId(branch);
+    setOpenModalCredential(true);
+  }
   return (
     <div>
       {filteredBranches.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredBranches.map((branch) => {
             const isDisabled = branch.isActive === false;
-            const isSelected = selectedBranchId === branch._id;
+            const isSelected = selectedBranchId?._id === branch._id;
 
             return (
               <div
@@ -116,6 +127,13 @@ export default function EmployeeBranches({
       ) : (
         <NotEmployeeBranches />
       )}
+
+      <ModalLayout
+        open={openModalCredential}
+        setOpen={setOpenModalCredential}
+      >
+       <StartBranchModal sucursalName={selectedBranchId?.name}  />
+      </ModalLayout>
     </div>
   );
 }

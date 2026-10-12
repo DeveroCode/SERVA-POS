@@ -22,7 +22,6 @@ import UpdatePersonnelView from "./pages/dashboard/Owner/Business/UpdatePersonne
 import EditMemberCredentialsView from "./pages/dashboard/Owner/Branch/EditMemberCredentialsView";
 import BranchesLayout from "./layouts/BranchesLayout";
 import DashboardRedirect from "./pages/DashboardRedirect";
-import BranchesLayoutExample from "./layouts/BranchesLayoutExample";
 import EBranchIndex from "./pages/dashboard/Employee/EBranchIndex";
 import BranchExampleLayout from "./layouts/BranchExampleLayout";
 import BranchLayout from "./layouts/BranchLayout";
@@ -87,10 +86,10 @@ export default function router() {
             }
           >
             {/* Layout for Branch - Role["ADMIN | MANAGER | STAFF | OWNER"] */}
-            <Route
+            {/* <Route
               path="branches-example"
               element={<BranchesLayoutExample />}
-            ></Route>
+            ></Route> */}
             <Route path="branches" element={<BranchesLayout />}>
               <Route index element={<EBranchIndex />} />
             </Route>

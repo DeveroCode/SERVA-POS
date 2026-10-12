@@ -4,16 +4,37 @@ import formidable from "formidable";
 import { body } from "express-validator";
 import { MemberRoles } from "../models/Member";
 
-export const hasRole = (...roles: MemberRoles[]) => {
+// export const hasRole = (...roles: MemberRoles[]) => {
+//     return (req: Request, res: Response, next: NextFunction) => {
+//         if (!roles.includes(req.user.role)) {
+//             return res.status(403).json({
+//                 message: 'Acceso no autorizado'
+//             });
+//         }
+//         next();
+//     };
+// };
+
+export const hasRole = (...roles: UserRoles[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
-        if (!roles.includes(req.user.role)) {
+       const role = req.auth?.type === "owner"
+        ? req.user?.role
+        : req.auth?.type === "employee"
+        ? req.credential?.role
+        : undefined;
+
+        if(!role){
+            const error = new Error("No se pudo determinar el rol de la identidad autenticada.");
+        }
+
+        if (!roles.includes(role)) {
             return res.status(403).json({
-                message: 'Acceso no autorizado'
+                message: "Acceso no autorizado"
             });
         }
         next();
     };
-};
+}
 
 export function parseImage(
     req: Request,

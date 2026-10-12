@@ -3,19 +3,28 @@ import { useState } from "react";
 import AsideBranch from "@/Components/Asides/AsideBranch";
 import AsideBranchMobile from "@/Components/Asides/AsideBranchMobile";
 import POSHeader from "@/Components/Headers/POSHeader";
+import useBusinessContext from "@/hooks/useBusinessContext";
+import { useEmployeeBranch } from "@/hooks/useEmployeeBranch";
+import Loader from "@/pages/Loader";
 
 export default function BranchLayout() {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false);
+  const { currentBranchId } = useBusinessContext();
+
+  // Get Branch
+  const { data: branch, isLoading } = useEmployeeBranch(currentBranchId);
+
+  if(isLoading) return <Loader />
 
   return (
     <div className="min-h-screen bg-slate-50/60 font-sans text-slate-900 flex flex-col antialiased selection:bg-orange-100 selection:text-orange-900">
       {/* Header */}
-      <POSHeader setIsMobileDrawerOpen={setIsMobileDrawerOpen} />
+      <POSHeader setIsMobileDrawerOpen={setIsMobileDrawerOpen} branch={branch} />
 
       {/* Main layout */}
       <div className="flex flex-1 min-h-0 relative">
         {/* Aside Desktop */}
-        <AsideBranch />
+        <AsideBranch branch={branch} />
         {/* Aside Mobile */}
         {isMobileDrawerOpen && (
           <AsideBranchMobile setIsMobileDrawerOpen={setIsMobileDrawerOpen} />

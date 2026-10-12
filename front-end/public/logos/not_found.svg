@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%" aria-hidden="true">
+  <defs>
+    <style>
+      :root {
+        --serva-empty-bg: #F1F5F9;      /* slate-100 */
+        --serva-empty-surface: #F8FAFC; /* slate-50 */
+        --serva-empty-border: #E2E8F0;  /* slate-200 */
+        --serva-empty-neutral: #94A3B8; /* slate-400 */
+        --serva-empty-[#C2410C]: #C2410C; /* orange-700 */
+      }
+      .bg-layer { fill: var(--serva-empty-bg); }
+      .surface-layer { fill: var(--serva-empty-surface); stroke: var(--serva-empty-border); stroke-width: 1.5; }
+      .border-line { stroke: var(--serva-empty-border); stroke-width: 1.5; stroke-dasharray: 4 4; }
+      .neutral-icon { fill: var(--serva-empty-neutral); }
+      .accent-dot { fill: var(--serva-empty-[#C2410C]); }
+    </style>
+  </defs>
+
+  <!-- Base / Fondo Abstracto Suave -->
+  <circle class="bg-layer" cx="100" cy="100" r="72" opacity="0.6" />
+
+  <!-- Capa Posterior Desplazada (Representa el marco contenedor) -->
+  <rect class="surface-layer" x="45" y="45" width="100" height="85" rx="16" opacity="0.5" />
+
+  <!-- Capa Principal Frontal (Contenedor Vacío Estructurado) -->
+  <rect class="surface-layer" x="55" y="55" width="100" height="85" rx="16" />
+
+  <!-- Ranura/Línea Superior del Marco Frontal -->
+  <rect class="neutral-icon" x="70" y="68" width="30" height="4" rx="2" opacity="0.5" />
+  <circle class="accent-dot" cx="140" cy="70" r="3" />
+
+  <!-- Líneas Divisorias Punteadas de Estado Vacío -->
+  <line class="border-line" x1="70" y1="88" x2="140" y2="88" />
+  <line class="border-line" x1="70" y1="102" x2="125" y2="102" />
+  <line class="border-line" x1="70" y1="116" x2="110" y2="116" />
+
+  <!-- Elemento Flotante Superior Izquierdo (Cuadrado Geométrico Neutral) -->
+  <rect class="neutral-icon" x="38" y="65" width="16" height="16" rx="5" opacity="0.25" />
+
+  <!-- Elemento Flotante Superior Derecho (Detalle Geométrico Accent Orange-700) -->
+  <circle class="accent-dot" cx="152" cy="52" r="6" opacity="0.85" />
+
+  <!-- Elemento Flotante Inferior Derecho (Forma Neutra Flotante) -->
+  <rect class="neutral-icon" x="142" y="118" width="18" height="18" rx="6" opacity="0.35" />
+</svg>

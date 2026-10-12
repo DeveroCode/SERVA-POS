@@ -40,3 +40,12 @@ export type Employees = z.infer<typeof employeesSchema>;
 
 export type Category = z.infer<typeof CategorySchema>;
 export type Categories = z.infer<typeof CategoriesSchema>;
+export type CredentialForm = {
+    userKey: string;
+    password: string;
+}
+
+export type accessBranchResponse = {
+    message: string;
+    expiresAt: string;
+}

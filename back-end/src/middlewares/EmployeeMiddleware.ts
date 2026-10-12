@@ -4,7 +4,7 @@ import { paginate, PaginationResult } from "../lib/pagination";
 import { IBranch } from "../models/Branch";
 import { BranchSession } from "../models/BranchAccess";
 import { MEMBER_ROLES, IMember } from "../models/Member";
-import { Credential } from "../models/Credential";
+import { Credential, ICredential } from "../models/Credential";
 import { checkPassword, hashAccessToken } from "../utils";
 import { body, param, query } from "express-validator";
 
@@ -121,7 +121,7 @@ export async function accessToBranch(req: Request, res: Response, next: NextFunc
         }
 
         req.myBranch = credential.branch as unknown as IBranch;
-
+        req.credential = credential as unknown as ICredential;
         next();
     } catch (error) {
         next(error);

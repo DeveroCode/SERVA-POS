@@ -8,12 +8,18 @@ import {
 
 import {
     MEMBER_ROLES,
+    type Branch,
     type NavGroup,
 } from "@/types/Index.types";
 
 import { NAVIGATION_SCHEMA } from "@/data/EmployeeNavigation";
+import { Link } from "react-router-dom";
 
-export default function AsideBranch() {
+type AsideBranchProps = {
+  branch: Branch
+}
+
+export default function AsideBranch({ branch }: AsideBranchProps) {
   // Actions for the sidebar
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("overview");
@@ -85,10 +91,10 @@ export default function AsideBranch() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-slate-900 truncate leading-tight">
-                    Sucursal Centro
+                    {branch?.name}
                   </p>
                   <p className="text-[11px] text-slate-500 truncate">
-                    Nuevo Casas Grandes
+                    {branch?.address.city}
                   </p>
                 </div>
               </div>
@@ -97,15 +103,15 @@ export default function AsideBranch() {
             <div className="flex items-center justify-between pt-1 border-t border-slate-200/50 text-[10px]">
               <span className="inline-flex items-center gap-1 font-semibold text-emerald-700">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Activa
+                {branch?.isActive ? "Activa" : "Inactiva"}
               </span>
-              <button
-                type="button"
+              <Link
+                to={'/branches'}
                 className="text-slate-500 hover:text-orange-700 font-semibold transition-colors flex items-center gap-0.5"
               >
                 <span>Cambiar</span>
                 <ChevronRight className="w-3 h-3" />
-              </button>
+              </Link>
             </div>
           </div>
         )}

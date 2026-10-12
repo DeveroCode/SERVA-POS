@@ -1,11 +1,19 @@
-import { ArrowLeft, ArrowLeftRight, ChevronRight, MenuIcon } from "lucide-react";
+import type { Branch } from "@/types/Branch.types";
+import {
+  ArrowLeft,
+  ArrowLeftRight,
+  ChevronRight,
+  MenuIcon,
+} from "lucide-react";
 import { type Dispatch, type SetStateAction } from "react";
+import { Link } from "react-router-dom";
 
 type POSHeaderProps = {
-    setIsMobileDrawerOpen: Dispatch<SetStateAction<boolean>>
+  setIsMobileDrawerOpen: Dispatch<SetStateAction<boolean>>;
+  branch: Branch;
 };
 
-export default function POSHeader({ setIsMobileDrawerOpen }: POSHeaderProps) {
+export default function POSHeader({ setIsMobileDrawerOpen, branch }: POSHeaderProps) {
   return (
     <header className="bg-white border-b border-slate-200/80 sticky top-0 z-30 h-14 flex items-center shrink-0">
       <div className="w-full px-4 sm:px-6 flex items-center justify-between gap-4">
@@ -22,33 +30,29 @@ export default function POSHeader({ setIsMobileDrawerOpen }: POSHeaderProps) {
 
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-1.5 text-xs font-medium text-slate-500 truncate">
-            <button
-              type="button"
+            <Link
+              to={'/branches'}
               className="hover:text-slate-900 transition-colors flex items-center gap-1 shrink-0"
             >
               <ArrowLeft className="w-3.5 h-3.5 text-slate-400" />
               <span className="hidden sm:inline">Volver a</span> Sucursales
-            </button>
+            </Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
             <span className="text-slate-400 truncate hidden md:inline">
-              Mi Restaurante S.A.
-            </span>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0 hidden md:inline" />
-            <span className="text-slate-900 font-semibold truncate">
-              Sucursal Centro
+              {branch.name}
             </span>
           </nav>
         </div>
 
         {/* Acciones del Header */}
         <div className="flex items-center gap-2 shrink-0">
-          <button
-            type="button"
+          <Link
+            to={'/branches'}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-all shadow-sm active:scale-95"
           >
             <ArrowLeftRight className="w-3.5 h-3.5 text-slate-400" />
             <span>Cambiar sucursal</span>
-          </button>
+          </Link>
         </div>
       </div>
     </header>

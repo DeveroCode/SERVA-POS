@@ -1,6 +1,11 @@
+import { useUser } from "@/hooks/useUser";
+import Loader from "@/pages/Loader";
 import { Building2, LogOut } from "lucide-react";
 
 export default function HBranch() {
+  const { data, isLoading } = useUser();
+
+  if(isLoading) return <Loader />
   return (
     <header className="bg-white border-b border-slate-200/80 sticky top-0 z-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -24,7 +29,7 @@ export default function HBranch() {
           <div className="hidden sm:flex flex-col text-right pr-4 border-r border-slate-200">
             <span className="text-xs font-semibold text-slate-900 flex items-center gap-1.5 justify-end">
               <Building2 className="w-3.5 h-3.5 text-slate-400" />
-              Serva
+              Welcome {data.name} {data.last_name}
             </span>
             <span className="text-[11px] text-slate-500">
               {/* {MOCK_BUSINESS.userName} • {MOCK_BUSINESS.userRole} */}

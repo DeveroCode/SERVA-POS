@@ -1,34 +1,28 @@
 import EmployeeBranches from "@/Components/Cards/Employee/EmployeeBranches";
 import QuickSelection from "@/Components/Cards/Employee/QuickSelection";
+import { EmptyState } from "@/Components/NoData/EmptyState";
 import EmployeeSearchForm from "@/forms/EmployeeSearchForm";
+import useBusinessContext from "@/hooks/useBusinessContext";
+import { useEmployeeBranch } from "@/hooks/useEmployeeBranch";
 import { useEmployeeBranches } from "@/hooks/useEmployeeBranches";
 import usePagination from "@/hooks/usePagination";
 import Loader from "@/pages/Loader";
-import type { Branch } from "@/types/Branch.types";
 import { useState } from "react";
-
 export default function EBranchIndex() {
-  const [selectedBranchId, setSelectedBranchId] = useState<
-    Branch["_id"] | null
-  >(null);
+  const [openModalCredential, setOpenModalCredential] = useState(false);
   // Pagination
   const { page } = usePagination();
+  // Branch
+  const { currentBranchId } = useBusinessContext();
+  const {
+    data: branch,
+    isPending: isBranchPending,
+    isError,
+  } = useEmployeeBranch(currentBranchId);
 
   //   Branches
   const { data: branches, isPending } = useEmployeeBranches(page);
   const totalBranches = branches?.data.length ?? 0;
-
-  //   Selected branch
-  const handleSelectBranch = (branch: Branch) => {
-    if (branch.isActive === false) return;
-    setSelectedBranchId(branch._id);
-  };
-
-  // setTimeout(() => {
-  //   console.log(
-  //     `[SERVA] Estableciendo contexto activo en Branch: ${branches.data[0].name} (${selectedBranchId})`,
-  //   );
-  // }, 400);
 
   if (isPending) return <Loader />;
 
@@ -45,15 +39,25 @@ export default function EBranchIndex() {
         </p>
       </div>
       {/* Last used branch */}
-      <QuickSelection />
+      {!currentBranchId ? (
+        <EmptyState
+          title="Aún no has seleccionado una sucursal"
+          description="Selecciona una sucursal para tener un atajo al inicio"
+        />
+      ) : isBranchPending ? (
+        <div className="mb-8 h-28 animate-pulse rounded-2xl bg-slate-100" />
+      ) : isError || !branch ? (
+        <EmptyState
+          title="No se pudo cargar la sucursal"
+          description="Selecciona una sucursal de la lista para continuar."
+        />
+      ) : (
+        <QuickSelection branch={branch} setOpenModalCredential={setOpenModalCredential} />
+      )}
       {/* SearchComponent */}
       <EmployeeSearchForm totalBranches={totalBranches} />
       {/* Branches list */}
-      <EmployeeBranches
-        branches={branches}
-        handleSelectBranch={handleSelectBranch}
-        selectedBranchId={selectedBranchId}
-      />
+      <EmployeeBranches branches={branches} openModalCredential={openModalCredential} setOpenModalCredential={setOpenModalCredential} />
     </>
   );
 }
