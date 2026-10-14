@@ -9,6 +9,7 @@ export * from './BusinessMember.type.ts';
 export * from './Pagination.type.ts';
 export * from './Order.type.ts';
 export * from './Employee.type.ts';
+export * from './Product.type.ts';
 
 // Global Types
 export type Response = {

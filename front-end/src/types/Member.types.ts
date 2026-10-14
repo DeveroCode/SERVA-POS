@@ -31,13 +31,7 @@ export const MembersSchema = z.object({
 // ==========================================
 
 export type Member = z.infer<typeof MemberSchema>;
-
 export type Members = z.infer<typeof MembersSchema>;
-
-// ==========================================
-// 2 - REGISTER MEMBERS
-// ==========================================
-
 export type RegisterMember = {
     name: string;
     last_name: string;

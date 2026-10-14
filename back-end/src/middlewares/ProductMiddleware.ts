@@ -151,7 +151,7 @@ export const updateProductRules = [
         .withMessage("El disponible debe ser un booleano"),
 ];
 
-export const setDisccountRules = [
+export const setDiscountRules = [
     body("discount")
         .isNumeric()
         .withMessage("El descuento debe ser un número")
