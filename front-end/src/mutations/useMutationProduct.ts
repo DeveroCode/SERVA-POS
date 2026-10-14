@@ -1,7 +1,7 @@
 import useBusinessContext from "@/hooks/useBusinessContext";
 import { queryKeys } from "@/lib/queryKeys";
 import { ProductService } from "@/services/ProductService";
-import type { getOne, ProductForm, setDisccountForm, uploadProductImage } from "@/types/Product.type";
+import type { Product, ProductForm, setDisccountForm, uploadProductImage } from "@/types/Product.type";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 export function useCreateProduct() {
@@ -19,7 +19,7 @@ export function useCreateProduct() {
     })
 }
 
-export function useUpdateProduct(formData: ProductForm, _id: getOne) {
+export function useUpdateProduct(formData: ProductForm, _id: Product['_id']) {
     const { navigate, QC, currentBranchId } = useBusinessContext();
 
     return useMutation({
@@ -35,7 +35,7 @@ export function useUpdateProduct(formData: ProductForm, _id: getOne) {
     })
 }
 
-export function useDeleteProduct(_id: getOne) {
+export function useDeleteProduct(_id: Product['_id']) {
     const { navigate, QC, currentBranchId } = useBusinessContext();
 
     return useMutation({
