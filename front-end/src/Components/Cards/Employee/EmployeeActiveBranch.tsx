@@ -1,11 +1,20 @@
+import { useSetIsActive } from "@/mutations/useMutationEmployee";
+import type { setActiveBranch } from "@/types/Branch.types";
 import { AlertTriangle } from "lucide-react";
 
 type EmployeeActiveBranchProps = {
-    isBranchActive: boolean;
-}
+  isBranchActive: setActiveBranch["isActive"];
+};
 
+export default function EmployeeActiveBranch({
+  isBranchActive,
+}: EmployeeActiveBranchProps) {
+  const { mutate, isPending } = useSetIsActive();
 
-export default function EmployeeActiveBranch({ isBranchActive }: EmployeeActiveBranchProps) {
+  const handleSendActive = () => {
+     mutate({ isActive: !isBranchActive });
+  };
+
   return (
     <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -18,6 +27,7 @@ export default function EmployeeActiveBranch({ isBranchActive }: EmployeeActiveB
                 : "Reactivar esta sucursal"}
             </h3>
           </div>
+
           <p className="text-[11px] text-slate-500 pl-6">
             Las terminales POS vinculadas no podrán registrar nuevas ventas
             mientras esté inactiva.
@@ -26,10 +36,15 @@ export default function EmployeeActiveBranch({ isBranchActive }: EmployeeActiveB
 
         <button
           type="button"
-          onClick={() => ("")}
-          className="px-3 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200/70 rounded-xl transition-colors shrink-0 self-start sm:self-auto"
+          onClick={handleSendActive}
+          disabled={isPending}
+          className="px-3 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200/70 rounded-xl transition-colors shrink-0 self-start sm:self-auto disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isBranchActive ? "Desactivar Sucursal" : "Activar Sucursal"}
+          {isPending
+            ? "Procesando..."
+            : isBranchActive
+              ? "Desactivar Sucursal"
+              : "Activar Sucursal"}
         </button>
       </div>
     </div>

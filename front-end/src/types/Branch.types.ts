@@ -31,5 +31,5 @@ export type getBranches = {
 };
 
 export type createNewBranch = Pick<Branch, "name" | "slug" | "phone" | "email" | "address">;
-
 export type updateBrach = createNewBranch;
+export type setActiveBranch = Pick<Branch, "isActive">;

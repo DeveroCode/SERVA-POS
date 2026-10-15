@@ -103,12 +103,26 @@ export class BranchController {
     static search = async (req: Request, res: Response) => {
         const foundBranch = req.searchBranch;
         try {
-          return res.status(200).json({foundBranch, message: "Sucursal encontrada"});
+            return res.status(200).json({ foundBranch, message: "Sucursal encontrada" });
         } catch (e) {
             console.error(e);
             return res.status(500).json({
                 message: 'Internal server error',
             });
+        }
+    }
+
+    static async setIsActive(req: Request, res: Response) {
+        const branch = req.myBranch;
+        try {
+            const { isActive } = req.body;
+            branch.isActive = isActive;
+            await branch.save();
+            return res.status(200).json({
+                message: 'Sucursal actualizada correctamente',
+            });
+        } catch (error) {
+            return res.status(500).json({ message: 'Internal server error' });
         }
     }
 }

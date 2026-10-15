@@ -1,9 +1,8 @@
 import api from "@/lib/axios";
-import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse } from "@/types/Index.types";
+import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse, type setActiveBranch, type Response } from "@/types/Index.types";
 import { isAxiosError } from "axios";
 import { getApiErrorMessage } from "../lib";
 import { LAST_BRANCH_KEY } from "@/utils/key";
-
 export class EmployeeService {
     static async getBranches(page: number = 1): Promise<Branches> {
         try {
@@ -69,6 +68,17 @@ export class EmployeeService {
         const branchId = localStorage.getItem(LAST_BRANCH_KEY);
         try {
             const { data } = await api.post(`/employee/branch/${branchId}/access`, formData);
+            return data
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(getApiErrorMessage(error.response?.data.message), { cause: error });
+            }
+        }
+    }
+    static async setActiveBranch(isActive: setActiveBranch): Promise<Response>{
+        const branchId = localStorage.getItem(LAST_BRANCH_KEY);
+        try {
+            const { data } = await api.put(`/employee/branch/${branchId}/setActive`, isActive);
             return data
         } catch (error) {
             if (isAxiosError(error) && error.response) {

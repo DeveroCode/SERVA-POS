@@ -6,13 +6,13 @@ interface ScheduleDay {
 }
 
 const MOCK_SCHEDULE: ScheduleDay[] = [
-  { day: 'Lunes', hours: '08:00 — 20:00' },
-  { day: 'Martes', hours: '08:00 — 20:00' },
-  { day: 'Miércoles', hours: '08:00 — 20:00' },
-  { day: 'Jueves', hours: '08:00 — 20:00', isToday: true },
-  { day: 'Viernes', hours: '08:00 — 22:00' },
-  { day: 'Sábado', hours: '09:00 — 22:00' },
-  { day: 'Domingo', hours: '09:00 — 18:00' },
+  { day: "Lunes", hours: "08:00 — 20:00" },
+  { day: "Martes", hours: "08:00 — 20:00" },
+  { day: "Miércoles", hours: "08:00 — 20:00" },
+  { day: "Jueves", hours: "08:00 — 20:00", isToday: true },
+  { day: "Viernes", hours: "08:00 — 22:00" },
+  { day: "Sábado", hours: "09:00 — 22:00" },
+  { day: "Domingo", hours: "09:00 — 18:00" },
 ];
 
 export default function ScheduleBranch() {

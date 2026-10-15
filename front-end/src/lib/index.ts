@@ -1,5 +1,16 @@
 import { isAxiosError } from "axios";
 
+export const avatarColors = [
+    "bg-blue-600",
+    "bg-emerald-600",
+    "bg-purple-600",
+    "bg-pink-600",
+    "bg-cyan-700",
+    "bg-indigo-600",
+    "bg-rose-600",
+    "bg-teal-600",
+];
+
 export function getGreeting(lang: "es" | "en" = "en"): string {
     const hour = new Date().getHours();
 
@@ -103,3 +114,19 @@ export function formatActivityDate(date: string | Date): string {
 }
 export const pluralize = (count: number, singular: string, plural: string) =>
     count === 1 ? singular : plural;
+export function getAvatarColor(id: string) {
+    let hash = 0;
+
+    for (let i = 0; i < id.length; i++) {
+        hash = id.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    return avatarColors[Math.abs(hash) % avatarColors.length];
+}
+
+export function getInitials(name?: string, lastName?: string) {
+    const firstNameInitial = name?.trim().charAt(0) ?? "";
+    const lastNameInitial = lastName?.trim().charAt(0) ?? "";
+
+    return `${firstNameInitial}${lastNameInitial}`.toUpperCase() || "?";
+}

@@ -4,6 +4,7 @@ import GeneralInformationCard from "@/Components/Cards/Employee/GeneralInformati
 import ScheduleBranch from "@/Components/Cards/Employee/ScheduleBranch";
 import TeamBranchCard from "@/Components/Cards/Employee/TeamBranchCard";
 import EmployeeBranchHeader from "@/Components/Headers/EmployeeBranchHeader";
+import { EmptyState } from "@/Components/NoData/EmptyState";
 import useBusinessContext from "@/hooks/useBusinessContext";
 import { useEmployeeBranch } from "@/hooks/useEmployeeBranch";
 import Loader from "@/pages/Loader";
@@ -19,27 +20,29 @@ export default function EmployeeBranchView() {
 
   if (isError) return Navigate({ to: "/branches" });
   if (isLoading) return <Loader />;
-  return (
-    <>
-      {/*Hero  */}
-      <EmployeeBranchHeader Branch={branch} />
+  if (!branch) return <EmptyState />;
+  if (branch)
+    return (
+      <>
+        {/*Hero  */}
+        <EmployeeBranchHeader Branch={branch} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div className="lg:col-span-7 space-y-6">
-          <GeneralInformationCard branch={branch} />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="lg:col-span-7 space-y-6">
+            <GeneralInformationCard branch={branch} />
 
-          <EmployeeActiveBranch isBranchActive={branch.isActive} />
-        </div>
+            <EmployeeActiveBranch isBranchActive={branch.isActive} />
+          </div>
 
-        <div className="lg:col-span-5 space-y-6">
+          <div className="lg:col-span-5 space-y-6">
             {/* Widget - 1 */}
             <ScheduleBranch />
             {/* Widget - 2 */}
             <TeamBranchCard />
             {/* Widget - 3 */}
             <BranchConfigAccessCard />
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
 }

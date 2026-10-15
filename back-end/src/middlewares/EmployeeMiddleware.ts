@@ -98,6 +98,14 @@ export const branchAccessRules = [
         .withMessage("La contraseña es obligatoria.")
 ];
 
+//set active
+export const setIsActiveRules = [
+    ...branchIdRules,
+    body("isActive")
+        .isBoolean()
+        .withMessage("El isActive debe ser un booleano.")
+];
+
 // Comprueba que el miembro tenga acceso a la sucursal.
 export async function accessToBranch(req: Request, res: Response, next: NextFunction) {
     try {
@@ -114,7 +122,6 @@ export async function accessToBranch(req: Request, res: Response, next: NextFunc
         const credential = await Credential.findOne({ user: req.member._id, branch: branchId })
             .populate("branch", "-__v -createdAt -updatedAt -business")
             .select("-__v -createdAt -updatedAt -business")
-            .lean();
 
         if (!credential?.branch) {
             return res.status(403).json({ message: "No tienes acceso a esta sucursal." });
@@ -167,7 +174,6 @@ export const getMyEmployees = async (req: Request, res: Response, next: NextFunc
             Credential,
             {
                 branch: branchId,
-                user: { $ne: req.member._id },
                 role: {
                     $in: [
                         MEMBER_ROLES.ADMIN,
@@ -253,7 +259,7 @@ export async function isBranchSessionValid(req: Request, res: Response, next: Ne
             branch: branchId,
             tokenHash: hashAccessToken(token),
             expiresAt: { $gt: new Date() }
-        }).lean();
+        });
 
         if (!session) {
             return res.status(403).json({ message: "No tienes una sesión activa para esta sucursal." });
