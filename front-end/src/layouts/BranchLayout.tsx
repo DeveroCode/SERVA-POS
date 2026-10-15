@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useState } from "react";
 import AsideBranch from "@/Components/Asides/AsideBranch";
 import AsideBranchMobile from "@/Components/Asides/AsideBranchMobile";
@@ -12,8 +12,11 @@ export default function BranchLayout() {
   const { currentBranchId } = useBusinessContext();
 
   // Get Branch
-  const { data: branch, isLoading } = useEmployeeBranch(currentBranchId);
+  const { data: branch, isLoading, isError } = useEmployeeBranch(currentBranchId);
 
+  if(isError) {
+    return Navigate({ to: '/branches' });
+  }
   if(isLoading) return <Loader />
 
   return (
@@ -30,7 +33,7 @@ export default function BranchLayout() {
           <AsideBranchMobile setIsMobileDrawerOpen={setIsMobileDrawerOpen} />
         )}
         {/* Main content */}
-        <main className="flex-1 min-w-0 overflow-y-auto">
+        <main className="flex-1 min-w-0 overflow-y-auto max-w-7xl mx-auto py-10 space-y-6 sm:px-10 px-2">
           <Outlet />
         </main>
       </div>

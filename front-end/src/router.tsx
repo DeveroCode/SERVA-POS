@@ -23,8 +23,10 @@ import EditMemberCredentialsView from "./pages/dashboard/Owner/Branch/EditMember
 import BranchesLayout from "./layouts/BranchesLayout";
 import DashboardRedirect from "./pages/DashboardRedirect";
 import EBranchIndex from "./pages/dashboard/Employee/EBranchIndex";
-import BranchExampleLayout from "./layouts/BranchExampleLayout";
 import BranchLayout from "./layouts/BranchLayout";
+import ProductsModule from "./pages/dashboard/Employee/ProductView";
+import ProductsView from "./pages/dashboard/Employee/ProductsView";
+import EmployeeBranchView from "./pages/dashboard/Employee/EmployeeBranchView";
 
 export default function router() {
   return (
@@ -86,24 +88,14 @@ export default function router() {
             }
           >
             {/* Layout for Branch - Role["ADMIN | MANAGER | STAFF | OWNER"] */}
-            {/* <Route
-              path="branches-example"
-              element={<BranchesLayoutExample />}
-            ></Route> */}
             <Route path="branches" element={<BranchesLayout />}>
               <Route index element={<EBranchIndex />} />
             </Route>
-
-
             <Route path="branch" element={<BranchLayout />}>
-              {/* <Route index element={<EBranchIndex />} /> */}
+              <Route index element={<EmployeeBranchView />} />
+              <Route path="products" element={<ProductsView />} />
+              <Route path="products-example" element={<ProductsModule />} />
             </Route>
-
-            <Route
-              path="branch-example"
-              element={<BranchExampleLayout />}
-            ></Route>
-            {/* <Route path="example" element={<ExampleOwerner />} /> */}
           </Route>
           {/* <Route path="/dashboard" element={<DIndex />}>
             <Route index element={<DIndex />} />
