@@ -26,10 +26,10 @@ export default function SetScheduleView({
     },
   });
 
-  const { watch, setValue, handleSubmit } = methods;
+  const { getValues, setValue, handleSubmit } = methods;
   // Copiar todos los horarios
   const handleCopyWeeks = () => {
-    const monday = watch("schedule.0");
+    const monday = getValues("schedule.0");
 
     if (!monday) return;
 
