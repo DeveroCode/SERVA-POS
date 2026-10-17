@@ -1,3 +1,4 @@
+import type { ScheduleDataForm } from "@/types/Branch.types";
 import { isAxiosError } from "axios";
 
 export const avatarColors = [
@@ -10,6 +11,17 @@ export const avatarColors = [
     "bg-rose-600",
     "bg-teal-600",
 ];
+
+export const DEFAULT_SCHEDULE_DAYS: ScheduleDataForm["schedule"] = [
+  { day: "lunes", isOpen: true, openTime: "08:00", closeTime: "20:00" },
+  { day: "martes", isOpen: true, openTime: "08:00", closeTime: "20:00" },
+  { day: "miércoles", isOpen: true, openTime: "08:00", closeTime: "20:00" },
+  { day: "jueves", isOpen: true, openTime: "08:00", closeTime: "20:00" },
+  { day: "viernes", isOpen: true, openTime: "08:00", closeTime: "22:00" },
+  { day: "sábado", isOpen: true, openTime: "09:00", closeTime: "22:00" },
+  { day: "domingo", isOpen: false, openTime: "09:00", closeTime: "18:00" },
+];
+
 
 export function getGreeting(lang: "es" | "en" = "en"): string {
     const hour = new Date().getHours();

@@ -60,3 +60,20 @@ export function useGetEmployees(page: number) {
         enabled: Boolean(currentBranchId && page),
     });
 }
+
+export function useSetScheduleBranch(){
+    const {QC, currentBranchId} = useBusinessContext();
+
+    return useMutation({
+        mutationFn: EmployeeService.setScheduleBranch,
+        onSuccess: (data) => {
+            toast.success(data.message);
+            QC.invalidateQueries({
+                queryKey: queryKeys.employee.oneBranch(currentBranchId)
+            });
+        },
+        onError: (error: Error) => {
+            toast.error(error.message);
+        }
+    });
+}

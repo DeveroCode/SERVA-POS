@@ -36,7 +36,7 @@ export default function EmployeeBranchView() {
 
           <div className="lg:col-span-5 space-y-6">
             {/* Widget - 1 */}
-            <ScheduleBranch />
+            <ScheduleBranch schedule={branch.schedules.schedule} schedules={branch.schedules} name={branch.name} />
             {/* Widget - 2 */}
             <TeamBranchCard />
             {/* Widget - 3 */}

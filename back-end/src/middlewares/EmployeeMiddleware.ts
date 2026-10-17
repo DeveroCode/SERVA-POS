@@ -7,6 +7,7 @@ import { MEMBER_ROLES, IMember } from "../models/Member";
 import { Credential, ICredential } from "../models/Credential";
 import { checkPassword, hashAccessToken } from "../utils";
 import { body, param, query } from "express-validator";
+import { BranchSchedule } from "../models/BranchSchedule";
 
 declare global {
     namespace Express {
@@ -106,7 +107,31 @@ export const setIsActiveRules = [
         .withMessage("El isActive debe ser un booleano.")
 ];
 
+export const setScheduleRules = [
+    ...branchIdRules,
+    body("schedule")
+        .isArray()
+        .withMessage("El schedule debe ser un arreglo.")
+        .bail(),
+    body("schedule.*.day")
+        .isString()
+        .withMessage("El día debe ser una cadena de texto."),
+    body("schedule.*.isOpen")
+        .isBoolean()
+        .withMessage("El isOpen debe ser un booleano.")
+        .bail(),
+    body("schedule.*.openTime")
+        .isString()
+        .withMessage("La hora de apertura debe ser una cadena de texto.")
+        .bail(),
+    body("schedule.*.closeTime")
+        .isString()
+        .withMessage("El horario de cierre debe ser una cadena de texto.")
+];
+
+
 // Comprueba que el miembro tenga acceso a la sucursal.
+
 export async function accessToBranch(req: Request, res: Response, next: NextFunction) {
     try {
         if (req.auth.type !== "employee" || !req.member?._id) {
@@ -119,25 +144,47 @@ export async function accessToBranch(req: Request, res: Response, next: NextFunc
             return res.status(400).json({ message: "El ID de la sucursal es obligatorio." });
         }
 
-        const credential = await Credential.findOne({ user: req.member._id, branch: branchId })
-            .populate("branch", "-__v -createdAt -updatedAt -business")
-            .select("-__v -createdAt -updatedAt -business")
+        const credential = await Credential.findOne({
+            user: req.member._id,
+            branch: branchId
+        })
+            .populate({
+                path: "branch",
+                select: "-__v -createdAt -updatedAt -business"
+            })
+            .select("-__v -createdAt -updatedAt -business -id");
 
         if (!credential?.branch) {
             return res.status(403).json({ message: "No tienes acceso a esta sucursal." });
         }
 
-        req.myBranch = credential.branch as unknown as IBranch;
+        const branch = credential.branch as unknown as IBranch;
+
+        const schedules = await BranchSchedule.findOne({
+            branch: branch._id
+        })
+            .select("-__v -createdAt -updatedAt -branch")
+            .lean();
+
+        req.myBranch = {
+            ...branch.toObject(),
+            schedules: schedules ?? null
+        } as unknown as IBranch;
+
         req.credential = credential as unknown as ICredential;
+
+        console.log(req.myBranch);
+
         next();
     } catch (error) {
         next(error);
     }
 }
 
+
 // Busca un empleado por userKey para los flujos que lo necesitan.
 export const employeeExist = async (req: Request, res: Response, next: NextFunction) => {
-   try {
+    try {
         const userKey = req.query.userKey;
         const branchId = req.myBranch?._id;
 

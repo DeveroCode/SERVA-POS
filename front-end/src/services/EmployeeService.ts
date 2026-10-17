@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse, type setActiveBranch, type Response } from "@/types/Index.types";
+import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse, type setActiveBranch, type Response, type ScheduleDataForm } from "@/types/Index.types";
 import { isAxiosError } from "axios";
 import { getApiErrorMessage } from "../lib";
 import { LAST_BRANCH_KEY } from "@/utils/key";
@@ -15,7 +15,7 @@ export class EmployeeService {
             throw new Error("La respuesta no cumple con el esquema, favor de revisar tus types de datos");
         } catch (error) {
             if (isAxiosError(error) && error.response) {
-                throw new Error(getApiErrorMessage(error.response?.data.message), { cause: error });
+                throw new Error(getApiErrorMessage(error), { cause: error });
             }
         }
     }
@@ -31,7 +31,7 @@ export class EmployeeService {
             throw new Error("La respuesta no cumple con el esquema, favor de revisar tus types de datos");
         } catch (error) {
             if (isAxiosError(error) && error.response) {
-                throw new Error(getApiErrorMessage(error.response?.data.message), { cause: error });
+                throw new Error(getApiErrorMessage(error), { cause: error });
             }
         }
     }
@@ -45,7 +45,7 @@ export class EmployeeService {
             throw new Error("La respuesta no cumple con el esquema, favor de revisar tus types de datos");
         } catch (error) {
             if (isAxiosError(error) && error.response) {
-                throw new Error(getApiErrorMessage(error.response?.data.message), { cause: error });
+                throw new Error(getApiErrorMessage(error), { cause: error });
             }
         }
     }
@@ -60,7 +60,7 @@ export class EmployeeService {
             throw new Error("La respuesta no cumple con el esquema, favor de revisar tus types de datos");
         } catch (error) {
             if (isAxiosError(error) && error.response) {
-                throw new Error(getApiErrorMessage(error.response?.data.message), { cause: error });
+                throw new Error(getApiErrorMessage(error), { cause: error });
             }
         }
     }
@@ -71,7 +71,7 @@ export class EmployeeService {
             return data
         } catch (error) {
             if (isAxiosError(error) && error.response) {
-                throw new Error(getApiErrorMessage(error.response?.data.message), { cause: error });
+                throw new Error(getApiErrorMessage(error), { cause: error });
             }
         }
     }
@@ -82,7 +82,19 @@ export class EmployeeService {
             return data
         } catch (error) {
             if (isAxiosError(error) && error.response) {
-                throw new Error(getApiErrorMessage(error.response?.data.message), { cause: error });
+                throw new Error(getApiErrorMessage(error), { cause: error });
+            }
+        }
+    }
+
+    static async setScheduleBranch(schedule: ScheduleDataForm): Promise<Response>{
+        const branchId = localStorage.getItem(LAST_BRANCH_KEY);
+        try {
+            const {data} = await api.put(`/employee/branch/${branchId}/schedule/set`, schedule);
+            return data;
+        } catch (error) {
+             if (isAxiosError(error) && error.response) {
+                throw new Error(getApiErrorMessage(error), { cause: error });
             }
         }
     }

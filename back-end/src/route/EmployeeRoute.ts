@@ -13,7 +13,8 @@ import {
     getMyEmployees,
     isBranchSessionValid,
     isValidCredentials,
-    setIsActiveRules
+    setIsActiveRules,
+    setScheduleRules
 } from "../middlewares/EmployeeMiddleware";
 import { handleInputErrors } from "../utils/validator";
 import { hasRole } from "../middlewares/GlobalMiddleware";
@@ -30,6 +31,7 @@ router.get("/branch/:branchId", branchIdRules, handleInputErrors, isBranchSessio
 router.put("/branch/:branchId/setActive", setIsActiveRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), BranchController.setIsActive);
 router.get("/branch/:branchId/employees", branchIdRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), getMyEmployees, EmployeeController.getEmployees);
 router.get("/branch/:branchId/employees/search", employeeParamsRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), getEmployeeFromBranch, EmployeeController.getEmployee);
+router.put("/branch/:branchId/schedule/set", setScheduleRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), BranchController.setSchedule);
 router.get("/categories", EmployeeController.getCategories);
 
 export default router;

@@ -1,5 +1,6 @@
 import mongoose, {Schema, Document, PopulatedDoc } from "mongoose";
 import { IBusiness } from "./business";
+import { BranchSchedule } from "./BranchSchedule";
 
 export interface IBranch extends Document {
     name: string;
@@ -18,7 +19,7 @@ export interface IBranch extends Document {
     business: PopulatedDoc<IBusiness>;
 }
 
-const BusinessSchema = new Schema<IBranch>({
+const BracnhSchema = new Schema<IBranch>({
     name: { type: String, required: true, trim: true },
     slug: { type: String, required: true, unique: true, trim: true },
     description: { type: String, trim: true },
@@ -33,6 +34,12 @@ const BusinessSchema = new Schema<IBranch>({
         country: { type: String, required: true, trim: true },
     },
     business: { type: Schema.Types.ObjectId, ref: "Business", required: true },
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
-export const Branch = mongoose.model<IBranch>("Branch", BusinessSchema);
+BracnhSchema.virtual("schedules", {
+    ref: "BranchSchedule",
+    localField: "_id",
+    foreignField: "branch",
+    justOne: true,
+});
+export const Branch = mongoose.model<IBranch>("Branch", BracnhSchema);
