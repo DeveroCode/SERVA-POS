@@ -27,6 +27,8 @@ import BranchLayout from "./layouts/BranchLayout";
 import ProductsModule from "./pages/dashboard/Employee/ProductView";
 import ProductsView from "./pages/dashboard/Employee/ProductsView";
 import EmployeeBranchView from "./pages/dashboard/Employee/EmployeeBranchView";
+import ManageTeamView from "./pages/dashboard/Employee/ManageTeamView";
+import ManageTeamExampleView from "./pages/dashboard/Employee/ManageTeamExampleView";
 
 export default function router() {
   return (
@@ -91,21 +93,16 @@ export default function router() {
             <Route path="branches" element={<BranchesLayout />}>
               <Route index element={<EBranchIndex />} />
             </Route>
-            <Route path="branch" element={<BranchLayout />}>
+            <Route path="/branch" element={<BranchLayout />}>
               <Route index element={<EmployeeBranchView />} />
+              <Route path="equipo" element={<ManageTeamView />} />
+              <Route path="equipo-example" element={<ManageTeamExampleView />} />
               <Route path="products" element={<ProductsView />} />
               <Route path="products-example" element={<ProductsModule />} />
             </Route>
           </Route>
-          {/* <Route path="/dashboard" element={<DIndex />}>
-            <Route index element={<DIndex />} />
-            <Route path="menu" element={<DIndex />} />
-            <Route path="orders" element={<DIndex />} />
-            <Route path="tables" element={<DIndex />} />
-            <Route path="pos" element={<DashboardLayout />} />
-          </Route> */}
 
-          {/* Profile Settings */}
+          {/* Profile Settings - Esto Funciona */}
           <Route path="/profile" element={<DashboardLayout />}>
             <Route element={<ProfileSettingLayout />}>
               <Route path="index" index element={<ProfileView />} />

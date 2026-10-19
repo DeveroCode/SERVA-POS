@@ -16,6 +16,11 @@ declare global {
             myBranch: IBranch;
             employees: PaginationResult<IMember>;
             employee: IMember;
+            employeesStats: {
+                activeEmployees: number;
+                totalEmployees: number;
+                totalAdministrators: number;
+            }
         }
     }
 }
@@ -131,7 +136,6 @@ export const setScheduleRules = [
 
 
 // Comprueba que el miembro tenga acceso a la sucursal.
-
 export async function accessToBranch(req: Request, res: Response, next: NextFunction) {
     try {
         if (req.auth.type !== "employee" || !req.member?._id) {
@@ -171,10 +175,7 @@ export async function accessToBranch(req: Request, res: Response, next: NextFunc
             schedules: schedules ?? null
         } as unknown as IBranch;
 
-        req.credential = credential as unknown as ICredential;
-
-        console.log(req.myBranch);
-
+        req.credential = credential as unknown as ICredential
         next();
     } catch (error) {
         next(error);
@@ -217,29 +218,87 @@ export const getMyEmployees = async (req: Request, res: Response, next: NextFunc
 
         const branchId = req.myBranch._id;
 
-        const result = await paginate(
-            Credential,
-            {
-                branch: branchId,
-                role: {
-                    $in: [
-                        MEMBER_ROLES.ADMIN,
-                        MEMBER_ROLES.EMPLOYEE,
-                        MEMBER_ROLES.MANAGER,
-                        MEMBER_ROLES.STAFF
-                    ]
-                }
-            },
-            {
-                page: req.query.page,
-                sort: { updatedAt: -1 },
-                select: "user",
-                populate: {
-                    path: "user",
-                    select: "-password -__v -createdAt -updatedAt"
-                }
+        const employeeFilter = {
+            branch: branchId,
+            role: {
+                $in: [
+                    MEMBER_ROLES.ADMIN,
+                    MEMBER_ROLES.EMPLOYEE,
+                    MEMBER_ROLES.MANAGER,
+                    MEMBER_ROLES.STAFF
+                ]
             }
-        );
+        };
+
+        const [result, statsResult] = await Promise.all([
+            paginate(
+                Credential,
+                employeeFilter,
+                {
+                    page: req.query.page,
+                    sort: { updatedAt: -1 },
+                    select: "user",
+                    populate: {
+                        path: "user",
+                        select: "-password -__v -createdAt -updatedAt"
+                    }
+                }
+            ),
+            Credential.aggregate([
+                { $match: employeeFilter },
+                {
+                    $group: {
+                        _id: "$user",
+                        isAdministrator: {
+                            $max: {
+                                $cond: [
+                                    { $eq: ["$role", MEMBER_ROLES.ADMIN] },
+                                    1,
+                                    0
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "members",
+                        localField: "_id",
+                        foreignField: "_id",
+                        as: "member"
+                    }
+                },
+                {
+                    $unwind: "$member"
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalEmployees: { $sum: 1 },
+                        activeEmployees: {
+                            $sum: {
+                                $cond: [
+                                    { $eq: ["$member.isActive", true] },
+                                    1,
+                                    0
+                                ]
+                            }
+                        },
+                        totalAdministrators: {
+                            $sum: "$isAdministrator"
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        activeEmployees: 1,
+                        totalEmployees: 1,
+                        totalAdministrators: 1
+                    }
+                }
+            ])
+        ]);
 
         const employees: IMember[] = result.data
             .map((credential) => credential.user)
@@ -250,12 +309,18 @@ export const getMyEmployees = async (req: Request, res: Response, next: NextFunc
             pagination: result.pagination
         };
 
+        req.employeesStats = statsResult[0] ?? {
+            activeEmployees: 0,
+            totalEmployees: 0,
+            totalAdministrators: 0
+        };
+
+        console.log(req.employeesStats);
         next();
     } catch (error) {
         next(error);
     }
 };
-
 // Validar las credenciales al entrar a una sucursal.
 export async function isValidCredentials(req: Request, res: Response, next: NextFunction) {
     try {
@@ -317,6 +382,7 @@ export async function isBranchSessionValid(req: Request, res: Response, next: Ne
         next(error);
     }
 }
+
 
 // Obtener un empleado específico que pertenezca a la sucursal autorizada.
 export const getEmployeeFromBranch = async (req: Request, res: Response, next: NextFunction) => {

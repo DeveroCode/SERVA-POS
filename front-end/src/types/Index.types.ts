@@ -34,6 +34,7 @@ export type NavItem = {
   label: string;
   icon: React.ElementType;
   badge?: number;
+  url?: string;
   roles?: MemberRole[];
 }
 

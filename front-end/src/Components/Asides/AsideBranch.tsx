@@ -1,29 +1,25 @@
 import { useState } from "react";
 import {
-    ChevronsRight,
-    ChevronsLeft,
-    Building2,
-    ChevronRight
+  ChevronsRight,
+  ChevronsLeft,
+  Building2,
+  ChevronRight,
 } from "lucide-react";
 
-import {
-    MEMBER_ROLES,
-    type Branch,
-    type NavGroup,
-} from "@/types/Index.types";
+import { MEMBER_ROLES, type Branch, type NavGroup } from "@/types/Index.types";
 
 import { NAVIGATION_SCHEMA } from "@/data/EmployeeNavigation";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 type AsideBranchProps = {
-  branch: Branch
-}
+  branch: Branch;
+};
 
 export default function AsideBranch({ branch }: AsideBranchProps) {
   // Actions for the sidebar
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<string>("overview");
   const currentUserRole = MEMBER_ROLES.ADMIN;
+
   // Filtered by roles
   const filterNavByRole = (groups: NavGroup[]): NavGroup[] => {
     return groups
@@ -62,6 +58,7 @@ export default function AsideBranch({ branch }: AsideBranchProps) {
           onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
           title={isSidebarCollapsed ? "Expandir menú" : "Colapsar menú"}
+          aria-label={isSidebarCollapsed ? "Expandir menú" : "Colapsar menú"}
         >
           {isSidebarCollapsed ? (
             <ChevronsRight className="w-4 h-4" />
@@ -74,10 +71,7 @@ export default function AsideBranch({ branch }: AsideBranchProps) {
       {/* Identidad de la Branch Actual */}
       <div className="p-3 border-b border-slate-100">
         {isSidebarCollapsed ? (
-          <div
-            className="flex justify-center"
-            title="Sucursal Centro - Nuevo Casas Grandes"
-          >
+          <div className="flex justify-center" title={branch?.name}>
             <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200/80 text-orange-700 flex items-center justify-center">
               <Building2 className="w-5 h-5" />
             </div>
@@ -106,7 +100,7 @@ export default function AsideBranch({ branch }: AsideBranchProps) {
                 {branch?.isActive ? "Activa" : "Inactiva"}
               </span>
               <Link
-                to={'/branches'}
+                to="/branches"
                 className="text-slate-500 hover:text-orange-700 font-semibold transition-colors flex items-center gap-0.5"
               >
                 <span>Cambiar</span>
@@ -129,51 +123,57 @@ export default function AsideBranch({ branch }: AsideBranchProps) {
 
             {group.items.map((item) => {
               const Icon = item.icon;
-              const isActive = activeTab === item.id;
 
               return (
-                <button
+                <NavLink
                   key={item.id}
-                  type="button"
-                  onClick={() => setActiveTab(item.id)}
+                  to={item.url ?? "/branch"}
+                  end={item.id === "overview"}
                   title={isSidebarCollapsed ? item.label : undefined}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all group relative ${
-                    isActive
-                      ? "bg-orange-50/80 text-orange-700 font-bold border border-orange-200/60 shadow-sm"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 border border-transparent"
-                  }`}
+                  aria-label={item.label}
+                  className={({ isActive }) =>
+                    `w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all group relative ${
+                      isActive
+                        ? "bg-orange-50/80 text-orange-700 font-bold border border-orange-200/60 shadow-sm"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 border border-transparent"
+                    }`
+                  }
                 >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <Icon
-                      className={`w-4 h-4 shrink-0 transition-colors ${
-                        isActive
-                          ? "text-orange-700"
-                          : "text-slate-400 group-hover:text-slate-600"
-                      }`}
-                    />
+                  {({ isActive }) => (
+                    <>
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Icon
+                          className={`w-4 h-4 shrink-0 transition-colors ${
+                            isActive
+                              ? "text-orange-700"
+                              : "text-slate-400 group-hover:text-slate-600"
+                          }`}
+                        />
 
-                    {!isSidebarCollapsed && (
-                      <span className="truncate">{item.label}</span>
-                    )}
-                  </div>
+                        {!isSidebarCollapsed && (
+                          <span className="truncate">{item.label}</span>
+                        )}
+                      </div>
 
-                  {/* Badges de notificación */}
-                  {item.badge !== undefined &&
-                    item.badge > 0 &&
-                    (isSidebarCollapsed ? (
-                      <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-orange-700" />
-                    ) : (
-                      <span
-                        className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                          isActive
-                            ? "bg-orange-700 text-white"
-                            : "bg-slate-200 text-slate-700"
-                        }`}
-                      >
-                        {item.badge}
-                      </span>
-                    ))}
-                </button>
+                      {/* Badges de notificación */}
+                      {item.badge !== undefined &&
+                        item.badge > 0 &&
+                        (isSidebarCollapsed ? (
+                          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-orange-700" />
+                        ) : (
+                          <span
+                            className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                              isActive
+                                ? "bg-orange-700 text-white"
+                                : "bg-slate-200 text-slate-700"
+                            }`}
+                          >
+                            {item.badge}
+                          </span>
+                        ))}
+                    </>
+                  )}
+                </NavLink>
               );
             })}
           </div>

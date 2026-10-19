@@ -56,7 +56,7 @@ export class EmployeeController {
     }
     static async getEmployees(req: Request, res: Response) {
         try {
-            return res.status(200).json(req.employees);
+            return res.status(200).json({...req.employees, stats: req.employeesStats});
         } catch (error) {
             return res.status(500).json({ message: 'Internal server error' });
         }

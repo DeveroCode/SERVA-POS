@@ -13,6 +13,11 @@ export const CategorySchema = z.object({
     isActive: z.boolean(),
 });
 
+export const statsSchema = z.object({
+    activeEmployees: z.number(),
+    totalEmployees: z.number(),
+    totalAdministrators: z.number(),
+})
 export const CategoriesSchema = z.array(CategorySchema);
 
 export const employeeSchema = z.object({
@@ -27,8 +32,9 @@ export const employeeSchema = z.object({
     role: z.enum(Object.values(MEMBER_ROLES)),
 })
 export const employeesSchema = z.object({
-   data: z.array(employeeSchema),
-   pagination: paginationSchema
+    data: z.array(employeeSchema),
+    stats: statsSchema,
+    pagination: paginationSchema
 })
 
 // ==========================================
