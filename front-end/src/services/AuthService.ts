@@ -49,13 +49,8 @@ export class AuthService {
 
         } catch (error) {
             if (isAxiosError(error) && error.response) {
-                throw new Error(
-                    error.response.data.message,
-                    { cause: error }
-                );
+                throw new Error(getApiErrorMessage(error), { cause: error });
             }
-
-            throw error;
         }
     }
     static async register(formData: RegisterForm): Promise<string> {
@@ -64,7 +59,7 @@ export class AuthService {
             return data.message;
         } catch (error) {
             if (isAxiosError(error) && error.response) {
-                throw new Error(error.response?.data.message, { cause: error });
+                throw new Error(getApiErrorMessage(error), { cause: error });
             }
         }
     }
@@ -80,14 +75,9 @@ export class AuthService {
             return data.message;
 
         } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                throw new Error(
-                    getApiErrorMessage(error.response.data.message),
-                    { cause: error }
-                );
+           if (isAxiosError(error) && error.response) {
+                throw new Error(getApiErrorMessage(error), { cause: error });
             }
-
-            throw error;
         }
     }
 }

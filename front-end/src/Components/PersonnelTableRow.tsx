@@ -2,11 +2,18 @@ import useBusinessContext from "@/hooks/useBusinessContext";
 import { useDeleteMember } from "@/mutations/useMutationBusinessMember";
 import type { Member } from "@/types/Index.types";
 import { SET_MEMBER_ID_KEY } from "@/utils/key";
-import { Shield, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import ModalLayout from "./Modals/ModalLayout";
 import DeleteMemberView from "@/pages/dashboard/Owner/Business/DeleteMemberView";
+import { formatActivityDate } from "../lib";
 
 type MemberTableRowProps = {
   member: Member;
@@ -100,6 +107,12 @@ export default function PersonnelTableRow({
 
         {/* Status */}
         <td className="px-6 py-4">
+          <p className="text-xs text-slate-400 truncate max-w-55">
+            {formatActivityDate(member.lastLogin)}
+          </p>
+        </td>
+        {/* Status */}
+        <td className="px-6 py-4">
           <div className="flex items-center gap-2">
             <span
               className={`w-2 h-2 rounded-full ${
@@ -157,16 +170,6 @@ export default function PersonnelTableRow({
               </button>
 
               <div className="my-1 h-px bg-slate-100" />
-              <button
-                // onClick={() => handleSendEditCredentials(member._id)}
-                type="button"
-                className="w-full px-4 cursor-pointer py-2.5 flex items-center gap-2.5 text-left text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-orange-700 transition-colors"
-              >
-                <Shield className="w-3.5 h-3.5" />
-                Editar Credenciales
-              </button>
-
-              <div className="my-1 h-px bg-slate-100" />
 
               <button
                 type="button"
@@ -182,7 +185,12 @@ export default function PersonnelTableRow({
       </tr>
 
       <ModalLayout open={open} setOpen={setOpen}>
-         <DeleteMemberView setOpen={setOpen} isPending={isPending} member={member} handleDelete={handleDeleteMember} />
+        <DeleteMemberView
+          setOpen={setOpen}
+          isPending={isPending}
+          member={member}
+          handleDelete={handleDeleteMember}
+        />
       </ModalLayout>
     </>
   );

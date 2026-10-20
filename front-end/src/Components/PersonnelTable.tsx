@@ -36,14 +36,14 @@ export default function PersonnelTable({
                 </th>
 
                 <th className="bg-slate-50 px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
-                  Rol
+                  Último Acceso
                 </th>
 
                 <th className="bg-slate-50 px-6 py-4 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
                   Estado
                 </th>
 
-                <th className="bg-slate-50 rounded-t-[20px] px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                <th className="bg-slate-50 rounded-tr-[20px] px-6 py-4 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
                   Acciones
                 </th>
               </tr>
