@@ -16,8 +16,6 @@ router.use(isAuthenticate, hasRole(MEMBER_ROLES.OWNER, MEMBER_ROLES.ADMIN));
 router.get('/:businessId/members', existBusiness, existMembers, handleInputErrors, BusinessMemberController.members); // Check
 router.get('/:businessId/:memberId/member', existBusiness, existMember, handleInputErrors, BusinessMemberController.member); // Check
 router.post('/:businessId/:branchId/:memberId/add/member', existBusiness, existBranch, existMember, addMemberToBusinessRules, handleInputErrors, BusinessMemberController.add); // Check
-router.get('/:businessId/:branchId/:memberId/get/credentials', existBusiness, existBranch, existMember, existMemberInToBranch, getCredentialsRules, handleInputErrors, BusinessMemberController.getCredentials); // Check
-router.patch('/:businessId/:branchId/:memberId/update/member', existBusiness, existBranch, existMember, existMemberInToBranch, updateMemberCredentialsRules, handleInputErrors, BusinessMemberController.updateMemberCredentials); // Check
 router.delete('/:businessId/:branchId/:memberId/delete/member', existBusiness, existBranch, existMember, existMemberInToBranch, handleInputErrors, BusinessMemberController.deleteMember); // Check
 router.get('/:businessId/:search/search-member', existBusiness, searchRule, isFoundMemberInBusiness,handleInputErrors, MemberController.search);
 router.get('/:businessId/:search/search-branch', existBusiness, searchRule, foundBranch, handleInputErrors, BranchController.search);

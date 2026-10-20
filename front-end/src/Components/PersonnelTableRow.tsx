@@ -1,7 +1,6 @@
 import useBusinessContext from "@/hooks/useBusinessContext";
 import { useDeleteMember } from "@/mutations/useMutationBusinessMember";
 import type { Member } from "@/types/Index.types";
-import { ROLE_LABELS } from "@/utils/index";
 import { SET_MEMBER_ID_KEY } from "@/utils/key";
 import { Shield, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
@@ -48,11 +47,6 @@ export default function PersonnelTableRow({
   //   );
   //   localStorage.setItem(SET_MEMBER_ID_KEY, id);
   // };
-
-  const role = ROLE_LABELS[member.role] ?? {
-    label: member.role,
-    className: "bg-slate-50 text-slate-600 border-slate-200",
-  };
 
   const handleDeleteMember = (memberId: Member["_id"]) => {
     mutate(memberId);
@@ -102,17 +96,6 @@ export default function PersonnelTableRow({
               </p>
             </div>
           </div>
-        </td>
-
-        {/* Role */}
-        <td className="px-6 py-4">
-          <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${role.className}`}
-          >
-            <Shield className="w-3 h-3" />
-
-            {role.label}
-          </span>
         </td>
 
         {/* Status */}

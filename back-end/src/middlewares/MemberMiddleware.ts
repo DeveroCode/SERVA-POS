@@ -146,7 +146,7 @@ export async function existMembers(
             {
                 page: req.query.page,
                 sort: { updatedAt: -1 },
-                select: "name last_name email phone_number image isActive lastLogin role",
+                select: "name last_name email phone_number image isActive lastLogin",
                 populate: {
                     path: "business",
                     select: "name -_id"

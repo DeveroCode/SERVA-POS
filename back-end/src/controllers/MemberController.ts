@@ -16,17 +16,11 @@ export class MemberController {
     }
     static create = async (req: Request, res: Response) => {
         const { _id: businessId } = req.business;
-        const { name, last_name, email, phone_number, role } = req.body;
+        const { name, last_name, email, phone_number } = req.body;
         try {
             const existMember = await Member.findOne({ email, business: businessId });
             if (existMember) {
                 const error = new Error("Ya existe un miembro con este correo electrónico en este negocio.");
-                return res.status(400).json({ message: error.message });
-            }
-
-            const isValidRole = Object.values(MEMBER_ROLES).includes(role);
-            if (!isValidRole) {
-                const error = new Error("El rol no es válido.");
                 return res.status(400).json({ message: error.message });
             }
 
@@ -35,7 +29,6 @@ export class MemberController {
                 last_name,
                 email,
                 phone_number,
-                role,
                 business: businessId,
             });
             await newMember.save();
@@ -50,21 +43,13 @@ export class MemberController {
         try {
             const member = req.member;
 
-            const { name, last_name, email, phone_number, role, isActive } = req.body;
+            const { name, last_name, email, phone_number, isActive } = req.body;
             member.name = name ?? member.name;
             member.last_name = last_name ?? member.last_name;
             member.isActive = isActive ?? member.isActive;
             member.email = email ?? member.email;
             member.phone_number = phone_number ?? member.phone_number;
 
-            if (role !== member.role) {
-                const isValidRole = Object.values(MEMBER_ROLES).includes(role);
-                if (!isValidRole) {
-                    const error = new Error("El rol no es válido.");
-                    return res.status(400).json({ message: error.message });
-                }
-                member.role = role ?? member.role;
-            }
             await member.save();
             res.status(200).json({ message: "Miembro actualizado correctamente" });
 

@@ -20,7 +20,6 @@ export interface IMember extends Document {
     isActive: boolean;
     lastLogin: Date;
     business: PopulatedDoc<IBusiness>;
-    role: MemberRoles
 }
 
 const memberSchema = new Schema<IMember>({
@@ -32,7 +31,6 @@ const memberSchema = new Schema<IMember>({
     isActive: { type: Boolean, default: true },
     lastLogin: { type: Date, default: Date.now() },
     business: { type: Schema.Types.ObjectId, ref: "Business", required: true },
-    role: { type: String, required: true, enum: Object.values(MEMBER_ROLES) },
 }, { timestamps: true });
 
 memberSchema.index({ business: 1, email: 1 }, { unique: true });
