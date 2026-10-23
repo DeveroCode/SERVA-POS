@@ -1,6 +1,6 @@
 import api from "@/lib/axios";
-import type { AddMemberToBranch, Credentials, GetMemberByBusiness, GetMemberById, Member, Members, FoundMember, GetByParams, RegisterMember, Response, SearchMemberParams, UpdateMember, UpdateMemberCredentials, FoundBranch } from "@/types/Index.types";
-import { CredentialsSchema, MembersSchema } from "@/types/Index.types";
+import type { AddMemberToBranch, GetMemberByBusiness, GetMemberById, Member, Members, FoundMember, RegisterMember, Response, SearchMemberParams, UpdateMember, FoundBranch } from "@/types/Index.types";
+import { MembersSchema } from "@/types/Index.types";
 import { LAST_BRANCH_KEY, LAST_BUSINESS_KEY } from "@/utils/key";
 import { getApiErrorMessage } from "../lib";
 
@@ -56,33 +56,12 @@ export class BusinessMemberService {
         }
     }
 
-    static async update({ formData, memberId, branchId, businessId }: UpdateMemberCredentials): Promise<Response> {
-        try {
-            const { data } = await api.patch<Response>(`/business-member/${businessId}/${branchId}/${memberId}/update/member`, formData);
-            return data;
-        } catch (error) {
-            throw new Error(getApiErrorMessage(error), { cause: error });
-        }
-    }
-
     static async deleteMemberToBusiness(memberId: GetMemberById["memberId"]): Promise<Response> {
         const businessId = localStorage.getItem(LAST_BUSINESS_KEY);
         const branchId = localStorage.getItem(LAST_BRANCH_KEY);
         try {
             const { data } = await api.delete<Response>(`/business-member/${businessId}/${branchId}/${memberId}/delete/member`);
             return data;
-        } catch (error) {
-            throw new Error(getApiErrorMessage(error), { cause: error });
-        }
-    }
-
-    static async getMemberCredentials({ memberId, businessId, branchId }: GetByParams): Promise<Credentials> {
-        try {
-            const { data } = await api.get<Credentials>(`/business-member/${businessId}/${branchId}/${memberId}/get/credentials`);
-            const response = CredentialsSchema.safeParse(data);
-            if (response.success) {
-                return response.data
-            }
         } catch (error) {
             throw new Error(getApiErrorMessage(error), { cause: error });
         }

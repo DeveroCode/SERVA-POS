@@ -1,14 +1,11 @@
 import UpdateMemberCredentialsForm from "@/forms/UpdateMemberCredentialsForm";
 import useBusinessContext from "@/hooks/useBusinessContext";
-import {
-  useGetMemberCredentials,
-  useUpdateMemberCredentials,
-} from "@/mutations/useMutationBusinessMember";
+import { useGetCredentiasl, useUpdateEmployeeCredentials } from "@/mutations/useMutationEmployee";
 import Loader from "@/pages/Loader";
 import {
   MEMBER_ROLES,
-  type UpdateCredentialsForm,
-  type UpdateMemberCredentials,
+  type updateCredentialsForm,
+  type updateEmployeeCredentialsForms,
 } from "@/types/Index.types";
 import { ArrowLeft, UserCheck } from "lucide-react";
 import { useEffect } from "react";
@@ -19,24 +16,19 @@ import { toast } from "react-toastify";
 export default function EditMemberCredentialsView() {
   const {
     currentBranchId: branchId,
-    currentBusinessId: businessId,
-    currentMemberId: memberId,
+    currentEmployeeId,
     navigate,
   } = useBusinessContext();
-  const {
-    data: credentials,
-    isLoading,
-    isError,
-  } = useGetMemberCredentials({
+
+  const { data: credentials, isError, isLoading } = useGetCredentiasl({
     branchId,
-    businessId,
-    memberId,
+    employeeId: currentEmployeeId,
   });
 
-  const { mutate, isPending } = useUpdateMemberCredentials();
+  const { mutate, isPending } = useUpdateEmployeeCredentials();
 
   /** Add Member to Business */
-  const methods = useForm<UpdateCredentialsForm>({
+  const methods = useForm<updateCredentialsForm>({
     defaultValues: {
       role: MEMBER_ROLES.OWNER,
       name: "",
@@ -49,13 +41,12 @@ export default function EditMemberCredentialsView() {
 
   const { handleSubmit, reset } = methods;
 
-  const handleSendData = (data: UpdateCredentialsForm) => {
+  const handleSendData = (data: updateCredentialsForm) => {
     // Send data to backend
-    const sendData: UpdateMemberCredentials = {
+    const sendData: updateEmployeeCredentialsForms = {
       formData: data,
-      memberId,
+      employeeId: currentEmployeeId,
       branchId,
-      businessId,
     };
     mutate(sendData);
   };
@@ -77,8 +68,8 @@ export default function EditMemberCredentialsView() {
     if (!isError) return;
 
     toast.error("Este miembro aún no tiene credenciales.");
-    navigate(`/dashboard/business/${businessId}/personnel`);
-  }, [isError, businessId, navigate]);
+    navigate('/branch/equipo');
+  }, [isError, currentEmployeeId, navigate]);
 
   if (isPending) return <Loader />;
 
@@ -86,17 +77,17 @@ export default function EditMemberCredentialsView() {
 
   return (
     <>
-      <div className="w-full max-w-4xl font-sans text-slate-900 space-y-6 pb-12">
+      <div className="w-full max-w-7xl font-sans text-slate-900 space-y-6 pb-12">
         {/* Header */}
         <div className="space-y-2">
           <Link
-            to={`/dashboard/business/${businessId}/personnel`}
+            to={'/branch/equipo'}
             type="button"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
 
-            <span>Volver a personal</span>
+            <span>Volver atrás</span>
           </Link>
           <div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">

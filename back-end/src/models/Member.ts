@@ -19,8 +19,22 @@ export interface IMember extends Document {
     image: string;
     isActive: boolean;
     lastLogin: Date;
+    role: MemberRoles;
     business: PopulatedDoc<IBusiness>;
 }
+export type BranchEmployee = Pick<
+    IMember,
+    | "name"
+    | "last_name"
+    | "email"
+    | "phone_number"
+    | "image"
+    | "isActive"
+    | "lastLogin"
+    | "role"
+> & {
+    _id: string;
+};
 
 const memberSchema = new Schema<IMember>({
     name: { type: String, required: true },
@@ -29,6 +43,7 @@ const memberSchema = new Schema<IMember>({
     phone_number: { type: String, required: false, default: "" },
     image: { type: String, default: "" },
     isActive: { type: Boolean, default: true },
+    role: { type: String, required: false, enum: Object.values(MEMBER_ROLES) },
     lastLogin: { type: Date, default: Date.now() },
     business: { type: Schema.Types.ObjectId, ref: "Business", required: true },
 }, { timestamps: true });

@@ -4,6 +4,10 @@ import { Edit3, Mail, Power, Users } from "lucide-react";
 import { formatActivityDate, getUserInitials } from "../lib";
 import type { paginationType } from "@/types/Pagination.type";
 import Pagination from "./Pagination";
+import useBusinessContext from "@/hooks/useBusinessContext";
+import { SET_EMPLOYEE_ID_KEY } from "@/utils/key";
+import { useUser } from "@/hooks/useUser";
+import type { User } from "@/types/User.types";
 
 type EmployeeTableProps = {
   filteredEmployees: Employee[];
@@ -16,8 +20,17 @@ export default function EmployeeTable({
   filteredEmployees,
   role,
   pagination,
-  onPageChange
+  onPageChange,
 }: EmployeeTableProps) {
+  const { data: user } = useUser();
+  const { navigate } = useBusinessContext();
+  const handleSendEditCredentialsa = (id: Employee["_id"]) => {
+    localStorage.setItem(SET_EMPLOYEE_ID_KEY, id);
+    navigate(`/branch/credentials`);
+  };
+
+  const isAuthenticated = (_id: string, authId: User["_id"]) => _id === authId;
+
   return (
     <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
@@ -35,7 +48,6 @@ export default function EmployeeTable({
           <tbody className="divide-y divide-slate-100 text-xs">
             {filteredEmployees.length > 0 ? (
               filteredEmployees.map((emp) => {
-
                 return (
                   <tr
                     key={emp._id}
@@ -49,7 +61,10 @@ export default function EmployeeTable({
 
                         <div className="min-w-0">
                           <p className="font-bold text-slate-900 truncate group-hover:text-orange-700 transition-colors">
-                            {emp.name}
+                            {emp.name}{" "}
+                            {isAuthenticated(emp._id, user?._id) && (
+                              <span className="text-orange-700"> (Yo)</span>
+                            )}
                           </p>
 
                           <p className="text-[11px] text-slate-400 truncate flex items-center gap-1">
@@ -104,17 +119,31 @@ export default function EmployeeTable({
                         {role === MEMBER_ROLES.ADMIN && (
                           <>
                             <button
-                              onClick={() => ("")}
-                              className="p-1.5 cursor-pointer text-slate-400 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors"
-                              title="Editar rol / datos"
+                              onClick={() =>
+                                handleSendEditCredentialsa(emp._id)
+                              }
+                              disabled={isAuthenticated(
+                                emp._id,
+                                user?._id ?? "",
+                              )}
+                              className="p-1.5 cursor-pointer text-slate-400 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                              title={
+                                isAuthenticated(emp._id, user?._id ?? "")
+                                  ? "No puedes editar tus propias credenciales"
+                                  : "Editar rol / datos"
+                              }
                             >
                               <Edit3 className="w-4 h-4" />
                             </button>
                             <button
-                              onClick={() => ("")}
+                              onClick={() => ""}
+                              disabled={isAuthenticated(
+                                emp._id,
+                                user?._id ?? "",
+                              )}
                               className={`p-1.5 cursor-pointer rounded-lg transition-colors ${
                                 emp.isActive === true
-                                  ? "text-slate-400 hover:text-red-600 hover:bg-red-50"
+                                  ? "text-slate-400 hover:text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40 "
                                   : "text-slate-400 hover:text-emerald-600 hover:bg-emerald-50"
                               }`}
                               title={

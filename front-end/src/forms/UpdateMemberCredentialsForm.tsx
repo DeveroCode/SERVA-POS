@@ -1,6 +1,7 @@
 import ErrorAlert from "@/Components/Alerts/ErrorAlert";
 import {
-  MEMBER_ROLES_EXPLAIN, type UpdateCredentialsForm
+  MEMBER_ROLES_EXPLAIN,
+  type updateCredentialsForm, 
 } from "@/types/Index.types";
 import {
   Eye,
@@ -21,7 +22,7 @@ export default function UpdateMemberCredentialsForm() {
     getValues,
     formState: { errors },
     watch
-  } = useFormContext<UpdateCredentialsForm>();
+  } = useFormContext<updateCredentialsForm>();
 
   const userNameDisplay = watch("name");
   const branchNameDisplay = watch("branchName");

@@ -20,6 +20,10 @@ import { handleInputErrors } from "../utils/validator";
 import { hasRole } from "../middlewares/GlobalMiddleware";
 import { MEMBER_ROLES } from "../models/Member";
 import { BranchController } from "../controllers/BranchController";
+import { existBranch, existMemberInToBranch } from "../middlewares/BranchMiddeware";
+import { existMember } from "../middlewares/MemberMiddleware";
+import { getCredentialsRules, updateMemberCredentialsRules } from "../middlewares/BusinessMemberMiddleware";
+import { BusinessMemberController } from "../controllers/BusinessMemberController";
 
 const router: Router = Router();
 
@@ -33,5 +37,9 @@ router.get("/branch/:branchId/employees", branchIdRules, handleInputErrors, isBr
 router.get("/branch/:branchId/employees/search", employeeParamsRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), getEmployeeFromBranch, EmployeeController.getEmployee);
 router.put("/branch/:branchId/schedule/set", setScheduleRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), BranchController.setSchedule);
 router.get("/categories", EmployeeController.getCategories);
+
+// Business Member Controller
+router.get("/:branchId/:employeeId/get/credentials", getCredentialsRules, handleInputErrors, isBranchSessionValid, accessToBranch, BusinessMemberController.getCredentials);
+router.patch('/:branchId/:employeeId/update/credentials',  updateMemberCredentialsRules, handleInputErrors, isBranchSessionValid, accessToBranch, employeeExist, BusinessMemberController.updateMemberCredentials);
 
 export default router;

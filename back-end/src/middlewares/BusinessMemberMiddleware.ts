@@ -82,9 +82,8 @@ export const addMemberToBusinessRules = [
 ];
 
 export const getCredentialsRules = [
-    param("businessId").isString().withMessage("El id del miembro no es valido"),
     param("branchId").isString().withMessage("El id del miembro no es valido"),
-    param("memberId").isString().withMessage("El id del miembro no es valido")
+    param("employeeId").isString().withMessage("El id del miembro no es valido")
 
 ];
 export const updateMemberCredentialsRules = [

@@ -1,10 +1,26 @@
 import { z } from "zod";
-import { MEMBER_ROLES } from "./BusinessMember.type";
+import { MEMBER_ROLES, type MemberRole } from "./BusinessMember.type";
 import { paginationSchema } from "./Pagination.type";
 
 // ==========================================
 // 0 - SCHEMAS
 // ==========================================
+
+export const CredentialsUserSchema = z.object({
+    _id: z.string(),
+    name: z.string(),
+    last_name: z.string()
+})
+
+export const credentialsSchema = z.object({
+    _id: z.string(),
+    userKey: z.string(),
+    branch: z.object({
+        name: z.string(),
+    }),
+    user:  CredentialsUserSchema,
+    role: z.enum(Object.values(MEMBER_ROLES)),
+});
 
 export const CategorySchema = z.object({
     _id: z.string(),
@@ -46,9 +62,27 @@ export type Employees = z.infer<typeof employeesSchema>;
 
 export type Category = z.infer<typeof CategorySchema>;
 export type Categories = z.infer<typeof CategoriesSchema>;
+
+
+export type Credentials = z.infer<typeof credentialsSchema>;
 export type CredentialForm = {
     userKey: string;
     password: string;
+}
+
+export type updateCredentialsForm = {
+    name: string;
+    role: MemberRole;
+    userKey: string;
+    password: string;
+    branchName: string;
+    passwordConfirm: string;
+}
+
+export type updateEmployeeCredentialsForms = {
+    formData: Pick<updateCredentialsForm, "name" | "role" | "userKey" | "password">
+    employeeId: Employee["_id"]
+    branchId: string
 }
 
 export type accessBranchResponse = {

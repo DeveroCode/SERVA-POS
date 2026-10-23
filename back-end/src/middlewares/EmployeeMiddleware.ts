@@ -1,21 +1,21 @@
-
 import { Request, Response, NextFunction } from "express";
 import { paginate, PaginationResult } from "../lib/pagination";
 import { IBranch } from "../models/Branch";
 import { BranchSession } from "../models/BranchAccess";
-import { MEMBER_ROLES, IMember } from "../models/Member";
+import { MEMBER_ROLES, IMember, BranchEmployee } from "../models/Member";
 import { Credential, ICredential } from "../models/Credential";
 import { checkPassword, hashAccessToken } from "../utils";
 import { body, param, query } from "express-validator";
 import { BranchSchedule } from "../models/BranchSchedule";
+import { HydratedDocument } from "mongoose";
 
 declare global {
     namespace Express {
         interface Request {
             myBranches: PaginationResult<IBranch>;
             myBranch: IBranch;
-            employees: PaginationResult<IMember>;
-            employee: IMember;
+            employees: PaginationResult<BranchEmployee>;
+            employee: BranchEmployee;
             employeesStats: {
                 activeEmployees: number;
                 totalEmployees: number;
@@ -186,14 +186,13 @@ export async function accessToBranch(req: Request, res: Response, next: NextFunc
 // Busca un empleado por userKey para los flujos que lo necesitan.
 export const employeeExist = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userKey = req.query.userKey;
-        const branchId = req.myBranch?._id;
+        const {branchId, employeeId} = req.params;
 
-        if (!branchId || typeof userKey !== "string" || !userKey.trim()) {
+        if (!branchId || !employeeId) {
             return res.status(400).json({ message: "Debes proporcionar un userKey válido." });
         }
 
-        const credential = await Credential.findOne({ userKey: userKey.trim(), branch: branchId })
+        const credential = await Credential.findOne({ user: employeeId, branch: branchId })
             .populate("user", "-password -__v -createdAt -updatedAt");
 
         if (!credential?.user) {
@@ -201,7 +200,7 @@ export const employeeExist = async (req: Request, res: Response, next: NextFunct
         }
 
         req.credential = credential;
-        req.employee = credential.user as unknown as IMember;
+        req.employee = credential.user as unknown as BranchEmployee;
 
         next();
     } catch (error) {
@@ -237,7 +236,7 @@ export const getMyEmployees = async (req: Request, res: Response, next: NextFunc
                 {
                     page: req.query.page,
                     sort: { updatedAt: -1 },
-                    select: "user",
+                    select: "user role",
                     populate: {
                         path: "user",
                         select: "-password -__v -createdAt -updatedAt"
@@ -300,9 +299,30 @@ export const getMyEmployees = async (req: Request, res: Response, next: NextFunc
             ])
         ]);
 
-        const employees: IMember[] = result.data
-            .map((credential) => credential.user)
-            .filter((user): user is IMember => user !== null && typeof user === "object");
+        const employees: BranchEmployee[] = result.data
+            .filter((credential) => {
+                const user = credential.user;
+
+                return user !== null
+                    && typeof user === "object"
+                    && "_id" in user;
+            })
+            .map((credential) => {
+                const user = credential.user as HydratedDocument<IMember>;
+                const member = user.toObject();
+
+                return {
+                    _id: member._id.toString(),
+                    name: member.name,
+                    last_name: member.last_name,
+                    email: member.email,
+                    phone_number: member.phone_number,
+                    image: member.image,
+                    isActive: member.isActive,
+                    lastLogin: member.lastLogin,
+                    role: credential.role
+                };
+            });
 
         req.employees = {
             data: employees,
@@ -315,12 +335,123 @@ export const getMyEmployees = async (req: Request, res: Response, next: NextFunc
             totalAdministrators: 0
         };
 
-        console.log(req.employeesStats);
         next();
     } catch (error) {
         next(error);
     }
 };
+
+// export const getMyEmployees = async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//         if (!req.myBranch?._id || !req.member?._id) {
+//             return res.status(403).json({ message: "No se pudo determinar la sucursal autorizada." });
+//         }
+
+//         const branchId = req.myBranch._id;
+
+//         const employeeFilter = {
+//             branch: branchId,
+//             role: {
+//                 $in: [
+//                     MEMBER_ROLES.ADMIN,
+//                     MEMBER_ROLES.EMPLOYEE,
+//                     MEMBER_ROLES.MANAGER,
+//                     MEMBER_ROLES.STAFF
+//                 ]
+//             }
+//         };
+
+//         const [result, statsResult] = await Promise.all([
+//             paginate(
+//                 Credential,
+//                 employeeFilter,
+//                 {
+//                     page: req.query.page,
+//                     sort: { updatedAt: -1 },
+//                     select: "user",
+//                     populate: {
+//                         path: "user",
+//                         select: "-password -__v -createdAt -updatedAt"
+//                     }
+//                 }
+//             ),
+//             Credential.aggregate([
+//                 { $match: employeeFilter },
+//                 {
+//                     $group: {
+//                         _id: "$user",
+//                         isAdministrator: {
+//                             $max: {
+//                                 $cond: [
+//                                     { $eq: ["$role", MEMBER_ROLES.ADMIN] },
+//                                     1,
+//                                     0
+//                                 ]
+//                             }
+//                         }
+//                     }
+//                 },
+//                 {
+//                     $lookup: {
+//                         from: "members",
+//                         localField: "_id",
+//                         foreignField: "_id",
+//                         as: "member"
+//                     }
+//                 },
+//                 {
+//                     $unwind: "$member"
+//                 },
+//                 {
+//                     $group: {
+//                         _id: null,
+//                         totalEmployees: { $sum: 1 },
+//                         activeEmployees: {
+//                             $sum: {
+//                                 $cond: [
+//                                     { $eq: ["$member.isActive", true] },
+//                                     1,
+//                                     0
+//                                 ]
+//                             }
+//                         },
+//                         totalAdministrators: {
+//                             $sum: "$isAdministrator"
+//                         }
+//                     }
+//                 },
+//                 {
+//                     $project: {
+//                         _id: 0,
+//                         activeEmployees: 1,
+//                         totalEmployees: 1,
+//                         totalAdministrators: 1
+//                     }
+//                 }
+//             ])
+//         ]);
+
+//         const employees: IMember[] = result.data
+//             .map((credential) => credential.user)
+//             .filter((user): user is IMember => user !== null && typeof user === "object");
+
+//         req.employees = {
+//             data: employees,
+//             pagination: result.pagination
+//         };
+
+//         req.employeesStats = statsResult[0] ?? {
+//             activeEmployees: 0,
+//             totalEmployees: 0,
+//             totalAdministrators: 0
+//         };
+
+//         console.log(req.employeesStats);
+//         next();
+//     } catch (error) {
+//         next(error);
+//     }
+// };
 // Validar las credenciales al entrar a una sucursal.
 export async function isValidCredentials(req: Request, res: Response, next: NextFunction) {
     try {
@@ -401,7 +532,7 @@ export const getEmployeeFromBranch = async (req: Request, res: Response, next: N
             return res.status(404).json({ message: "No se encontró el empleado en esta sucursal." });
         }
 
-        req.employee = credential.user as unknown as IMember;
+        req.employee = credential.user as unknown as BranchEmployee;
 
         next();
     } catch (error) {

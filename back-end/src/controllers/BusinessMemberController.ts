@@ -81,18 +81,17 @@ export class BusinessMemberController {
 
     static getCredentials = async (req: Request, res: Response) => {
         try {
-            const memberId = req.member._id;
-            const branchId = req.branch._id;
+            const { employeeId, branchId } = req.params;
 
             const getCredentials = await Credential.findOne({
-                user: memberId,
+                user: employeeId,
                 branch: branchId
             })
                 .populate("user", "name last_name _id")
                 .populate("branch", "name -_id")
                 .select("userKey role branch user");
 
-            if(!getCredentials) {
+            if (!getCredentials) {
                 const error = new Error("No se encontraron las credenciales del miembro en esta sucursal");
                 return res.status(404).json({ message: error.message });
             }
@@ -108,8 +107,9 @@ export class BusinessMemberController {
     };
     static updateMemberCredentials = async (req: Request, res: Response) => {
         try {
-            const member = req.member;
-            const { _id: branch } = req.branch;
+            const member = req.employee;
+            const { branchId } = req.params
+            const credentials = req.credential;
 
             const { role, userKey, password } = req.body;
 
@@ -121,22 +121,11 @@ export class BusinessMemberController {
                 });
             }
 
-            const credentials = await Credential.findOne({
-                user: member._id,
-                branch
-            });
-
-            if (!credentials) {
-                return res.status(404).json({
-                    message: "No se encontraron las credenciales del miembro en esta sucursal"
-                });
-            }
-
-            credentials.role = role || credentials.role;
-            credentials.userKey = userKey || credentials.userKey;
+            credentials.role = role ?? credentials.role;
+            credentials.userKey = userKey ?? credentials.userKey;
 
             if (password) {
-                credentials.password = await hashPassword(password);
+                credentials.password = await hashPassword(password) ?? credentials.password;
             }
 
             await credentials.save();

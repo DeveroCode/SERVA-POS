@@ -10,7 +10,7 @@ export const userSchema = z.object({
     email: z.string().email(),
     phone_number: z.string(),
     birthday: z.string(),
-    role: z.enum(Object.values(MEMBER_ROLES)),
+    role: z.enum(MEMBER_ROLES),
     image: z.string(),
     isActive: z.boolean(),
     lastLogin: z.string().optional(),

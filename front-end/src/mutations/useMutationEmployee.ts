@@ -2,6 +2,7 @@ import useBusinessContext from "@/hooks/useBusinessContext";
 import { queryKeys } from "@/lib/queryKeys";
 import { EmployeeService } from "@/services/EmployeeService";
 import type { Branch, setActiveBranch } from "@/types/Branch.types";
+import type { getCredentials } from "@/types/BusinessMember.type";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -21,7 +22,7 @@ export function useCredentialsEmployee() {
 }
 
 export function useSetIsActive() {
-    const { currentBranchId,navigate, QC } = useBusinessContext();
+    const { currentBranchId, navigate, QC } = useBusinessContext();
     return useMutation({
         mutationFn: (isActive: setActiveBranch) => EmployeeService.setActiveBranch(isActive),
         onSuccess: (data) => {
@@ -61,8 +62,17 @@ export function useGetEmployees(page: number) {
     });
 }
 
-export function useSetScheduleBranch(){
-    const {QC, currentBranchId} = useBusinessContext();
+export function useGetCredentiasl({ branchId, employeeId }: getCredentials) {
+    return useQuery({
+        queryKey: queryKeys.employee.credentials(branchId, employeeId),
+        queryFn: () =>
+            EmployeeService.getCredentials({ branchId, employeeId }),
+        enabled: Boolean(branchId && employeeId),
+    });
+}
+
+export function useSetScheduleBranch() {
+    const { QC, currentBranchId } = useBusinessContext();
 
     return useMutation({
         mutationFn: EmployeeService.setScheduleBranch,
@@ -71,6 +81,21 @@ export function useSetScheduleBranch(){
             QC.invalidateQueries({
                 queryKey: queryKeys.employee.oneBranch(currentBranchId)
             });
+        },
+        onError: (error: Error) => {
+            toast.error(error.message);
+        }
+    });
+}
+
+export function useUpdateEmployeeCredentials() {
+    const { navigate } = useBusinessContext();
+
+    return useMutation({
+        mutationFn: EmployeeService.updateCredentials,
+        onSuccess: (data) => {
+            toast.success(data.message);
+            navigate('/branch/equipo');
         },
         onError: (error: Error) => {
             toast.error(error.message);

@@ -5,3 +5,5 @@ export const SET_TOKEN_KEY = "serva:token";
 export const GET_TOKEN_KEY = "serva:token";
 export const SET_MEMBER_ID_KEY = "serva:member-id";
 export const LAST_MEMBER_KEY = "serva:last-member";
+export const SET_EMPLOYEE_ID_KEY = "serva:employee-id";
+export const LAST_EMPLOYEE_KEY = "serva:last-employee";

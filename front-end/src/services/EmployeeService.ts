@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse, type setActiveBranch, type Response, type ScheduleDataForm } from "@/types/Index.types";
+import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse, type setActiveBranch, type Response, type ScheduleDataForm, type Credentials, type getCredentials, credentialsSchema, type updateEmployeeCredentialsForms } from "@/types/Index.types";
 import { isAxiosError } from "axios";
 import { getApiErrorMessage } from "../lib";
 import { LAST_BRANCH_KEY } from "@/utils/key";
@@ -75,7 +75,7 @@ export class EmployeeService {
             }
         }
     }
-    static async setActiveBranch(isActive: setActiveBranch): Promise<Response>{
+    static async setActiveBranch(isActive: setActiveBranch): Promise<Response> {
         const branchId = localStorage.getItem(LAST_BRANCH_KEY);
         try {
             const { data } = await api.put(`/employee/branch/${branchId}/setActive`, isActive);
@@ -87,13 +87,40 @@ export class EmployeeService {
         }
     }
 
-    static async setScheduleBranch(schedule: ScheduleDataForm): Promise<Response>{
+    static async setScheduleBranch(schedule: ScheduleDataForm): Promise<Response> {
         const branchId = localStorage.getItem(LAST_BRANCH_KEY);
         try {
-            const {data} = await api.put(`/employee/branch/${branchId}/schedule/set`, schedule);
+            const { data } = await api.put(`/employee/branch/${branchId}/schedule/set`, schedule);
             return data;
         } catch (error) {
-             if (isAxiosError(error) && error.response) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(getApiErrorMessage(error), { cause: error });
+            }
+        }
+    }
+
+    static async getCredentials({ branchId, employeeId }: getCredentials): Promise<Credentials> {
+        try {
+            const { data } = await api<Credentials>(`/employee/${branchId}/${employeeId}/get/credentials`);
+            const response = credentialsSchema.safeParse(data);
+            if (response.success) {
+                return response.data
+            }
+
+            throw new Error("La respuesta no cumple con el esquema, favor de revisar tus types de datos");
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(getApiErrorMessage(error), { cause: error });
+            }
+        }
+    }
+
+    static async updateCredentials({ branchId, employeeId, formData }: updateEmployeeCredentialsForms): Promise<Response> {
+        try {
+            const { data } = await api.patch<Response>(`/employee/${branchId}/${employeeId}/update/credentials`, formData);
+            return data
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
                 throw new Error(getApiErrorMessage(error), { cause: error });
             }
         }

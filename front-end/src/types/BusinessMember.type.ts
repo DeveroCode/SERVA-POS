@@ -47,22 +47,6 @@ export const BusinessMembersSchema = z.array(
     })
 );
 
-export const CredentialsUserSchema = z.object({
-    _id: z.string(),
-    name: z.string(),
-    last_name: z.string()
-})
-
-export const CredentialsSchema = z.object({
-    _id: z.string(),
-    userKey: z.string(),
-    branch: z.object({
-        name: z.string()
-    }),
-    user: CredentialsUserSchema,
-    role: z.enum(Object.values(MEMBER_ROLES)),
-});
-
 // ==========================================
 // 2 - TYPES
 // ==========================================
@@ -74,10 +58,6 @@ export type BusinessMembers = z.infer<
 export type BusinessMember = z.infer<
     typeof BusinessMembersSchema
 >[0];
-
-export type Credentials = z.infer<
-    typeof CredentialsSchema
->;
 
 export type FoundMember = {
     foundMember: Member[];
@@ -103,28 +83,6 @@ export type CredentialsDetails = {
     last_name: string;
 }
 
-export type UpdateCredentialsForm = {
-    name: string,
-    role: MemberRole,
-    userKey: string,
-    branchName: string,
-    password: string,
-    passwordConfirm: string
-}
-
-export type UpdateMemberCredentials = {
-    formData: Pick<UpdateCredentialsForm, "name" | "role" | "userKey" | "password" | "passwordConfirm">;
-    memberId: Member["_id"];
-    branchId: Branch["_id"];
-    businessId: Business["_id"];
-};
-
-
-export type GetMemberById = {
-    _id: Business["_id"];
-    memberId: Member["_id"];
-};
-
 // ==========================================
 // 3 - PARAMS TYPES
 // ==========================================
@@ -134,6 +92,16 @@ export type GetByParams = {
     businessId: Business["_id"];
     branchId: Branch["_id"];
 };
+
+export type GetMemberById = {
+    _id: Business["_id"];
+    memberId: Member["_id"];
+};
+
+export type getCredentials = {
+    branchId: Branch["_id"];
+    employeeId: Member["_id"];
+}
 
 export type SearchMemberParams = {
     search: string;

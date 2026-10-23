@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { GET_TOKEN_KEY, SET_TOKEN_KEY } from "@/utils/key";
 import { getApiErrorMessage } from "../lib";
 
-interface JwtPayload {
+export interface JwtPayload {
     id: string;
     type: "owner" | "employee";
     iat: number;

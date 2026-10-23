@@ -43,7 +43,9 @@ export default function router() {
           <Route path="/dashboard/redirect" element={<DashboardRedirect />} />
           {/* Owner - Routes */}
           <Route
-            element={<RoleMiddleware allowedRoles={[MEMBER_ROLES.OWNER]} />}
+            element={<RoleMiddleware allowedRoles={
+              [MEMBER_ROLES.OWNER]
+            } />}
           >
             <Route path="/dashboard" element={<OwnerLayout />}>
               {/* Dashboard */}
@@ -79,15 +81,7 @@ export default function router() {
           </Route>
 
           <Route
-            element={
-              <RoleMiddleware
-                allowedRoles={[
-                  MEMBER_ROLES.ADMIN,
-                  MEMBER_ROLES.MANAGER,
-                  MEMBER_ROLES.STAFF,
-                ]}
-              />
-            }
+            element={<RoleMiddleware allowedRoles={[MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER, MEMBER_ROLES.STAFF]} />}
           >
             {/* Layout for Branch - Role["ADMIN | MANAGER | STAFF | OWNER"] */}
             <Route path="branches" element={<BranchesLayout />}>
@@ -96,7 +90,11 @@ export default function router() {
             <Route path="/branch" element={<BranchLayout />}>
               <Route index element={<EmployeeBranchView />} />
               <Route path="equipo" element={<ManageTeamView />} />
-              <Route path="equipo-example" element={<ManageTeamExampleView />} />
+              <Route path="credentials" element={<EditMemberCredentialsView />} />
+              <Route
+                path="equipo-example"
+                element={<ManageTeamExampleView />}
+              />
               <Route path="products" element={<ProductsView />} />
               <Route path="products-example" element={<ProductsModule />} />
             </Route>

@@ -47,6 +47,8 @@ export const queryKeys = {
     branchesPage: (page: number) =>
       ["employee", "branches", "page", page] as const,
     branches: () => ["employee", "branches", "all"] as const,
+    credentials: (branchId: Branch["_id"], employee: Member["_id"]) =>
+      ["employee", "credentials", branchId, employee] as const,
   },
 
   branch: {
