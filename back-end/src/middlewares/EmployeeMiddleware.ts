@@ -2,12 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { paginate, PaginationResult } from "../lib/pagination";
 import { IBranch } from "../models/Branch";
 import { BranchSession } from "../models/BranchAccess";
-import { MEMBER_ROLES, IMember, BranchEmployee } from "../models/Member";
+import { MEMBER_ROLES, IMember, BranchEmployee, Member } from "../models/Member";
 import { Credential, ICredential } from "../models/Credential";
-import { checkPassword, hashAccessToken } from "../utils";
+import { checkPassword, escapeRegex, hashAccessToken } from "../utils";
 import { body, param, query } from "express-validator";
 import { BranchSchedule } from "../models/BranchSchedule";
 import { HydratedDocument } from "mongoose";
+import { toBranchEmployee } from "../mappers/BranchEmployee.mapper";
 
 declare global {
     namespace Express {
@@ -16,6 +17,7 @@ declare global {
             myBranch: IBranch;
             employees: PaginationResult<BranchEmployee>;
             employee: BranchEmployee;
+            searchEmployee: PaginationResult<BranchEmployee>;
             employeesStats: {
                 activeEmployees: number;
                 totalEmployees: number;
@@ -77,13 +79,13 @@ export const branchIdRules = [
 // Validar los IDs de la sucursal y del empleado.
 export const employeeParamsRules = [
     ...branchIdRules,
-    query("userKey")
+    param("search")
         .isString()
-        .withMessage("El userKey debe ser una cadena de texto.")
+        .withMessage("La palabra clave debe ser una cadena de texto.")
         .bail()
         .trim()
         .notEmpty()
-        .withMessage("El userKey es obligatorio.")
+        .withMessage("La palabra clave es obligatorio.")
 ];
 
 // Validaciones para POST /branch/:branchId/access.
@@ -182,11 +184,10 @@ export async function accessToBranch(req: Request, res: Response, next: NextFunc
     }
 }
 
-
 // Busca un empleado por userKey para los flujos que lo necesitan.
 export const employeeExist = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {branchId, employeeId} = req.params;
+        const { branchId, employeeId } = req.params;
 
         if (!branchId || !employeeId) {
             return res.status(400).json({ message: "Debes proporcionar un userKey válido." });
@@ -514,25 +515,83 @@ export async function isBranchSessionValid(req: Request, res: Response, next: Ne
     }
 }
 
-
-// Obtener un empleado específico que pertenezca a la sucursal autorizada.
-export const getEmployeeFromBranch = async (req: Request, res: Response, next: NextFunction) => {
+// Buscar employees
+export const getSearchEmployee = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
-        const { employeeId } = req.params;
-        const branchId = req.myBranch?._id;
+        const { branchId, search } = req.params;
 
-        if (!branchId) {
-            return res.status(403).json({ message: "No se pudo determinar la sucursal autorizada." });
+        if (typeof search !== "string" || !search.trim()) {
+            return res.status(400).json({
+                message: "Debes proporcionar un texto de búsqueda.",
+            });
         }
 
-        const credential = await Credential.findOne({ user: employeeId, branch: branchId })
-            .populate("user", "-password -__v -createdAt -updatedAt");
+        const searchValue = escapeRegex(search.trim());
+        const exactMatch = new RegExp(`^${searchValue}$`, "i");
 
-        if (!credential?.user) {
-            return res.status(404).json({ message: "No se encontró el empleado en esta sucursal." });
-        }
+        const members = await Member.find({
+            $or: [
+                { name: exactMatch },
+                { last_name: exactMatch },
+                { email: exactMatch },
+                {
+                    $expr: {
+                        $regexMatch: {
+                            input: {
+                                $concat: ["$name", " ", "$last_name"],
+                            },
+                            regex: `^${searchValue}$`,
+                            options: "i",
+                        },
+                    },
+                },
+            ],
+        })
+            .select("_id")
+            .lean();
 
-        req.employee = credential.user as unknown as BranchEmployee;
+        const memberIds = members.map(({ _id }) => _id);
+
+        const result = await paginate(
+            Credential,
+            {
+                branch: branchId,
+                user: { $in: memberIds },
+            },
+            {
+                page: req.query.page,
+                sort: { updatedAt: -1 },
+                select: "user role",
+                populate: {
+                    path: "user",
+                    select: "-password -__v -createdAt -updatedAt",
+                },
+            }
+        );
+
+        const employees: BranchEmployee[] = result.data
+            .filter((credential) => {
+                const user = credential.user;
+
+                return user !== null
+                    && typeof user === "object"
+                    && "_id" in user;
+            })
+            .map((credential) => {
+                const user = credential.user as HydratedDocument<IMember>;
+                const member = user.toObject();
+
+                return toBranchEmployee(member, credential);
+            });
+
+        req.searchEmployee = {
+            data: employees,
+            pagination: result.pagination,
+        };
 
         next();
     } catch (error) {

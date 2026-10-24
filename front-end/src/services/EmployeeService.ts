@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse, type setActiveBranch, type Response, type ScheduleDataForm, type Credentials, type getCredentials, credentialsSchema, type updateEmployeeCredentialsForms } from "@/types/Index.types";
+import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse, type setActiveBranch, type Response, type ScheduleDataForm, type Credentials, type getCredentials, credentialsSchema, type updateEmployeeCredentialsForms, type searchEmployee, type GetEmployees, getEmployeesSchema } from "@/types/Index.types";
 import { isAxiosError } from "axios";
 import { getApiErrorMessage } from "../lib";
 import { LAST_BRANCH_KEY } from "@/utils/key";
@@ -20,7 +20,7 @@ export class EmployeeService {
         }
     }
 
-    static async getEmployees(page: number = 1, branchId: Branch["_id"]): Promise<Employees> {
+    static async getEmployees(branchId: Branch["_id"], page: number): Promise<Employees> {
         try {
             const { data } = await api.get<Employees>(`/employee/branch/${branchId}/employees?page=${page}`);
             const response = employeesSchema.safeParse(data);
@@ -119,6 +119,23 @@ export class EmployeeService {
         try {
             const { data } = await api.patch<Response>(`/employee/${branchId}/${employeeId}/update/credentials`, formData);
             return data
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(getApiErrorMessage(error), { cause: error });
+            }
+        }
+    }
+
+    static async searchEmployee({ page, search, branchId }: searchEmployee): Promise<GetEmployees > {
+        try {
+            const { data } = await api<GetEmployees>(`/employee/branch/${branchId}/employees/${search}?page=${page}`);
+            const response = getEmployeesSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data
+            }
+
+            throw new Error("La respuesta no cumple con el esquema, favor de revisar tus types de datos");
         } catch (error) {
             if (isAxiosError(error) && error.response) {
                 throw new Error(getApiErrorMessage(error), { cause: error });

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { MEMBER_ROLES, type MemberRole } from "./BusinessMember.type";
 import { paginationSchema } from "./Pagination.type";
+import type { Branch } from "./Branch.types";
 
 // ==========================================
 // 0 - SCHEMAS
@@ -52,13 +53,17 @@ export const employeesSchema = z.object({
     stats: statsSchema,
     pagination: paginationSchema
 })
-
+export const getEmployeesSchema = z.object({
+    data: z.array(employeeSchema),
+    pagination: paginationSchema
+})
 // ==========================================
 // 1 - TYPES
 // ==========================================
 
 export type Employee = z.infer<typeof employeeSchema>;
 export type Employees = z.infer<typeof employeesSchema>;
+export type GetEmployees = z.infer<typeof getEmployeesSchema>;
 
 export type Category = z.infer<typeof CategorySchema>;
 export type Categories = z.infer<typeof CategoriesSchema>;
@@ -88,4 +93,16 @@ export type updateEmployeeCredentialsForms = {
 export type accessBranchResponse = {
     message: string;
     expiresAt: string;
+}
+
+export type searchEmployee = {
+    branchId: Branch["_id"];
+    search: string;
+    page?: number
+}
+
+export type searchEmplooyeForm = {
+    role: MemberRole | null,
+    isActive: boolean
+    search: string
 }

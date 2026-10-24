@@ -3,6 +3,7 @@ import { queryKeys } from "@/lib/queryKeys";
 import { EmployeeService } from "@/services/EmployeeService";
 import type { Branch, setActiveBranch } from "@/types/Branch.types";
 import type { getCredentials } from "@/types/BusinessMember.type";
+import type { searchEmployee } from "@/types/Employee.type";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -57,7 +58,7 @@ export function useGetEmployees(page: number) {
     return useQuery({
         queryKey: queryKeys.employee.page(page),
         queryFn: () =>
-            EmployeeService.getEmployees(page, currentBranchId),
+            EmployeeService.getEmployees(currentBranchId, page),
         enabled: Boolean(currentBranchId && page),
     });
 }
@@ -100,5 +101,26 @@ export function useUpdateEmployeeCredentials() {
         onError: (error: Error) => {
             toast.error(error.message);
         }
+    });
+}
+
+export function useSearchEmployee({
+    page,
+    search,
+    branchId,
+}: searchEmployee) {
+    return useQuery({
+        queryKey: queryKeys.employee.search(
+            branchId,
+            search,
+            page
+        ),
+        queryFn: () =>
+            EmployeeService.searchEmployee({
+                page,
+                search,
+                branchId,
+            }),
+        enabled: Boolean(branchId && search.trim()),
     });
 }

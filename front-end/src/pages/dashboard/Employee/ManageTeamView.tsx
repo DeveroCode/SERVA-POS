@@ -7,22 +7,32 @@ import usePagination from "@/hooks/usePagination";
 import { useUser } from "@/hooks/useUser";
 import { useGetEmployees } from "@/mutations/useMutationEmployee";
 import Loader from "@/pages/Loader";
-import { MEMBER_ROLES } from "@/types/BusinessMember.type";
+import { MEMBER_ROLES } from "@/types/Index.types";
+import type { GetEmployees } from "@/types/Index.types";
 import { UserPlus, Users } from "lucide-react";
+import { useState } from "react";
 
 export default function ManageTeamView() {
-  const { page, setPage, resetPage } = usePagination();
-  //  Load User Auth
-  const { data: user, isLoading: isLoadingUser } = useUser();
-  //   Load last branch visited
+  // Load last branch visited
   const { currentBranchId } = useBusinessContext();
-  //   Load Branch
-  const { data: branch, isLoading } = useEmployeeBranch(currentBranchId);
+
+  // Found employees
+  const { page, setPage, resetPage } = usePagination();
+  const [foundEmployee, setFoundEmployee] = useState<GetEmployees | null>(null);
+
   // Load Employees
-  const { data: employess, isLoading: isLoadingEmployees } =
+  const { data: employees, isLoading: isLoadingEmployees } =
     useGetEmployees(page);
 
-    const filteredEmployees = employess?.data ?? [];
+  // Load User Auth
+  const { data: user, isLoading: isLoadingUser } = useUser();
+
+  // Load Branch
+  const { data: branch, isLoading } = useEmployeeBranch(currentBranchId);
+
+  // Employees to display
+  const displayedEmployees = foundEmployee ?? employees;
+  const filteredEmployees = displayedEmployees?.data ?? [];
 
   if (isLoading || isLoadingUser || isLoadingEmployees) return <Loader />;
 
@@ -52,13 +62,18 @@ export default function ManageTeamView() {
         )}
       </div>
 
-      <EmployeeMetricsCard stats={employess.stats} />
+      <EmployeeMetricsCard stats={employees.stats} />
 
-      {/* Filtered by roles and another filters */}
-      <SearchEmployee />
+      {/* Filtered by roles and other filters */}
+      <SearchEmployee page={page} onSearch={setFoundEmployee}  resetPage={resetPage}/>
 
       {/* Table Employees */}
-      <EmployeeTable onPageChange={setPage} pagination={employess.pagination} role={user.role} filteredEmployees={filteredEmployees} />
+      <EmployeeTable
+        onPageChange={setPage}
+        role={user?.role}
+        pagination={displayedEmployees?.pagination}
+        filteredEmployees={filteredEmployees}
+      />
     </>
   );
 }

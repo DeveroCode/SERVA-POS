@@ -28,7 +28,6 @@ import ProductsModule from "./pages/dashboard/Employee/ProductView";
 import ProductsView from "./pages/dashboard/Employee/ProductsView";
 import EmployeeBranchView from "./pages/dashboard/Employee/EmployeeBranchView";
 import ManageTeamView from "./pages/dashboard/Employee/ManageTeamView";
-import ManageTeamExampleView from "./pages/dashboard/Employee/ManageTeamExampleView";
 
 export default function router() {
   return (
@@ -91,10 +90,6 @@ export default function router() {
               <Route index element={<EmployeeBranchView />} />
               <Route path="equipo" element={<ManageTeamView />} />
               <Route path="credentials" element={<EditMemberCredentialsView />} />
-              <Route
-                path="equipo-example"
-                element={<ManageTeamExampleView />}
-              />
               <Route path="products" element={<ProductsView />} />
               <Route path="products-example" element={<ProductsModule />} />
             </Route>

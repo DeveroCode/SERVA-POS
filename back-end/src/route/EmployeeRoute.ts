@@ -7,10 +7,9 @@ import {
     branchAccessRules,
     branchIdRules,
     employeeExist,
-    employeeParamsRules,
-    getEmployeeFromBranch,
-    getMyBranches,
+    employeeParamsRules, getMyBranches,
     getMyEmployees,
+    getSearchEmployee,
     isBranchSessionValid,
     isValidCredentials,
     setIsActiveRules,
@@ -20,8 +19,6 @@ import { handleInputErrors } from "../utils/validator";
 import { hasRole } from "../middlewares/GlobalMiddleware";
 import { MEMBER_ROLES } from "../models/Member";
 import { BranchController } from "../controllers/BranchController";
-import { existBranch, existMemberInToBranch } from "../middlewares/BranchMiddeware";
-import { existMember } from "../middlewares/MemberMiddleware";
 import { getCredentialsRules, updateMemberCredentialsRules } from "../middlewares/BusinessMemberMiddleware";
 import { BusinessMemberController } from "../controllers/BusinessMemberController";
 
@@ -34,7 +31,7 @@ router.post("/branch/:branchId/access", branchAccessRules, handleInputErrors, is
 router.get("/branch/:branchId", branchIdRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.EMPLOYEE, MEMBER_ROLES.STAFF, MEMBER_ROLES.MANAGER), EmployeeController.getBranchById);
 router.put("/branch/:branchId/setActive", setIsActiveRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), BranchController.setIsActive);
 router.get("/branch/:branchId/employees", branchIdRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), getMyEmployees, EmployeeController.getEmployees);
-router.get("/branch/:branchId/employees/search", employeeParamsRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), getEmployeeFromBranch, EmployeeController.getEmployee);
+router.get("/branch/:branchId/employees/:search", employeeParamsRules, handleInputErrors, isBranchSessionValid, accessToBranch, getSearchEmployee, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), EmployeeController.getEmployee);
 router.put("/branch/:branchId/schedule/set", setScheduleRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), BranchController.setSchedule);
 router.get("/categories", EmployeeController.getCategories);
 
