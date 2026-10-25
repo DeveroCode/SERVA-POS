@@ -17,7 +17,7 @@ export const MemberSchema = z.object({
     business: z.object({
         name: z.string(),
     }),
-    role: z.enum(Object.values(MEMBER_ROLES)),
+    role: z.enum(Object.values(MEMBER_ROLES)).optional(),
     lastLogin: z.string().optional(),
 });
 
