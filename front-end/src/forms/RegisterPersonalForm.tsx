@@ -7,7 +7,7 @@ import {
   XCircle
 } from "lucide-react";
 
-import { MEMBER_ROLES_EXPLAIN, type RegisterMember } from "@/types/Index.types";
+import { type RegisterMember } from "@/types/Index.types";
 import { useFormContext } from "react-hook-form";
 import ErrorAlert from "@/Components/Alerts/ErrorAlert";
 
@@ -179,31 +179,6 @@ export default function RegisterPersonalForm() {
               Define el nivel de acceso general del usuario dentro de SERVA.
             </p>
           </div>
-        </div>
-
-        <div className="space-y-1">
-          <label
-            htmlFor="role"
-            className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider"
-          >
-            Rol del Usuario <span className="text-orange-700">*</span>
-          </label>
-
-          <select
-            id="role"
-            className="w-full px-3.5 py-2 text-xs bg-slate-50/60 border border-slate-200/90 rounded-xl font-medium text-slate-800 focus:bg-white focus:border-orange-700 focus:ring-4 focus:ring-orange-700/10 focus:outline-none transition-all"
-            {...register("role", {
-              required: "El rol del usuario es obligatorio",
-            })}
-            name="role"
-          >
-            {Object.entries(MEMBER_ROLES_EXPLAIN).map(([role, description]) => (
-              <option key={role} value={role.charAt(0).toLocaleLowerCase() + role.slice(1).toLowerCase()}>
-                {description}
-              </option>
-            ))}
-          </select>
-          {errors.role && <ErrorAlert>{errors.role.message}</ErrorAlert>}
         </div>
       </div>
 

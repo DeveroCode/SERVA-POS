@@ -1,7 +1,7 @@
 import { UserPlus, HelpCircle, ArrowLeft } from "lucide-react";
 import RegisterPersonalForm from "@/forms/RegisterPersonalForm";
 import { FormProvider, useForm } from "react-hook-form";
-import { MEMBER_ROLES, type Business, type RegisterMember } from "@/types/Index.types";
+import { type Business, type RegisterMember } from "@/types/Index.types";
 import { useRegisterMember } from "@/mutations/useMutationBusinessMember";
 import { Link, useParams } from "react-router-dom";
 import { LAST_BUSINESS_KEY } from "@/utils/key";
@@ -17,7 +17,6 @@ export default function RegisterPersonalView() {
       email: "",
       phone_number: "",
       isActive: true,
-      role: MEMBER_ROLES.STAFF, // Set default role
     },
   });
 
