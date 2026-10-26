@@ -126,9 +126,32 @@ export class EmployeeService {
         }
     }
 
-    static async searchEmployee({ page, search, branchId }: searchEmployee): Promise<GetEmployees > {
+    static async searchEmployee({ page, search, branchId }: searchEmployee): Promise<GetEmployees> {
         try {
-            const { data } = await api<GetEmployees>(`/employee/branch/${branchId}/employees/${search}?page=${page}`);
+            const { data } = await api<GetEmployees>(`/employee/branch/${branchId}/${search}?page=${page}`);
+            const response = getEmployeesSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data
+            }
+
+            throw new Error("La respuesta no cumple con el esquema, favor de revisar tus types de datos");
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(getApiErrorMessage(error), { cause: error });
+            }
+        }
+    }
+
+    static async searchByFilters({ branchId, isActive, role, page }: searchEmployee): Promise<GetEmployees> {
+        try {
+            const { data } = await api<GetEmployees>(`/employee/branch/${branchId}/filters`, {
+                params: {
+                    isActive,
+                    role,
+                    page
+                }
+            });
             const response = getEmployeesSchema.safeParse(data);
 
             if (response.success) {

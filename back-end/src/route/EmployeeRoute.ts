@@ -1,4 +1,3 @@
-
 import { Router } from "express";
 import { EmployeeController } from "../controllers/EmployeeController";
 import { isAuthenticate } from "../middlewares/UserMiddlewares";
@@ -7,9 +6,12 @@ import {
     branchAccessRules,
     branchIdRules,
     employeeExist,
-    employeeParamsRules, getMyBranches,
+    employeeParamsRules,
+    employeeParamsRulesByFilters,
+    getMyBranches,
     getMyEmployees,
     getSearchEmployee,
+    getSearchEmployeeByFilters,
     isBranchSessionValid,
     isValidCredentials,
     setIsActiveRules,
@@ -26,17 +28,60 @@ const router: Router = Router();
 
 router.use(isAuthenticate);
 
+// Sesión de sucursal + acceso del miembro a la sucursal
+const branchGuard = [isBranchSessionValid, accessToBranch];
+const adminOrManager = hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER);
+
 router.get("/branches", getMyBranches, EmployeeController.getMyBranches);
 router.post("/branch/:branchId/access", branchAccessRules, handleInputErrors, isValidCredentials, EmployeeController.accessBranch);
-router.get("/branch/:branchId", branchIdRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.EMPLOYEE, MEMBER_ROLES.STAFF, MEMBER_ROLES.MANAGER), EmployeeController.getBranchById);
-router.put("/branch/:branchId/setActive", setIsActiveRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), BranchController.setIsActive);
-router.get("/branch/:branchId/employees", branchIdRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), getMyEmployees, EmployeeController.getEmployees);
-router.get("/branch/:branchId/employees/:search", employeeParamsRules, handleInputErrors, isBranchSessionValid, accessToBranch, getSearchEmployee, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), EmployeeController.getEmployee);
-router.put("/branch/:branchId/schedule/set", setScheduleRules, handleInputErrors, isBranchSessionValid, accessToBranch, hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER), BranchController.setSchedule);
+router.get(
+    "/branch/:branchId",
+    branchIdRules, handleInputErrors, branchGuard,
+    hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.EMPLOYEE, MEMBER_ROLES.STAFF, MEMBER_ROLES.MANAGER),
+    EmployeeController.getBranchById
+);
+router.put(
+    "/branch/:branchId/setActive",
+    setIsActiveRules, handleInputErrors, branchGuard, adminOrManager,
+    BranchController.setIsActive
+);
+router.put(
+    "/branch/:branchId/schedule/set",
+    setScheduleRules, handleInputErrors, branchGuard, adminOrManager,
+    BranchController.setSchedule
+);
+
+// Rutas con segmento fijo SIEMPRE antes de la ruta dinámica /:search
+router.get(
+    "/branch/:branchId/employees",
+    branchIdRules, handleInputErrors, branchGuard, adminOrManager,
+    getMyEmployees,
+    EmployeeController.getEmployees
+);
+router.get(
+    "/branch/:branchId/filters",
+    employeeParamsRulesByFilters, handleInputErrors, branchGuard, adminOrManager,
+    getSearchEmployeeByFilters,
+    EmployeeController.getEmployeesByFilters
+);
+router.get(
+    "/branch/:branchId/:search",
+    employeeParamsRules, handleInputErrors, branchGuard, adminOrManager,
+    getSearchEmployee,
+    EmployeeController.getEmployee
+);
 router.get("/categories", EmployeeController.getCategories);
 
 // Business Member Controller
-router.get("/:branchId/:employeeId/get/credentials", getCredentialsRules, handleInputErrors, isBranchSessionValid, accessToBranch, BusinessMemberController.getCredentials);
-router.patch('/:branchId/:employeeId/update/credentials',  updateMemberCredentialsRules, handleInputErrors, isBranchSessionValid, accessToBranch, employeeExist, BusinessMemberController.updateMemberCredentials);
+router.get(
+    "/:branchId/:employeeId/get/credentials",
+    getCredentialsRules, handleInputErrors, branchGuard,
+    BusinessMemberController.getCredentials
+);
+router.patch(
+    "/:branchId/:employeeId/update/credentials",
+    updateMemberCredentialsRules, handleInputErrors, branchGuard, employeeExist,
+    BusinessMemberController.updateMemberCredentials
+);
 
 export default router;

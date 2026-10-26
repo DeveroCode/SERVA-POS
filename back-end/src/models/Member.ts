@@ -6,7 +6,8 @@ export const MEMBER_ROLES = {
     ADMIN: "admin",
     MANAGER: "manager",
     STAFF: "staff",
-    EMPLOYEE: "employee"
+    EMPLOYEE: "employee",
+    CASHIER: "cashier"
 };
 
 export type MemberRoles = typeof MEMBER_ROLES[keyof typeof MEMBER_ROLES];

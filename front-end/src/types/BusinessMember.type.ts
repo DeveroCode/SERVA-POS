@@ -14,7 +14,7 @@ export const MEMBER_ROLES = {
     EMPLOYEE: "employee",
     MANAGER: "manager",
     STAFF: "staff",
-    CHASHER: "chasher"
+    CASHIER: "cashier"
 } as const;
 
 export const MEMBER_ROLES_EXPLAIN = {
@@ -22,7 +22,7 @@ export const MEMBER_ROLES_EXPLAIN = {
     ADMIN: "Administrador (Admin)",
     MANAGER: "Gerente (Manager)",
     STAFF: "Empleado (Staff)",
-    CHASHER: "Cajero (Chasher)"
+    CASHIER: "Cajero (Cashier)",
 };
 
 export type MemberRole =

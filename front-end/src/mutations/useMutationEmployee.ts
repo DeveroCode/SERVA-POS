@@ -4,7 +4,7 @@ import { EmployeeService } from "@/services/EmployeeService";
 import type { Branch, setActiveBranch } from "@/types/Branch.types";
 import type { getCredentials } from "@/types/BusinessMember.type";
 import type { searchEmployee } from "@/types/Employee.type";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -59,6 +59,7 @@ export function useGetEmployees(page: number) {
         queryKey: queryKeys.employee.page(page),
         queryFn: () =>
             EmployeeService.getEmployees(currentBranchId, page),
+        placeholderData: keepPreviousData,
         enabled: Boolean(currentBranchId && page),
     });
 }
@@ -68,6 +69,7 @@ export function useGetCredentiasl({ branchId, employeeId }: getCredentials) {
         queryKey: queryKeys.employee.credentials(branchId, employeeId),
         queryFn: () =>
             EmployeeService.getCredentials({ branchId, employeeId }),
+        placeholderData: keepPreviousData,
         enabled: Boolean(branchId && employeeId),
     });
 }
@@ -115,6 +117,7 @@ export function useSearchEmployee({
             search,
             page
         ),
+        placeholderData: keepPreviousData,
         queryFn: () =>
             EmployeeService.searchEmployee({
                 page,
@@ -123,4 +126,13 @@ export function useSearchEmployee({
             }),
         enabled: Boolean(branchId && search.trim()),
     });
+}
+
+export function useSearchEmployeeByFilter({ page, isActive, role, branchId }: searchEmployee) {
+    return useQuery({
+        queryKey: queryKeys.employee.searchByFilter(branchId, isActive, role, page),
+        queryFn: () => EmployeeService.searchByFilters({ branchId, isActive, role, page }),
+        placeholderData: keepPreviousData,
+        enabled: Boolean(branchId),
+    })
 }

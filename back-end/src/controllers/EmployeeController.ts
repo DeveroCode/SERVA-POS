@@ -78,4 +78,11 @@ export class EmployeeController {
             return res.status(500).json({ message: 'Internal server error' });
         }
     }
+    static async getEmployeesByFilters(req: Request, res: Response) {
+        try {
+            return res.status(200).json(req.searchEmployee);
+        } catch (error) {
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
 }

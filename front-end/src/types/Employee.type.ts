@@ -19,7 +19,7 @@ export const credentialsSchema = z.object({
     branch: z.object({
         name: z.string(),
     }),
-    user:  CredentialsUserSchema,
+    user: CredentialsUserSchema,
     role: z.enum(Object.values(MEMBER_ROLES)),
 });
 
@@ -97,12 +97,26 @@ export type accessBranchResponse = {
 
 export type searchEmployee = {
     branchId: Branch["_id"];
-    search: string;
+    search?: string;
     page?: number
+    role?: MemberRole | null
+    isActive?: boolean | null
 }
 
 export type searchEmplooyeForm = {
     role: MemberRole | null,
-    isActive: boolean
+    isActive: boolean | null,
     search: string
+}
+// ==========================================
+// 2 - CONDITIONALS
+// ==========================================
+export const IS_ACTIVE_FILTERS = {
+    "TRUE": true,
+    "FALSE": false
+}
+
+export const IS_ACTIVE_FILTERS_EXPLAIN = {
+    "TRUE": "Usuarios Activos",
+    "FALSE": "Usuarios Inactivos"
 }
