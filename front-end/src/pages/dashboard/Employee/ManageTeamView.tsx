@@ -21,7 +21,7 @@ export default function ManageTeamView() {
   const [foundEmployee, setFoundEmployee] = useState<GetEmployees | null>(null);
 
   // Load Employees
-  const { data: employees, isLoading: isLoadingEmployees } =
+  const { data: employees, isLoading: isLoadingEmployees, isError: isErrorEmployees } =
     useGetEmployees(page);
 
   // Load User Auth
@@ -35,6 +35,12 @@ export default function ManageTeamView() {
   const filteredEmployees = displayedEmployees?.data ?? [];
 
   if (isLoading || isLoadingUser || isLoadingEmployees) return <Loader />;
+
+  if (isErrorEmployees || !employees || !user || !branch) {
+    return (
+      <p className="text-sm text-slate-500">No se pudo cargar el equipo.</p>
+    );
+  }
 
   return (
     <>
@@ -65,7 +71,11 @@ export default function ManageTeamView() {
       <EmployeeMetricsCard stats={employees.stats} />
 
       {/* Filtered by roles and other filters */}
-      <SearchEmployee page={page} onSearch={setFoundEmployee}  resetPage={resetPage}/>
+      <SearchEmployee
+        page={page}
+        onSearch={setFoundEmployee}
+        resetPage={resetPage}
+      />
 
       {/* Table Employees */}
       <EmployeeTable

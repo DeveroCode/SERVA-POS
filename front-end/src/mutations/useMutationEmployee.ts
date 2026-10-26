@@ -133,6 +133,6 @@ export function useSearchEmployeeByFilter({ page, isActive, role, branchId }: se
         queryKey: queryKeys.employee.searchByFilter(branchId, isActive, role, page),
         queryFn: () => EmployeeService.searchByFilters({ branchId, isActive, role, page }),
         placeholderData: keepPreviousData,
-        enabled: Boolean(branchId),
+        enabled: Boolean(branchId) && (role !== null || isActive !== null),
     })
 }
