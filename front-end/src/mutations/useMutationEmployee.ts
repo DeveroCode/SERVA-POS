@@ -3,7 +3,7 @@ import { queryKeys } from "@/lib/queryKeys";
 import { EmployeeService } from "@/services/EmployeeService";
 import type { Branch, setActiveBranch } from "@/types/Branch.types";
 import type { getCredentials } from "@/types/BusinessMember.type";
-import type { searchEmployee } from "@/types/Employee.type";
+import type { employeeActive, searchEmployee } from "@/types/Employee.type";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -135,4 +135,17 @@ export function useSearchEmployeeByFilter({ page, isActive, role, branchId }: se
         placeholderData: keepPreviousData,
         enabled: Boolean(branchId) && (role !== null || isActive !== null),
     })
+}
+
+export function useEmployeeActive() {
+    const { QC } = useBusinessContext();
+
+    return useMutation({
+        mutationFn: ({ branchId, employeeId, isActive }: employeeActive) => EmployeeService.employeeActive({ branchId, employeeId, isActive }),
+        onSuccess: (data) => {
+            toast.success(data.message);
+            QC.invalidateQueries({ queryKey: queryKeys.employee.root });
+
+        }
+    });
 }

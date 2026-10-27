@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { Category } from "../models/Category";
 import { BranchSession } from "../models/BranchAccess";
 import { hashAccessToken } from "../utils";
+import { Member } from "../models/Member";
 
 export class EmployeeController {
     static async getMyBranches(req: Request, res: Response) {
@@ -56,7 +57,7 @@ export class EmployeeController {
     }
     static async getEmployees(req: Request, res: Response) {
         try {
-            return res.status(200).json({...req.employees, stats: req.employeesStats});
+            return res.status(200).json({ ...req.employees, stats: req.employeesStats });
         } catch (error) {
             return res.status(500).json({ message: 'Internal server error' });
         }
@@ -82,6 +83,26 @@ export class EmployeeController {
         try {
             return res.status(200).json(req.searchEmployee);
         } catch (error) {
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    static async employeeActive(req: Request, res: Response) {
+        const { _id } = req.employee;
+        try {
+            const { isActive } = req.body;
+            console.log(isActive);
+            const employee = await Member.findOne({ _id });
+
+            if (!employee) {
+                const error = new Error("Empleado no encontrado.");
+                return res.status(404).json({ message: error.message });
+            }
+            employee.isActive = isActive;
+            await employee.save();
+            return res.status(200).json({ message: "Empleado actualizado correctamente." });
+        } catch (error) {
+            console.log(error);
             return res.status(500).json({ message: 'Internal server error' });
         }
     }

@@ -127,8 +127,6 @@ export class BranchController {
         }
     }
 
-
-
     static async setSchedule(req: Request, res: Response) {
         const { _id } = req.myBranch;
 

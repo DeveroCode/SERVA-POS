@@ -35,7 +35,7 @@ export const queryKeys = {
       ["bussines", "credentials", businessId, branchId, memberId] as const,
   },
   employee: {
-    all: ["employee", "all"] as const,
+   root: ["employee"] as const,
     page: (
       page: number
     ) =>

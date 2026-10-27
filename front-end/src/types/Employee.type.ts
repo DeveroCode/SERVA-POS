@@ -103,6 +103,12 @@ export type searchEmployee = {
     isActive?: boolean | null
 }
 
+export type employeeActive = {
+    isActive: searchEmployee["isActive"];
+    branchId: searchEmployee["branchId"];
+    employeeId: Employee["_id"];
+}
+
 export type searchEmplooyeForm = {
     role: MemberRole | null,
     isActive: boolean | null,

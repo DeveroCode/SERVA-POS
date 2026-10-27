@@ -2,12 +2,14 @@ import useBusinessContext from "@/hooks/useBusinessContext";
 import { useUser } from "@/hooks/useUser";
 import { SET_EMPLOYEE_ID_KEY } from "@/utils/key";
 import { MEMBER_ROLES, type MemberRole } from "@/types/BusinessMember.type";
-import type { Employee } from "@/types/Employee.type";
+import type { Employee, employeeActive } from "@/types/Employee.type";
 import type { paginationType } from "@/types/Pagination.type";
 import type { User } from "@/types/User.types";
 import { formatActivityDate, getUserInitials } from "../lib";
 import { Edit3, Mail, Power, Users } from "lucide-react";
 import Pagination from "./Pagination";
+import { useEmployeeActive } from "@/mutations/useMutationEmployee";
+import Loader from "@/pages/Loader";
 
 type EmployeeTableProps = {
   filteredEmployees: Employee[];
@@ -23,12 +25,22 @@ export default function EmployeeTable({
   onPageChange,
 }: EmployeeTableProps) {
   const { data: user } = useUser();
-  const { navigate } = useBusinessContext();
-
+  const { navigate, currentBranchId } = useBusinessContext();
+  const { mutate, isPending, isError } = useEmployeeActive();
   const handleSendEditCredentialsa = (id: Employee["_id"]) => {
     localStorage.setItem(SET_EMPLOYEE_ID_KEY, id);
     navigate(`/branch/credentials`);
   };
+
+  const handleSetActiveEmployee = ({
+    employeeId,
+    isActive,
+  }: Pick<employeeActive, "employeeId" | "isActive">) => {
+    mutate({ branchId: currentBranchId, employeeId, isActive });
+  };
+
+  if (isError) return <p>No se pudo cargar el equipo.</p>;
+  if (isPending) return <Loader />;
 
   const isAuthenticated = (_id: string, authId?: User["_id"]) =>
     Boolean(authId) && _id === authId;
@@ -102,7 +114,7 @@ export default function EmployeeTable({
                       ) : emp.isActive === false ? (
                         <span className="inline-flex items-center gap-1 text-amber-700 font-bold">
                           <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                          Invitación enviada
+                          Usuario Inactivo
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 text-slate-400 font-bold">
@@ -138,7 +150,12 @@ export default function EmployeeTable({
 
                             <button
                               type="button"
-                              onClick={() => ""}
+                              onClick={() =>
+                                handleSetActiveEmployee({
+                                  employeeId: emp._id,
+                                  isActive: !emp.isActive,
+                                })
+                              }
                               disabled={isAuthenticated(emp._id, user?._id)}
                               className={`p-1.5 cursor-pointer rounded-lg transition-colors ${
                                 emp.isActive === true

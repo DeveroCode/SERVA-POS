@@ -107,6 +107,17 @@ export const setIsActiveRules = [
         .withMessage("El isActive debe ser un booleano.")
 ];
 
+export const setEmployeeActiveRules = [
+    ...branchIdRules,
+    param("employeeId")
+        .isMongoId()
+        .withMessage("El ID del empleado no es válido.")
+        .bail(),
+    body("isActive")
+        .isBoolean()
+        .withMessage("El isActive debe ser un booleano.")
+];
+
 export const setScheduleRules = [
     ...branchIdRules,
     body("schedule")

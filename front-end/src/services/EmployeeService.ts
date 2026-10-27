@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse, type setActiveBranch, type Response, type ScheduleDataForm, type Credentials, type getCredentials, credentialsSchema, type updateEmployeeCredentialsForms, type searchEmployee, type GetEmployees, getEmployeesSchema } from "@/types/Index.types";
+import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse, type setActiveBranch, type Response, type ScheduleDataForm, type Credentials, type getCredentials, credentialsSchema, type updateEmployeeCredentialsForms, type searchEmployee, type GetEmployees, getEmployeesSchema, type employeeActive } from "@/types/Index.types";
 import { isAxiosError } from "axios";
 import { getApiErrorMessage } from "../lib";
 import { LAST_BRANCH_KEY } from "@/utils/key";
@@ -159,6 +159,17 @@ export class EmployeeService {
             }
 
             throw new Error("La respuesta no cumple con el esquema, favor de revisar tus types de datos");
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(getApiErrorMessage(error), { cause: error });
+            }
+        }
+    }
+
+    static async employeeActive({ branchId, employeeId, isActive }: employeeActive): Promise<Response> {
+        try {
+            const { data } = await api.patch<Response>(`/employee/branch/${branchId}/${employeeId}/active`, { isActive });
+            return data
         } catch (error) {
             if (isAxiosError(error) && error.response) {
                 throw new Error(getApiErrorMessage(error), { cause: error });

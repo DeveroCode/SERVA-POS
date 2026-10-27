@@ -71,6 +71,7 @@ router.get(
     EmployeeController.getEmployee
 );
 router.get("/categories", EmployeeController.getCategories);
+router.patch("/branch/:branchId/:employeeId/active", handleInputErrors, branchGuard, adminOrManager, employeeExist, EmployeeController.employeeActive);
 
 // Business Member Controller
 router.get(

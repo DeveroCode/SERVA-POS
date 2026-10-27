@@ -9,7 +9,7 @@ export function useEmployees(page: number) {
     const { currentBranchId: branchId } = useBusinessContext();
     return useQuery({
         queryKey: queryKeys.employee.page(page),
-        queryFn: () => EmployeeService.getEmployees(page, branchId),
+        queryFn: () => EmployeeService.getEmployees(branchId, page),
         retry: false,
         enabled: !!token && !!branchId,
         staleTime: 1000 * 60 * 10,
