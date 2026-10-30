@@ -10,6 +10,7 @@ import {
   type FoundMember,
   type Member,
 } from "@/types/Index.types";
+import { generateUserKey } from "@/utils/index";
 import { LAST_BUSINESS_KEY } from "@/utils/key";
 import { ArrowLeft, UserCheck } from "lucide-react";
 import { useState } from "react";
@@ -50,6 +51,10 @@ export default function AddPersonnelView() {
     setOpenModalSearch(false);
 
     setValue("memberId", found._id, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue("userKey", generateUserKey(found.name, found.last_name), {
       shouldDirty: true,
       shouldValidate: true,
     });
