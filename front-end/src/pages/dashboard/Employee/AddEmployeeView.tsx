@@ -14,6 +14,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import SearchEmployeeFormView from "./SearchEmployeeFormView";
 import useBusinessContext from "@/hooks/useBusinessContext";
+import { generateUserKey } from "@/utils/index";
 
 export default function AddEmployeeView() {
   const { currentBranchId } = useBusinessContext();
@@ -48,6 +49,10 @@ export default function AddEmployeeView() {
     setOpenModalSearch(false);
 
     setValue("employeeId", found._id, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue("userKey", generateUserKey(found.name, found.last_name), {
       shouldDirty: true,
       shouldValidate: true,
     });

@@ -20,7 +20,7 @@ declare global {
             employee: BranchEmployee;
             searchEmployee: PaginationResult<BranchEmployee>;
             foundEmployee: findEmployee;
-            employeesStats: EmployeesStats;
+            employeesStats: EmployeesStats | null;
         }
     }
 }
@@ -577,6 +577,10 @@ export const searchMembersInBranchBusiness = async (
 
         const alreadyInBranch = await Credential.distinct("user", { branch: branchId });
 
+        if (alreadyInBranch) {
+            return res.status(409).json({ message: "Este miembro ya pertenece a la sucursal." });
+        }
+
         const member = await Member.findOne({
             business: branch.business,
             _id: { $nin: alreadyInBranch },
@@ -596,14 +600,19 @@ export const searchMembersInBranchBusiness = async (
         })
             .select("name last_name")
             .lean();
-
-        console.log(member)
-
-        req.foundEmployee = {
+        const isFoundMember = member ? {
             _id: member._id.toString(),
             name: member.name,
             last_name: member.last_name
-        };
+        } : null;
+
+        if (!isFoundMember) {
+            return res.status(404).json({
+                message: "No se encontró el miembro."
+            });
+        }
+
+        req.foundEmployee = isFoundMember;
 
         next();
     } catch (error) {
