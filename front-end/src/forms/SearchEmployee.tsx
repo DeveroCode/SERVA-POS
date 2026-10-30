@@ -27,20 +27,18 @@ export default function SearchEmployee({
     defaultValues: { search: "", role: null, isActive: null },
   });
 
-  const { handleSubmit, control, setValue, watch } = methods;
+  const { handleSubmit, control, setValue } = methods;
   const searchValue = useWatch({ control, name: "search" });
   const role = useWatch({ control, name: "role" });
   const isActive = useWatch({ control, name: "isActive" });
 
-
   const [submittedSearch, setSubmittedSearch] = useState("");
 
-  // ---- Valores derivados (sin efectos, sin renders extra) ----
-  const hasFilters = role !== null || isActive !== null;
-  const activeSearch = !hasFilters && searchValue.trim() ? submittedSearch : "";
-  const mode = hasFilters ? "filters" : activeSearch ? "search" : "all";
-
-  console.log({ role, isActive, hasFilters, mode });
+  // ---- Valores derivados ----
+  const hasFilters =
+    Boolean(role) || (isActive !== null && isActive !== undefined);
+  const activeSearch = searchValue.trim() ? submittedSearch : "";
+  const mode = activeSearch ? "search" : hasFilters ? "filters" : "all";
 
   const { data: foundEmployee } = useSearchEmployee({
     page,
@@ -51,36 +49,11 @@ export default function SearchEmployee({
   const { data: filteredEmployees } = useSearchEmployeeByFilter({
     page,
     branchId: currentBranchId,
-    isActive,
-    role,
+    isActive: mode === "filters" ? isActive : null,
+    role: mode === "filters" ? role : null,
   });
 
-  // ---- Limpieza reactiva a cambios del formulario ----
-  // setState dentro del callback de una suscripción NO es síncrono en el efecto,
-  // así que la regla no se dispara. Es el uso legítimo de un efecto.
-  useEffect(() => {
-    const subscription = watch((values, { name }) => {
-      // Se activó un filtro → limpiar búsqueda
-      if (
-        (name === "role" || name === "isActive") &&
-        (values.role != null || values.isActive != null)
-      ) {
-        resetPage();
-        setSubmittedSearch("");
-        setValue("search", "");
-        return;
-      }
-
-      // Se vació el input → limpiar búsqueda enviada
-      if (name === "search" && !values.search?.trim()) {
-        setSubmittedSearch("");
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [watch, setValue, resetPage]);
-
-  // ---- Único efecto que informa al padre (no hace setState local) ----
+  // ---- Informa al padre del resultado a mostrar ----
   useEffect(() => {
     if (mode === "all") {
       onSearch(null);
@@ -91,14 +64,21 @@ export default function SearchEmployee({
     }
   }, [mode, filteredEmployees, foundEmployee, onSearch]);
 
-  // ---- Submit: todo en un solo event handler → React lo agrupa en 1 render ----
+  // ---- Event handlers ----
+  // Al cambiar un filtro se descarta la búsqueda de texto.
+  const handleFilterChange = useCallback(() => {
+    resetPage();
+    setSubmittedSearch("");
+    setValue("search", "");
+  }, [resetPage, setValue]);
+
+  // Al buscar por texto se descartan los filtros.
   const handleSendSearch = useCallback(
     (data: searchEmplooyeForm) => {
       resetPage();
       setValue("role", null);
       setValue("isActive", null);
       setSubmittedSearch(data.search.trim());
-      // Si está vacío, mode pasa a "all" y el efecto llama onSearch(null)
     },
     [resetPage, setValue],
   );
@@ -112,7 +92,7 @@ export default function SearchEmployee({
           onSubmit={handleSubmit(handleSendSearch)}
         >
           <SearchEmployeeForm />
-          <FiltersEmployeesForm />
+          <FiltersEmployeesForm onFilterChange={handleFilterChange} />
         </form>
       </FormProvider>
     </div>

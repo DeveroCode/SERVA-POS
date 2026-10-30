@@ -476,6 +476,7 @@ export const getSearchEmployee = async (req: Request, res: Response, next: NextF
             ]
         }).distinct("_id");
 
+        console.log(memberIds);
         req.searchEmployee = await paginateBranchEmployees(
             { branch: branchId, user: { $in: memberIds } },
             req.query.page
