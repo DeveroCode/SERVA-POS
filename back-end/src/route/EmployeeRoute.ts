@@ -3,6 +3,7 @@ import { EmployeeController } from "../controllers/EmployeeController";
 import { isAuthenticate } from "../middlewares/UserMiddlewares";
 import {
     accessToBranch,
+    addMemberToBranchRules,
     branchAccessRules,
     branchIdRules,
     employeeExist,
@@ -14,6 +15,9 @@ import {
     getSearchEmployeeByFilters,
     isBranchSessionValid,
     isValidCredentials,
+    memberBelongsToBranchBusines,
+    searchMembersInBranchBusiness,
+    setEmployeeActiveRules,
     setIsActiveRules,
     setScheduleRules
 } from "../middlewares/EmployeeMiddleware";
@@ -23,6 +27,7 @@ import { MEMBER_ROLES } from "../models/Member";
 import { BranchController } from "../controllers/BranchController";
 import { getCredentialsRules, updateMemberCredentialsRules } from "../middlewares/BusinessMemberMiddleware";
 import { BusinessMemberController } from "../controllers/BusinessMemberController";
+import { MemberController } from "../controllers/MemberController";
 
 const router: Router = Router();
 
@@ -31,7 +36,9 @@ router.use(isAuthenticate);
 // Sesión de sucursal + acceso del miembro a la sucursal
 const branchGuard = [isBranchSessionValid, accessToBranch];
 const adminOrManager = hasRole(MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER);
+const adminOnly = hasRole(MEMBER_ROLES.ADMIN);
 
+/* ----------------------------- Sucursales ------------------------------ */
 router.get("/branches", getMyBranches, EmployeeController.getMyBranches);
 router.post("/branch/:branchId/access", branchAccessRules, handleInputErrors, isValidCredentials, EmployeeController.accessBranch);
 router.get(
@@ -51,6 +58,7 @@ router.put(
     BranchController.setSchedule
 );
 
+/* ------------------------------ Empleados ------------------------------ */
 // Rutas con segmento fijo SIEMPRE antes de la ruta dinámica /:search
 router.get(
     "/branch/:branchId/employees",
@@ -70,18 +78,41 @@ router.get(
     getSearchEmployee,
     EmployeeController.getEmployee
 );
-router.get("/categories", EmployeeController.getCategories);
-router.patch("/branch/:branchId/:employeeId/active", handleInputErrors, branchGuard, adminOrManager, employeeExist, EmployeeController.employeeActive);
 
-// Business Member Controller
+// Buscar un miembro del negocio y agregarlo a la sucursal (solo admin)
+router.get(
+    "/branch/:branchId/search-employee/:search",
+    employeeParamsRules, handleInputErrors, branchGuard, adminOnly,
+    searchMembersInBranchBusiness,
+    EmployeeController.findEmployeeToAdd
+);
+router.post(
+    "/branch/:branchId/employee/:employeeId/add",
+    addMemberToBranchRules, handleInputErrors, branchGuard, adminOnly,
+    memberBelongsToBranchBusines,
+    EmployeeController.addMember
+);
+
+// Activar / desactivar empleado
+router.patch(
+    "/branch/:branchId/:employeeId/active",
+    setEmployeeActiveRules, handleInputErrors, branchGuard, adminOrManager,
+    employeeExist,
+    EmployeeController.employeeActive
+);
+
+router.get("/categories", EmployeeController.getCategories);
+
+/* ------------------------- Credenciales (admin) ------------------------ */
 router.get(
     "/:branchId/:employeeId/get/credentials",
-    getCredentialsRules, handleInputErrors, branchGuard,
+    getCredentialsRules, handleInputErrors, branchGuard, adminOnly,
     BusinessMemberController.getCredentials
 );
 router.patch(
     "/:branchId/:employeeId/update/credentials",
-    updateMemberCredentialsRules, handleInputErrors, branchGuard, employeeExist,
+    updateMemberCredentialsRules, handleInputErrors, branchGuard, adminOnly,
+    employeeExist,
     BusinessMemberController.updateMemberCredentials
 );
 

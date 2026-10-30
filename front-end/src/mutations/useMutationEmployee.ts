@@ -2,8 +2,8 @@ import useBusinessContext from "@/hooks/useBusinessContext";
 import { queryKeys } from "@/lib/queryKeys";
 import { EmployeeService } from "@/services/EmployeeService";
 import type { Branch, setActiveBranch } from "@/types/Branch.types";
-import type { getCredentials } from "@/types/BusinessMember.type";
-import type { employeeActive, searchEmployee } from "@/types/Employee.type";
+import type { getCredentials, SearchMemberParams } from "@/types/BusinessMember.type";
+import type { addEmployeeToBranch, employeeActive, searchEmployee } from "@/types/Employee.type";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -146,6 +146,32 @@ export function useEmployeeActive() {
             toast.success(data.message);
             QC.invalidateQueries({ queryKey: queryKeys.employee.root });
 
+        }
+    });
+}
+
+export function useSearchMemberToJoin() {
+    return useMutation({
+        mutationFn: (search: SearchMemberParams) => EmployeeService.searchMemberToJoin(search),
+        onSuccess: (data) => {
+            toast.success(data.message);
+        },
+        onError: (error: Error) => {
+            toast.error(error.message);
+        }
+    });
+}
+
+export function useAddEmployeeToBranch() {
+    const { QC } = useBusinessContext();
+    return useMutation({
+        mutationFn: (formData: addEmployeeToBranch) => EmployeeService.addEmployeeToBranch(formData),
+        onSuccess: (data) => {
+            toast.success(data.message);
+            QC.invalidateQueries({ queryKey: queryKeys.employee.root });
+        },
+        onError: (error: Error) => {
+            toast.error(error.message);
         }
     });
 }

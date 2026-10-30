@@ -37,6 +37,10 @@ export type BranchEmployee = Pick<
     _id: string;
 };
 
+export type findEmployee = Pick<IMember, "name" | "last_name"> & {
+    _id: string;
+}
+
 const memberSchema = new Schema<IMember>({
     name: { type: String, required: true },
     last_name: { type: String, default: "" },

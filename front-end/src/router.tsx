@@ -28,6 +28,7 @@ import ProductsModule from "./pages/dashboard/Employee/ProductView";
 import ProductsView from "./pages/dashboard/Employee/ProductsView";
 import EmployeeBranchView from "./pages/dashboard/Employee/EmployeeBranchView";
 import ManageTeamView from "./pages/dashboard/Employee/ManageTeamView";
+import AddEmployeeView from "./pages/dashboard/Employee/AddEmployeeView";
 
 export default function router() {
   return (
@@ -82,13 +83,15 @@ export default function router() {
           <Route
             element={<RoleMiddleware allowedRoles={[MEMBER_ROLES.ADMIN, MEMBER_ROLES.MANAGER, MEMBER_ROLES.STAFF]} />}
           >
-            {/* Layout for Branch - Role["ADMIN | MANAGER | STAFF | OWNER"] */}
             <Route path="branches" element={<BranchesLayout />}>
               <Route index element={<EBranchIndex />} />
             </Route>
             <Route path="/branch" element={<BranchLayout />}>
               <Route index element={<EmployeeBranchView />} />
-              <Route path="equipo" element={<ManageTeamView />} />
+              <Route path="equipo">
+                <Route index element={<ManageTeamView />} />
+                <Route path="add" element={<AddEmployeeView />} />
+              </Route>
               <Route path="credentials" element={<EditMemberCredentialsView />} />
               <Route path="products" element={<ProductsView />} />
               <Route path="products-example" element={<ProductsModule />} />

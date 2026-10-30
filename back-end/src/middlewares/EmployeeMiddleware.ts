@@ -1,14 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import { paginate, PaginationResult } from "../lib/pagination";
-import { IBranch } from "../models/Branch";
+import { Branch, IBranch } from "../models/Branch";
 import { BranchSession } from "../models/BranchAccess";
-import { MEMBER_ROLES, IMember, BranchEmployee, Member } from "../models/Member";
+import { MEMBER_ROLES, IMember, BranchEmployee, Member, findEmployee } from "../models/Member";
 import { Credential, ICredential } from "../models/Credential";
 import { checkPassword, escapeRegex, hashAccessToken } from "../utils";
 import { body, param, query } from "express-validator";
 import { BranchSchedule } from "../models/BranchSchedule";
 import { HydratedDocument, Types } from "mongoose";
 import { toBranchEmployee } from "../mappers/BranchEmployee.mapper";
+import { escape } from "node:querystring";
 
 declare global {
     namespace Express {
@@ -18,6 +19,7 @@ declare global {
             employees: PaginationResult<BranchEmployee>;
             employee: BranchEmployee;
             searchEmployee: PaginationResult<BranchEmployee>;
+            foundEmployee: findEmployee;
             employeesStats: EmployeesStats;
         }
     }
@@ -67,6 +69,23 @@ export const employeeParamsRules = [
         .trim()
         .notEmpty()
         .withMessage("La palabra clave es obligatoria.")
+];
+
+export const addMemberToBranchRules = [
+    ...branchIdRules,
+    param("employeeId").isMongoId().withMessage("El ID del miembro no es válido."),
+    body("role")
+        .isString().bail()
+        .isIn(Object.values(MEMBER_ROLES))
+        .withMessage("El rol no es válido."),
+    body("userKey")
+        .isString().withMessage("El userKey debe ser una cadena de texto.").bail()
+        .trim()
+        .notEmpty().withMessage("El userKey es obligatorio."),
+    body("password")
+        .isString().bail()
+        .isLength({ min: 6 })
+        .withMessage("La contraseña debe tener al menos 6 caracteres."),
 ];
 
 // Validar los filtros (opcionales) de empleados.
@@ -495,6 +514,96 @@ export const getSearchEmployeeByFilters = async (req: Request, res: Response, ne
         }
 
         req.searchEmployee = await paginateBranchEmployees(filter, req.query.page);
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
+// This employee is part of the business?
+export const memberBelongsToBranchBusines = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { employeeId } = req.params
+        const [branch, member] = await Promise.all([
+            Branch.findById(req.myBranch._id).select("business").lean(),
+            Member.findById(employeeId).select("business").lean()
+        ]);
+
+        if (!branch || !member) {
+            const error = new Error("No se pudo determinar si el miembro pertenece al negocio.");
+            return res.status(500).json({ message: error.message });
+        }
+
+        if (String(branch.business) !== String(member.business)) {
+            const error = new Error("El miembro no pertenece al negocio.");
+            return res.status(403).json({ message: error.message });
+        }
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
+// Search employee
+export const searchMembersInBranchBusiness = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { search } = req.params;
+        const { _id: branchId } = req.myBranch;
+
+        if (typeof search !== "string" || !search.trim()) {
+            return res.status(400).json({
+                message: "El parámetro de búsqueda no es válido."
+            });
+        }
+
+        const branch = await Branch.findById(branchId)
+            .select("business")
+            .lean();
+
+        if (!branch) {
+            return res.status(404).json({
+                message: "No se encontró la sucursal."
+            });
+        }
+
+        const searchValue = escapeRegex(search.trim());
+        const exactMatch = new RegExp(`^${searchValue}$`, "i");
+
+        const alreadyInBranch = await Credential.distinct("user", { branch: branchId });
+
+        const member = await Member.findOne({
+            business: branch.business,
+            _id: { $nin: alreadyInBranch },
+            $or: [
+                { name: exactMatch },
+                { last_name: exactMatch },
+                { email: exactMatch },
+                {
+                    $expr: {
+                        $regexMatch: {
+                            input: { $concat: ["$name", " ", { $ifNull: ["$last_name", ""] }] },
+                            regex: exactMatch,
+                        },
+                    },
+                },
+            ],
+        })
+            .select("name last_name")
+            .lean();
+
+        console.log(member)
+
+        req.foundEmployee = {
+            _id: member._id.toString(),
+            name: member.name,
+            last_name: member.last_name
+        };
 
         next();
     } catch (error) {

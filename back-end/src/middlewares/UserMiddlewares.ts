@@ -138,7 +138,6 @@ export async function isAuthenticate(
             }
 
             req.member = member;
-
             return next();
         }
 

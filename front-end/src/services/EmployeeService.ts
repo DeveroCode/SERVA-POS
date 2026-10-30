@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse, type setActiveBranch, type Response, type ScheduleDataForm, type Credentials, type getCredentials, credentialsSchema, type updateEmployeeCredentialsForms, type searchEmployee, type GetEmployees, getEmployeesSchema, type employeeActive } from "@/types/Index.types";
+import { branchesSchema, type Branches, CategoriesSchema, type Categories, type Employees, employeesSchema, type Branch, branchSchema, type CredentialForm, type accessBranchResponse, type setActiveBranch, type Response, type ScheduleDataForm, type Credentials, type getCredentials, credentialsSchema, type updateEmployeeCredentialsForms, type searchEmployee, type GetEmployees, getEmployeesSchema, type employeeActive, type SearchMemberParams, type searchMemberToJoin, searchMemberToJoinSchema, type addEmployeeToBranch } from "@/types/Index.types";
 import { isAxiosError } from "axios";
 import { getApiErrorMessage } from "../lib";
 import { LAST_BRANCH_KEY } from "@/utils/key";
@@ -165,7 +165,6 @@ export class EmployeeService {
             }
         }
     }
-
     static async employeeActive({ branchId, employeeId, isActive }: employeeActive): Promise<Response> {
         try {
             const { data } = await api.patch<Response>(`/employee/branch/${branchId}/${employeeId}/active`, { isActive });
@@ -174,6 +173,29 @@ export class EmployeeService {
             if (isAxiosError(error) && error.response) {
                 throw new Error(getApiErrorMessage(error), { cause: error });
             }
+        }
+    }
+    static async searchMemberToJoin({ search }: SearchMemberParams): Promise<searchMemberToJoin> {
+        const currentBranchId = localStorage.getItem(LAST_BRANCH_KEY);
+        try {
+            const { data } = await api<searchMemberToJoin>(`/employee/branch/${currentBranchId}/search-employee/${search}`);
+            const response = searchMemberToJoinSchema.safeParse(data);
+
+            if (response.success) {
+                return response.data
+            }
+
+            throw new Error("La respuesta no cumple con el esquema, favor de revisar tus types de datos");
+        } catch (error) {
+            throw new Error(getApiErrorMessage(error), { cause: error });
+        }
+    }
+    static async addEmployeeToBranch(formData: addEmployeeToBranch): Promise<Response> {
+        try {
+            const {data} = await api.post<Response>(`/employee/branch/${formData.branchId}/employee/${formData.employeeId}/add`, formData);
+            return data
+        } catch (error) {
+            throw new Error(getApiErrorMessage(error), { cause: error });
         }
     }
 }

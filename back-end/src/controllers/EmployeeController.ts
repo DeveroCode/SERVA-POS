@@ -2,8 +2,17 @@
 import { Request, Response } from "express";
 import { Category } from "../models/Category";
 import { BranchSession } from "../models/BranchAccess";
-import { hashAccessToken } from "../utils";
-import { Member } from "../models/Member";
+import { hashAccessToken, hashPassword } from "../utils";
+import { Member, MEMBER_ROLES } from "../models/Member";
+import { Credential } from "../models/Credential";
+
+
+// Roles que un admin puede asignar (sin owner ni admin).
+const ROLES_ASSIGNABLE_BY_ADMIN: string[] = [
+    MEMBER_ROLES.MANAGER,
+    MEMBER_ROLES.STAFF,
+    MEMBER_ROLES.EMPLOYEE,
+];
 
 export class EmployeeController {
     static async getMyBranches(req: Request, res: Response) {
@@ -102,7 +111,57 @@ export class EmployeeController {
             await employee.save();
             return res.status(200).json({ message: "Empleado actualizado correctamente." });
         } catch (error) {
-            console.log(error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    static findEmployeeToAdd(req: Request, res: Response) {
+        try {
+            return res.status(200).json({"message": "Empleado encontrado.", employee: req.foundEmployee});
+        } catch (error) {
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    // Add Employee to branch
+    static addMember = async (req: Request, res: Response) => {
+        try {
+            const { _id } = req.myBranch;
+            const user = String(req.params.employeeId);
+
+            const { role, password, userKey } = req.body;
+
+            if (!ROLES_ASSIGNABLE_BY_ADMIN.includes(role)) {
+                const error = new Error("El rol asignado no es valido.");
+                return res.status(400).json({ message: error.message });
+            }
+
+            const [alreadyInBrnach, keyInUse] = await Promise.all([
+                Credential.exists({ user, branch: _id }),
+                Credential.exists({ userKey })
+            ]);
+
+            if (alreadyInBrnach) {
+                const error = new Error("El empleado ya pertenece a la sucursal.");
+                return res.status(400).json({ message: error.message });
+            }
+
+            if (keyInUse) {
+                const error = new Error("La llave de acceso ya esta en uso.");
+                return res.status(400).json({ message: error.message });
+            }
+
+            await Credential.create({
+                user,
+                userKey,
+                branch: _id,
+                role,
+                password: await hashPassword(password)
+            });
+
+            return res.status(201).json({ message: "Empleado agregado correctamente." });
+
+        } catch (error) {
             return res.status(500).json({ message: 'Internal server error' });
         }
     }

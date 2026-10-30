@@ -30,6 +30,15 @@ export const CategorySchema = z.object({
     isActive: z.boolean(),
 });
 
+export const searchMemberToJoinSchema = z.object({
+    message: z.string(),
+    employee: z.object({
+        _id: z.string(),
+        name: z.string(),
+        last_name: z.string()
+    })
+})
+
 export const statsSchema = z.object({
     activeEmployees: z.number(),
     totalEmployees: z.number(),
@@ -114,6 +123,19 @@ export type searchEmplooyeForm = {
     isActive: boolean | null,
     search: string
 }
+
+export type addEmployeeToBranch = {
+    employeeId: Employee["_id"];
+    role: MemberRole;
+    userKey: string;
+    password: string;
+    passwordConfirm: string;
+    branchId: Branch["_id"];
+}
+
+export type searchMemberToJoin = z.infer<typeof searchMemberToJoinSchema>
+export type findMemberToJoin = z.infer<typeof searchMemberToJoinSchema.shape.employee>
+
 // ==========================================
 // 2 - CONDITIONALS
 // ==========================================
